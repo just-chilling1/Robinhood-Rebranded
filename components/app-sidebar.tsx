@@ -5,10 +5,7 @@ import {
   Brain,
   FolderOpen,
   Upload,
-  Banknote,
-  TrendingUp,
   Play,
-  Settings,
   LogOut,
   Gem,
   Sparkles,
@@ -23,7 +20,6 @@ const menuItems = [
   { title: "Gold Rush", url: "/create", icon: Brain },
   { title: "My Vault", url: "/pages", icon: FolderOpen },
   { title: "Link Vault", url: "/share", icon: Upload },
-  { title: "Bonus Training", url: "/bonus-training", icon: TrendingUp },
   { title: "Academy", url: "/training", icon: Play },
 ]
 

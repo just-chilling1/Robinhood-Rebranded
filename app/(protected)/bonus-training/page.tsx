@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export default function ScaleRobinhoodPage() {
+export default function BonusTrainingPage() {
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-4xl mx-auto">
