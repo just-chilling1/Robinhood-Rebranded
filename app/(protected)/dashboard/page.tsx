@@ -6,6 +6,9 @@ import { Brain, Play, Gem, Headphones } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+/** Never serve a cached dashboard shell (avoids stale UI after deploys). */
+export const dynamic = "force-dynamic"
+
 export default async function DashboardPage() {
   try {
     const supabase = await createClient()
