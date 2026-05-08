@@ -660,10 +660,10 @@ export function DFYVaultContent() {
         </div>
         <div>
           <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Welcome to Your DFY Vault!</h1>
-          <p className="text-2xl text-cyan-300 font-black mb-4">50 Proven Articles Ready to Copy & Earn</p>
+          <p className="text-2xl text-cyan-300 font-black mb-4">50 ready-to-use article templates</p>
           <p className="text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed font-bold">
-            These articles have generated over $500,000 in commissions for our members. Just copy any article, add your
-            affiliate link where indicated, and start earning today.
+            Pick a template, add your affiliate link where indicated, and publish your page when you are ready. Results
+            depend on your traffic, offer, and follow-through.
           </p>
         </div>
       </div>
@@ -772,11 +772,11 @@ export function DFYVaultContent() {
                 </div>
                 <div>
                   <h2 className="text-3xl font-black text-white mb-3 leading-tight">
-                    How To Turn A Measly $5 Into $50, $100, And Even $500 Every Single Day...
+                    How to Turn Small Tests Into a Consistent Publishing Rhythm
                   </h2>
                   <p className="text-xl text-gray-300 leading-relaxed font-bold">
-                    This exclusive training reveals the exact strategy to multiply small investments into massive daily
-                    profits using the DFY Vault articles.
+                    This walkthrough focuses on workflow: choosing an article, placing your link, and shipping pages
+                    without burning yourself out.
                   </p>
                 </div>
               </div>
@@ -831,11 +831,11 @@ export function DFYVaultContent() {
                 </div>
                 <div>
                   <h2 className="text-3xl font-black text-white mb-3 leading-tight">
-                    How To Hijack Top Publications Traffic In Less Than 9 Minutes, And Turn Them Into $500 Paydays
+                    How to Borrow Attention From Busy Publications (Ethically)
                   </h2>
                   <p className="text-xl text-gray-300 leading-relaxed font-bold">
-                    Discover the secret method to leverage high-traffic publications and convert their audience into
-                    your commission-generating machine.
+                    Learn how to align your pages with topics people already care about, then route interested readers to
+                    your offer with clear, honest positioning.
                   </p>
                 </div>
               </div>
@@ -848,7 +848,7 @@ export function DFYVaultContent() {
         <CardHeader>
           <CardTitle className="text-4xl text-white flex items-center gap-3 font-black">
             <FileText className="w-10 h-10 text-cyan-400" />
-            50 Proven Money-Making Articles
+            50 article templates
           </CardTitle>
           <p className="text-xl text-gray-100 mt-3 font-bold">
             Click "Use This Article" and we'll create a page for you automatically
@@ -866,16 +866,13 @@ export function DFYVaultContent() {
                     <Badge className="bg-cyan-500/20 text-cyan-300 text-sm font-black border-cyan-500/30">
                       {article.niche}
                     </Badge>
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400 font-black text-sm">${article.earnings}/day</span>
+                    <div className="flex items-center gap-2 text-cyan-400/90">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="font-black text-sm">Template</span>
                     </div>
                   </div>
                   <h3 className="text-xl font-black text-white leading-tight">{article.title}</h3>
                   <p className="text-gray-300 text-base font-bold">By {article.author}</p>
-                  <p className="text-emerald-400 text-sm font-bold">
-                    On average, this article makes ${article.earnings}/day
-                  </p>
                   <div className="bg-blue-500/10 rounded-lg p-3 border border-blue-500/20">
                     <p className="text-blue-300 text-sm font-bold flex items-start gap-2">
                       <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />

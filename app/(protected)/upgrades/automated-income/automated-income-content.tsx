@@ -555,7 +555,7 @@ const trafficSources: TrafficSource[] = [
     instructions: [
       "Create TikTok account focused on making money",
       "Post short videos about your online income",
-      "Show income proof and results",
+      "Show a clear before/after story (no fabricated numbers)",
       "Use trending sounds and hashtags",
       "Add link to bio",
       "Post 2-3 videos daily",

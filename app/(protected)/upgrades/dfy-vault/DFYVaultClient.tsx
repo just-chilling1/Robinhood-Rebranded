@@ -15,7 +15,6 @@ import {
   Check, 
   Eye,
   TrendingUp,
-  DollarSign,
   Flame,
   Zap,
   ExternalLink,
@@ -304,7 +303,7 @@ export default function DFYVaultClient() {
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <div className="glass rounded-lg p-2 border border-[#0ea5e9]/30 text-center">
                       <Eye className="w-3 h-3 text-[#0ea5e9] mx-auto mb-1" />
                       <p className="text-sm font-black text-white">{formatNumber(video.viewCount)}</p>
@@ -316,10 +315,6 @@ export default function DFYVaultClient() {
                     <div className="glass rounded-lg p-2 border border-[#06b6d4]/30 text-center">
                       <TrendingUp className="w-3 h-3 text-[#06b6d4] mx-auto mb-1" />
                       <p className="text-sm font-black text-white">{video.estimatedClicks}</p>
-                    </div>
-                    <div className="glass rounded-lg p-2 border border-[#10b981]/30 text-center">
-                      <DollarSign className="w-3 h-3 text-[#10b981] mx-auto mb-1" />
-                      <p className="text-sm font-black text-[#10b981]">{video.estimatedEarnings}</p>
                     </div>
                   </div>
 

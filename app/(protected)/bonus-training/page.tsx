@@ -7,11 +7,13 @@ export default function ScaleRobinhoodPage() {
         {/* Headline Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Scale Your Robinhood To{" "}
-            <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-transparent bg-clip-text font-black">$1,000+ Per Day</span>
+            Bonus training:{" "}
+            <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-transparent bg-clip-text font-black">
+              grow with Robinhood
+            </span>
           </h1>
           <p className="text-xl text-[#7dd3fc] font-bold mb-8">
-            Watch this exclusive training to multiply your results
+            Watch this exclusive session to get more from the platform
           </p>
         </div>
 

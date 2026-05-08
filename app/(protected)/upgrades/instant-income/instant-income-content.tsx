@@ -93,70 +93,70 @@ const facebookPosts: FacebookPost[] = [
   {
     id: "mmo-1",
     niche: "Make Money Online",
-    post: "💰 I made $1,847 last week from my laptop! No boss, no commute, just freedom. If you're ready to change your life: [LINK]",
+    post: "I finally organized a simple weekly routine for testing offers and tracking what actually gets clicks. If you want the checklist I used: [LINK]",
     earningsMin: 100,
     earningsMax: 300,
   },
   {
     id: "mmo-2",
     niche: "Make Money Online",
-    post: "Who else is tired of living paycheck to paycheck? 🙋 I was too until I found this. Now I'm making $500+ per day from home! [LINK]",
+    post: "Anyone else overwhelmed by shiny tactics? I stripped it back to one funnel, one audience, and one offer. Happy to share what I learned: [LINK]",
     earningsMin: 120,
     earningsMax: 350,
   },
   {
     id: "mmo-3",
     niche: "Make Money Online",
-    post: "I quit my 9-5 job 3 months ago and I've never been happier! Making more money working from home than I ever did at my old job. Here's how: [LINK]",
+    post: "I quit chasing viral hacks and focused on boring basics: clearer pages, faster follow-ups, and better questions in the comments. More here: [LINK]",
     earningsMin: 150,
     earningsMax: 400,
   },
   {
     id: "mmo-4",
     niche: "Make Money Online",
-    post: "This is NOT a scam. I was skeptical too, but I've made over $10,000 in the last 2 months. Real money, real results: [LINK]",
+    post: "I was skeptical of anything 'online business' until I started measuring one metric at a time. This is the resource that helped me stay consistent: [LINK]",
     earningsMin: 130,
     earningsMax: 380,
   },
   {
     id: "mmo-5",
     niche: "Make Money Online",
-    post: "My first $1,000 day! 🎉 I never thought this was possible, but here I am. If I can do it, you can too: [LINK]",
+    post: "Big milestone for me: I shipped my first real campaign end-to-end without quitting halfway. If you want the walkthrough: [LINK]",
     earningsMin: 110,
     earningsMax: 320,
   },
   {
     id: "mmo-6",
     niche: "Make Money Online",
-    post: "Working in my pajamas and making more money than ever. This is the life! Want to know my secret? [LINK]",
+    post: "Working from home got easier when I stopped improvising and used a simple daily checklist. Grab it if helpful: [LINK]",
     earningsMin: 95,
     earningsMax: 280,
   },
   {
     id: "mmo-7",
     niche: "Make Money Online",
-    post: "I used to think 'make money online' was a joke. Then I tried this and made $3,200 in my first month. No joke: [LINK]",
+    post: "I used to bounce between tools. Now I keep everything in one lightweight workflow and review it weekly. Details: [LINK]",
     earningsMin: 140,
     earningsMax: 390,
   },
   {
     id: "mmo-8",
     niche: "Make Money Online",
-    post: "Finally paid off my credit cards! 💳 This system helped me make an extra $2,500 last month. Life-changing: [LINK]",
+    post: "I finally built a calm system for outreach and follow-ups instead of panic-posting. Here's what changed for me: [LINK]",
     earningsMin: 125,
     earningsMax: 360,
   },
   {
     id: "mmo-9",
     niche: "Make Money Online",
-    post: "No experience needed. No special skills required. Just follow the steps and make money. I'm living proof: [LINK]",
+    post: "No fancy skills required—just clear messaging, a decent page, and steady reps. This is what I used to get started: [LINK]",
     earningsMin: 105,
     earningsMax: 310,
   },
   {
     id: "mmo-10",
     niche: "Make Money Online",
-    post: "I work 2-3 hours a day and make more than I did working 40 hours a week. This changed everything for me: [LINK]",
+    post: "I work in focused blocks now instead of all-day chaos. If you want the time-blocking template that helped: [LINK]",
     earningsMin: 135,
     earningsMax: 370,
   },
@@ -629,23 +629,24 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               </div>
 
               <div className="bg-emerald-500/10 rounded-xl p-6 border border-emerald-500/30">
-                <h4 className="text-2xl font-black text-white mb-4">💰 How Much Can You Make?</h4>
+                <h4 className="text-2xl font-black text-white mb-4">What to expect</h4>
                 <p className="text-lg text-gray-300 font-semibold leading-relaxed mb-4">
-                  Each post can generate $40-$400 per day depending on the niche and how many groups you post in. Here's
-                  the math:
+                  Outcomes depend on your niche, your offer, group rules, and how consistently you show up. Treat these
+                  posts as starting drafts—edit them so they sound like you and comply with each community&apos;s
+                  guidelines.
                 </p>
                 <ul className="space-y-3 text-lg text-gray-300 font-semibold">
                   <li className="flex items-start gap-3">
                     <span className="text-emerald-400 font-black">•</span>
-                    <span>Post in 5 groups per day = 5 posts. If each post makes $50/day, that's $250/day total!</span>
+                    <span>Post in a handful of relevant groups per day, spaced out, instead of dumping the same text everywhere at once.</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-emerald-400 font-black">•</span>
-                    <span>Do this for 30 days = $7,500/month. Just from copying and pasting!</span>
+                    <span>Reply to comments quickly and helpfully so your thread stays visible without sounding salesy.</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-emerald-400 font-black">•</span>
-                    <span>The more groups you join and post in, the more money you make. It's that simple!</span>
+                    <span>Track what you tried (hook, CTA, time of day) so you can improve the message—not just the volume.</span>
                   </li>
                 </ul>
               </div>
@@ -760,7 +761,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             <div className="text-center bg-gradient-to-br from-emerald-500/10 to-green-500/10 rounded-2xl p-8 border border-emerald-500/20">
               <h2 className="text-4xl font-black text-white mb-3">🎉 Your {filteredPosts.length} Posts Are Ready!</h2>
               <p className="text-xl text-emerald-300 font-bold">
-                Click "Copy Post" on any message below and paste it into Facebook groups. Start making money today!
+                Click &quot;Copy Post&quot; on any message below, personalize it, then paste where it fits the group&apos;s rules.
               </p>
             </div>
 
@@ -779,9 +780,6 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                           </span>
                           <span className="px-4 py-2 bg-blue-500/20 text-blue-300 text-base font-bold rounded-full">
                             {post.niche}
-                          </span>
-                          <span className="text-emerald-400 font-black text-xl">
-                            On average: ${post.earningsMin}-${post.earningsMax}/day
                           </span>
                         </div>
                         <div className="bg-gray-900/50 rounded-xl p-6 mb-4 border border-gray-700">

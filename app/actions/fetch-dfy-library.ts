@@ -8,7 +8,6 @@ export interface DFYVideo {
   viewCount: number
   niche: string
   estimatedClicks: number
-  estimatedEarnings: string
   viralScore: number
   commentTemplates: string[] // 5 templates with [PRODUCT] and [LINK] placeholders
 }
@@ -33,23 +32,16 @@ function generateCommentTemplates(): string[] {
   ]
 }
 
-function calculateMetrics(viewCount: number): { estimatedClicks: number; estimatedEarnings: string; viralScore: number } {
-  // Viral score based on view count
+function calculateMetrics(viewCount: number): { estimatedClicks: number; viralScore: number } {
   const viralScore = Math.min(100, Math.round((viewCount / 1000000) * 100))
-  
-  // Conservative click estimate for comments
-  const baseClickRate = 0.00001 // 0.001%
+
+  const baseClickRate = 0.00001
   const bonusClickRate = (viralScore / 100) * 0.00009
   const clickRate = baseClickRate + bonusClickRate
   const rawClicks = viewCount * clickRate
   const estimatedClicks = Math.max(10, Math.min(99, Math.round(rawClicks)))
-  
-  // Earnings estimate
-  const avgEarningsPerClick = 5 + (viralScore / 100) * 10
-  const estimatedRevenue = estimatedClicks * avgEarningsPerClick
-  const estimatedEarnings = `$${Math.round(estimatedRevenue)}`
-  
-  return { estimatedClicks, estimatedEarnings, viralScore }
+
+  return { estimatedClicks, viralScore }
 }
 
 export async function fetchDFYLibrary(): Promise<DFYVideo[]> {

@@ -23,7 +23,7 @@ const menuItems = [
   { title: "Gold Rush", url: "/create", icon: Brain },
   { title: "My Vault", url: "/pages", icon: FolderOpen },
   { title: "Link Vault", url: "/share", icon: Upload },
-  { title: "Scale Your Robinhood To $1,000+ Per Day", url: "/bonus-training", icon: TrendingUp },
+  { title: "Bonus Training", url: "/bonus-training", icon: TrendingUp },
   { title: "Academy", url: "/training", icon: Play },
 ]
 

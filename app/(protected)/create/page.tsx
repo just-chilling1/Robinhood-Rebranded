@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TrendingUp, Search, Zap, DollarSign, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check } from "lucide-react"
+import { TrendingUp, Search, Zap, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check } from "lucide-react"
 import { fetchTrendingShorts, searchVideosByKeyword, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 
@@ -281,7 +281,7 @@ export default function GoldRushPage() {
                           </div>
 
                           {/* Stats Grid */}
-                          <div className="grid grid-cols-4 gap-3">
+                          <div className="grid grid-cols-3 gap-3">
                             <div className="glass rounded-lg p-3 border-2 border-[#0ea5e9]/30">
                               <Eye className="w-4 h-4 text-[#0ea5e9] mb-1" />
                               <p className="text-lg font-black text-white">{formatNumber(video.viewCount)}</p>
@@ -296,11 +296,6 @@ export default function GoldRushPage() {
                               <TrendingUp className="w-4 h-4 text-[#06b6d4] mb-1" />
                               <p className="text-lg font-black text-white">{formatNumber(video.estimatedClicks)}</p>
                               <p className="text-xs text-[#7dd3fc] font-bold">Est. Clicks</p>
-                            </div>
-                            <div className="glass rounded-lg p-3 border-2 border-[#10b981]/30 bg-gradient-to-br from-[#10b981]/20 to-[#10b981]/10">
-                              <DollarSign className="w-4 h-4 text-[#10b981] mb-1" />
-                              <p className="text-lg font-black text-[#10b981]">{video.estimatedEarnings}</p>
-                              <p className="text-xs text-[#7dd3fc] font-bold">Est. Revenue</p>
                             </div>
                           </div>
 
@@ -340,7 +335,7 @@ export default function GoldRushPage() {
                       {hasComments && (
                         <div className="pt-6 border-t-2 border-[#10b981]/20 space-y-4">
                           <div className="flex items-center justify-between">
-                            <h3 className="text-2xl font-black text-[#10b981]">💰 Your Money Comments</h3>
+                            <h3 className="text-2xl font-black text-[#10b981]">Your generated comments</h3>
                             <Button
                               asChild
                               size="sm"

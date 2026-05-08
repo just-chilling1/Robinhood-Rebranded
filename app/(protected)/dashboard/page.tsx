@@ -2,8 +2,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from "@/lib/supabase/server"
 import { QuickActionCard } from "@/components/quick-action-card"
 import { FeaturedVideoCard } from "@/components/featured-video-card"
-import { CommunityProgress } from "@/components/community-progress"
-import { EarningsShowcase } from "@/components/earnings-showcase"
 import { Brain, Play, Gem, Headphones } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -46,12 +44,6 @@ export default async function DashboardPage() {
 
           {/* VIDEO CARD - FIRST THING THEY SEE */}
           <FeaturedVideoCard />
-
-          {/* Earnings Showcase - Money-focused Social Proof */}
-          <EarningsShowcase />
-
-          {/* Community Progress - NEW Social Proof */}
-          <CommunityProgress />
 
           {/* Quick Actions */}
           <div>
