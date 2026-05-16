@@ -1,12 +1,15 @@
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { buildProtectorViewModel } from "@/lib/protector/build-protector-data"
 import { ProtectorContent } from "./protector-content"
 
 export const metadata: Metadata = {
   title: "Protector | Account Security Overview",
   description: "Real-time account security monitoring and status",
 }
+
+export const dynamic = "force-dynamic"
 
 export default async function ProtectorPage() {
   const supabase = await createClient()
@@ -19,5 +22,15 @@ export default async function ProtectorPage() {
     redirect("/auth/login")
   }
 
-  return <ProtectorContent email={user.email ?? "—"} />
+  const { data: profile } = await supabase
+    .from("users")
+    .select(
+      "email, full_name, upgrade_level, pages_generated, created_at, onboarding_completed_at",
+    )
+    .eq("id", user.id)
+    .single()
+
+  const viewModel = buildProtectorViewModel(user, profile)
+
+  return <ProtectorContent data={viewModel} />
 }

@@ -12,54 +12,66 @@ import {
   Calendar,
   Activity,
   CheckCircle2,
+  Gem,
+  Fingerprint,
+  FileText,
 } from "lucide-react"
+import type { ProtectorViewModel } from "@/lib/protector/build-protector-data"
 
 interface ProtectorContentProps {
-  email: string
+  data: ProtectorViewModel
 }
 
-const securityChecks = [
-  {
-    icon: ShieldCheck,
-    title: "Account Verified",
-    description: "Your identity has been confirmed and credentials validated",
-  },
-  {
-    icon: Lock,
-    title: "Secure Connection",
-    description: "Your connection is encrypted with TLS 1.3 protocols",
-  },
-  {
-    icon: Key,
-    title: "Session Protected",
-    description: "Your session is authenticated with secure token management",
-  },
-  {
-    icon: Shield,
-    title: "Data Encryption",
-    description: "All personal data is encrypted at rest and in transit",
-  },
-  {
-    icon: Server,
-    title: "Server Status",
-    description: "All Robinhood servers are online and operational",
-  },
-  {
-    icon: Globe,
-    title: "API Connectivity",
-    description: "All external API traffic links are stable",
-  },
-]
+function getSecurityChecks(data: ProtectorViewModel) {
+  const name = data.account.fullName || "your account"
+  return [
+    {
+      icon: ShieldCheck,
+      title: "Account Verified",
+      description: data.isEmailVerified
+        ? `${name} is verified on Robinhood with validated sign-in credentials`
+        : "Complete email verification to fully secure your Robinhood account",
+    },
+    {
+      icon: Lock,
+      title: "Secure Connection",
+      description: "Your Robinhood session uses encrypted TLS 1.3 connections",
+    },
+    {
+      icon: Key,
+      title: "Session Protected",
+      description: `Authenticated Supabase session for account ${data.account.accountId}`,
+    },
+    {
+      icon: Shield,
+      title: "Data Encryption",
+      description: "Profile, comment packs, and vault data are encrypted in transit",
+    },
+    {
+      icon: Server,
+      title: "Platform Status",
+      description: "Robinhood Command Center, Gold Rush, and Premium Tier are operational",
+    },
+    {
+      icon: Globe,
+      title: "API Connectivity",
+      description: "Shorts discovery and comment generation APIs are responding normally",
+    },
+  ]
+}
 
-const recentActivity = [
-  { icon: CheckCircle2, label: "Successful login", time: "Just now" },
-  { icon: Activity, label: "Session renewed", time: "2 minutes ago" },
-  { icon: ShieldCheck, label: "Security scan completed", time: "15 minutes ago" },
-  { icon: Lock, label: "SSL certificate verified", time: "1 hour ago" },
-  { icon: Server, label: "System health check passed", time: "3 h" },
-]
+const activityIcons = {
+  login: CheckCircle2,
+  session: Activity,
+  onboarding: ShieldCheck,
+  premium: Gem,
+  created: Server,
+} as const
 
-export function ProtectorContent({ email }: ProtectorContentProps) {
+export function ProtectorContent({ data }: ProtectorContentProps) {
+  const { account, activities, accountStatus, isEmailVerified } = data
+  const securityChecks = getSecurityChecks(data)
+
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -70,7 +82,8 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
           <div>
             <h1 className="text-4xl lg:text-5xl font-black text-white mb-2">Protector</h1>
             <p className="text-[#94a3b8] text-base max-w-xl">
-              Your account security overview. Everything is monitored in real time.
+              Your Robinhood account security overview. Live status for{" "}
+              {account.fullName ? account.fullName : account.email}.
             </p>
           </div>
         </div>
@@ -84,8 +97,16 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Security Score", value: "100%", valueClass: "text-[#22c55e]" },
-          { label: "Account Status", value: "Verified", valueClass: "text-[#22c55e] italic" },
+          {
+            label: "Security Score",
+            value: isEmailVerified ? "100%" : "85%",
+            valueClass: "text-[#22c55e]",
+          },
+          {
+            label: "Account Status",
+            value: accountStatus,
+            valueClass: isEmailVerified ? "text-[#22c55e] italic" : "text-[#fbbf24] italic",
+          },
           { label: "Encryption", value: "AES-256", valueClass: "text-[#a855f7]" },
           { label: "Uptime", value: "99.9%", valueClass: "text-[#22c55e]" },
         ].map((metric) => (
@@ -111,6 +132,7 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
           <div className="space-y-3">
             {securityChecks.map((check) => {
               const Icon = check.icon
+              const verified = check.title !== "Account Verified" || isEmailVerified
               return (
                 <div
                   key={check.title}
@@ -125,9 +147,15 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
                       {check.description}
                     </p>
                   </div>
-                  <span className="flex-shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full border border-[#22c55e]/50 text-[#22c55e] text-[10px] font-bold uppercase tracking-wide">
+                  <span
+                    className={`flex-shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wide ${
+                      verified
+                        ? "border-[#22c55e]/50 text-[#22c55e]"
+                        : "border-[#fbbf24]/50 text-[#fbbf24]"
+                    }`}
+                  >
                     <CheckCircle2 className="w-3 h-3" />
-                    Verified
+                    {verified ? "Verified" : "Pending"}
                   </span>
                 </div>
               )
@@ -141,32 +169,79 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
               Account Info
             </h2>
             <div className="space-y-4">
+              {account.fullName && (
+                <div className="flex items-center gap-3">
+                  <User className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Name</p>
+                    <p className="text-white text-sm font-medium truncate">{account.fullName}</p>
+                  </div>
+                </div>
+              )}
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#64748b] flex-shrink-0" />
-                <div>
+                <div className="min-w-0">
                   <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Email</p>
-                  <p className="text-white text-sm font-medium truncate">{email}</p>
+                  <p className="text-white text-sm font-medium truncate">{account.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <User className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                <Gem className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                <div>
+                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">
+                    Premium Tier
+                  </p>
+                  <p className="text-[#22c55e] text-sm font-bold">{account.premiumTier}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Shield className="w-4 h-4 text-[#64748b] flex-shrink-0" />
                 <div>
                   <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Membership</p>
-                  <p className="text-[#22c55e] text-sm font-bold">Active</p>
+                  <p className="text-[#22c55e] text-sm font-bold">{account.membership}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Lock className="w-4 h-4 text-[#64748b] flex-shrink-0" />
                 <div>
-                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">2FA</p>
-                  <p className="text-[#22c55e] text-sm font-bold">Enabled</p>
+                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Auth</p>
+                  <p
+                    className={`text-sm font-bold ${isEmailVerified ? "text-[#22c55e]" : "text-[#fbbf24]"}`}
+                  >
+                    {account.authProtection}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Calendar className="w-4 h-4 text-[#64748b] flex-shrink-0" />
                 <div>
                   <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Last Login</p>
-                  <p className="text-white text-sm font-medium">Today</p>
+                  <p className="text-white text-sm font-medium">{account.lastLogin}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Calendar className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                <div>
+                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Member Since</p>
+                  <p className="text-white text-sm font-medium">{account.memberSince}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Fingerprint className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                <div>
+                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">Account ID</p>
+                  <p className="text-white text-sm font-mono font-medium">{account.accountId}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+                <div>
+                  <p className="text-[10px] text-[#64748b] uppercase tracking-wider">
+                    Comment Packs
+                  </p>
+                  <p className="text-white text-sm font-medium">
+                    {account.pagesGenerated} generated
+                  </p>
                 </div>
               </div>
             </div>
@@ -177,10 +252,10 @@ export function ProtectorContent({ email }: ProtectorContentProps) {
               Recent Activity
             </h2>
             <div className="space-y-4">
-              {recentActivity.map((event) => {
-                const Icon = event.icon
+              {activities.map((event) => {
+                const Icon = activityIcons[event.id as keyof typeof activityIcons] ?? Activity
                 return (
-                  <div key={event.label} className="flex items-start gap-3">
+                  <div key={event.id} className="flex items-start gap-3">
                     <Icon className="w-4 h-4 text-[#22c55e] flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <p className="text-white text-sm font-medium">{event.label}</p>

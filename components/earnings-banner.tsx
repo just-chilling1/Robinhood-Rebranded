@@ -34,7 +34,7 @@ export function EarningsBanner() {
             Then you have to watch this FREE training now (Will be taken down soon)
           </p>
           <Link
-            href="https://www.jvzoo.com/c/86517/415009"
+            href="https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-bold px-6 py-3 rounded-md transition-colors duration-200"
