@@ -146,6 +146,16 @@ export function OnboardingFlow() {
     }
   }
 
+  const handleSkipToDashboard = async () => {
+    setSubmitting(true)
+    const result = await completeOnboarding()
+    setSubmitting(false)
+    if (result.success) {
+      router.push(cfg.dashboardRoute)
+      router.refresh()
+    }
+  }
+
   if (step === "preparing") {
     return (
       <OnboardingShell step="preparing">
@@ -279,11 +289,6 @@ export function OnboardingFlow() {
               >
                 {cfg.betaOffer.ctaLabel}
               </Button>
-              <OnboardingContinueButton
-                label={cfg.betaOffer.continueLabel}
-                onClick={() => goTo("qualification")}
-                variant="secondary"
-              />
             </div>
           </div>
         </StepContent>
@@ -473,6 +478,16 @@ export function OnboardingFlow() {
             className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-sky-500 to-cyan-500 text-xl font-extrabold text-white shadow-lg shadow-sky-200 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 transition-all hover:-translate-y-0.5"
           >
             {submitting ? "Activating…" : cfg.activation.ctaLabel}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={handleSkipToDashboard}
+            disabled={submitting}
+            variant="ghost"
+            className="mt-4 h-12 w-full text-base font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+          >
+            {cfg.activation.skipCtaLabel}
           </Button>
         </div>
       </main>

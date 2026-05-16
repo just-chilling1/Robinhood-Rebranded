@@ -70,6 +70,7 @@ export const onboardingConfig = {
     ],
     note: "You're getting set up 🔥 — Your links will work overnight while you relax",
     ctaLabel: "Activate My System >",
+    skipCtaLabel: "No thanks, take me to the dashboard",
     sidebarStatus: [
       { label: "Neural link", status: "Online" },
       { label: "Gold Rush", status: "Ready" },
