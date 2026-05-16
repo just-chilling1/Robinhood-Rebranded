@@ -4,10 +4,10 @@ export default function UnlockInstantIncomePage() {
   return (
     <UnlockUpgradeClient
       upgradeLevel="instant_income"
-      upgradeName="Instant Income"
+      upgradeName="Recurring Streams"
       upgradeValue="$97"
       features={[
-        "Everything in DFY Vault",
+        "Everything in Accelerator",
         "100+ High-Converting Offers",
         "Advanced training videos",
         "Email swipe files",

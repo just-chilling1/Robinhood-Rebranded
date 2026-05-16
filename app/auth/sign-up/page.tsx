@@ -39,7 +39,7 @@ export default function SignUpPage() {
         },
       })
       if (error) throw error
-      router.push("/dashboard") // Redirect directly to dashboard instead of verify-email page
+      router.push("/onboarding")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {

@@ -111,7 +111,7 @@ export default function DFYVaultClient() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center space-y-4">
           <Loader2 className="w-16 h-16 text-[#0ea5e9] animate-spin mx-auto" />
-          <p className="text-2xl text-white font-bold">Loading Your DFY Library...</p>
+          <p className="text-2xl text-white font-bold">Loading Accelerator Library...</p>
           <p className="text-[#7dd3fc]">Fetching 200+ viral opportunities across 6 niches</p>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function DFYVaultClient() {
       {/* Header */}
       <div className="text-center space-y-4">
         <h1 className="text-6xl font-black text-white tracking-tight">
-          💎 Robinhood DFY Vault
+          💎 Accelerator
         </h1>
         <p className="text-2xl text-[#7dd3fc] font-bold">
           {videos.length} Pre-Loaded Viral Videos + 5 Comments Each
@@ -141,7 +141,7 @@ export default function DFYVaultClient() {
               <Youtube className="w-6 h-6 text-[#ec4899]" />
             </div>
             <div>
-              <h2 className="text-3xl font-black text-white">DFY Vault Training</h2>
+              <h2 className="text-3xl font-black text-white">Accelerator Training</h2>
               <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the 200+ DFY videos</p>
             </div>
           </div>

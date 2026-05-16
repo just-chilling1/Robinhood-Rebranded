@@ -10,6 +10,7 @@ import {
   Gem,
   Sparkles,
   Zap,
+  ShieldCheck,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -24,9 +25,10 @@ const menuItems = [
 ]
 
 const premiumItems = [
-  { title: "Robinhood DFY", url: "/upgrades/dfy-vault", icon: Gem },
-  { title: "Robinhood Instant Income", url: "/upgrades/instant-income", icon: Sparkles },
-  { title: "Robinhood Autopilot", url: "/upgrades/automated-income", icon: Zap },
+  { title: "Accelerator", url: "/upgrades/dfy-vault", icon: Gem },
+  { title: "Recurring Streams", url: "/upgrades/instant-income", icon: Sparkles },
+  { title: "Social Payouts", url: "/upgrades/automated-income", icon: Zap },
+  { title: "Protector", url: "/upgrades/protector", icon: ShieldCheck },
 ]
 
 export function AppSidebar() {

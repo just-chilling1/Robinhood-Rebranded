@@ -2029,7 +2029,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <TrendingUp className="w-12 h-12 text-white" />
         </div>
         <div>
-          <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Automated Income - Traffic On Autopilot</h1>
+          <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Social Payouts — Traffic On Autopilot</h1>
           <p className="text-2xl text-emerald-300 font-bold mb-4">
             100+ Free Traffic Sources - Submit Once, Get Traffic Forever
           </p>
@@ -2087,7 +2087,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 <span className="text-emerald-400 font-black text-sm uppercase tracking-wider">Watch First</span>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white mb-3">How to Use Automated Income</h2>
+                <h2 className="text-3xl font-black text-white mb-3">How to Use Social Payouts</h2>
                 <p className="text-xl text-gray-300 leading-relaxed font-bold">
                   Watch this quick tutorial to learn how to submit your link to these 100+ traffic sources and get
                   automated traffic forever!

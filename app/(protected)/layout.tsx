@@ -1,5 +1,6 @@
 import type React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
+import { AccountVerifiedModal } from "@/components/dashboard/AccountVerifiedModal"
 import { EarningsBanner } from "@/components/earnings-banner"
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         <EarningsBanner />
         {children}
       </main>
+      <AccountVerifiedModal />
     </div>
   )
 }

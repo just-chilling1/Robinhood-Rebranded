@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import DFYVaultClient from "./DFYVaultClient"
 
 export const metadata: Metadata = {
-  title: "Robinhood DFY | Pre-Loaded Opportunities",
+  title: "Accelerator | Pre-Loaded Opportunities",
   description: "200+ viral videos with ready-to-use comments",
 }
 

@@ -4,7 +4,7 @@ export default function UnlockDFYVaultPage() {
   return (
     <UnlockUpgradeClient
       upgradeLevel="dfy_vault"
-      upgradeName="DFY Vault"
+      upgradeName="Accelerator"
       upgradeValue="$47"
       features={[
         "50+ Done-For-You comment templates",

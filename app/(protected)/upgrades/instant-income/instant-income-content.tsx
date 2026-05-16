@@ -423,7 +423,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             <Facebook className="w-12 h-12 text-white" />
           </div>
           <div>
-            <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Instant Income: Facebook Posts</h1>
+            <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Recurring Streams: Facebook Posts</h1>
             <p className="text-2xl text-violet-300 font-bold mb-4">200+ Ready-to-Post Messages for Facebook Groups</p>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-semibold">
               Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills
@@ -479,7 +479,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                   <span className="text-violet-400 font-black text-sm uppercase tracking-wider">Watch First</span>
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black text-white mb-3">How to Use Instant Income</h2>
+                  <h2 className="text-3xl font-black text-white mb-3">How to Use Recurring Streams</h2>
                   <p className="text-xl text-gray-300 leading-relaxed font-bold">
                     Watch this quick tutorial to learn how to copy these Facebook posts and start making money
                     instantly. Simple and easy!

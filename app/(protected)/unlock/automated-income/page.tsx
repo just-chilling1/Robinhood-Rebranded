@@ -4,10 +4,10 @@ export default function UnlockAutomatedIncomePage() {
   return (
     <UnlockUpgradeClient
       upgradeLevel="automated_income"
-      upgradeName="Automated Income"
+      upgradeName="Social Payouts"
       upgradeValue="$197"
       features={[
-        "Everything in Instant Income",
+        "Everything in Recurring Streams",
         "Automated traffic system",
         "AI-powered optimization",
         "Priority support",

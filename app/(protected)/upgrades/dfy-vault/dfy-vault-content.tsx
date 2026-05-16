@@ -659,7 +659,7 @@ export function DFYVaultContent() {
           <Crown className="w-12 h-12 text-white" />
         </div>
         <div>
-          <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Welcome to Your DFY Vault!</h1>
+          <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Welcome to Accelerator!</h1>
           <p className="text-2xl text-cyan-300 font-black mb-4">50 ready-to-use article templates</p>
           <p className="text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed font-bold">
             Pick a template, add your affiliate link where indicated, and publish your page when you are ready. Results
@@ -713,7 +713,7 @@ export function DFYVaultContent() {
                 <span className="text-cyan-400 font-black text-sm uppercase tracking-wider">Quick Start</span>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white mb-3">How to Use Your DFY Vault</h2>
+                <h2 className="text-3xl font-black text-white mb-3">How to Use Accelerator</h2>
                 <p className="text-xl text-gray-300 leading-relaxed font-bold">
                   Watch this quick tutorial to learn how to copy these proven articles and start making money today. It
                   only takes 3 minutes!

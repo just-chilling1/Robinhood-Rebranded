@@ -48,8 +48,46 @@ export async function updateSession(request: NextRequest) {
   // Redirect authenticated users away from auth pages
   if (user && request.nextUrl.pathname.startsWith("/auth")) {
     const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
+    url.pathname = "/onboarding"
     return NextResponse.redirect(url)
+  }
+
+  const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding")
+
+  if (user && !isOnboardingRoute && !request.nextUrl.pathname.startsWith("/secret-p55-admin-panel-2029")) {
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("onboarding_completed_at")
+      .eq("id", user.id)
+      .single()
+
+    if (profileError) {
+      return supabaseResponse
+    }
+
+    if (!profile?.onboarding_completed_at) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/onboarding"
+      return NextResponse.redirect(url)
+    }
+  }
+
+  if (user && isOnboardingRoute) {
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("onboarding_completed_at")
+      .eq("id", user.id)
+      .single()
+
+    if (profileError) {
+      return supabaseResponse
+    }
+
+    if (profile?.onboarding_completed_at) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/dashboard"
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse

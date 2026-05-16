@@ -2,13 +2,13 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Check, Crown, Zap, Rocket } from "lucide-react"
+import { Check, Crown, Zap, Rocket, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 
 const upgrades = [
   {
     id: "dfy_vault",
-    name: "DFY Vault",
+    name: "Accelerator",
     tagline: "Done-For-You Templates",
     icon: Crown,
     color: "cyan",
@@ -24,12 +24,12 @@ const upgrades = [
   },
   {
     id: "instant_income",
-    name: "Instant Income",
+    name: "Recurring Streams",
     tagline: "Fast-Track Your Earnings",
     icon: Zap,
     color: "violet",
     features: [
-      "Everything in DFY Vault",
+      "Everything in Accelerator",
       "Paid Traffic Training",
       "FB Ads Masterclass",
       "Landing Page Builder",
@@ -40,12 +40,12 @@ const upgrades = [
   },
   {
     id: "automated_income",
-    name: "Automated Income",
+    name: "Social Payouts",
     tagline: "Set It and Forget It",
     icon: Rocket,
     color: "jade",
     features: [
-      "Everything in Instant Income",
+      "Everything in Recurring Streams",
       "Email Automation System",
       "Auto-Responder Sequences",
       "Traffic Automation Tools",
@@ -53,6 +53,21 @@ const upgrades = [
       "Lifetime Updates & Support",
     ],
     href: "/upgrades/automated-income",
+  },
+  {
+    id: "protector",
+    name: "Protector",
+    tagline: "Account Security Overview",
+    icon: ShieldCheck,
+    color: "jade",
+    features: [
+      "Real-time security monitoring",
+      "Encryption & session status",
+      "Account verification dashboard",
+      "Server & API health checks",
+      "Recent activity timeline",
+    ],
+    href: "/upgrades/protector",
   },
 ]
 
@@ -83,16 +98,16 @@ export default async function UpgradesPage() {
             <p className="text-lg font-bold text-accent">
               Current Plan:{" "}
               {profile?.upgrade_level === "dfy_vault"
-                ? "DFY Vault"
+                ? "Accelerator"
                 : profile?.upgrade_level === "instant_income"
-                  ? "Instant Income"
-                  : "Automated Income"}
+                  ? "Recurring Streams"
+                  : "Social Payouts"}
             </p>
           </CardContent>
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
         {upgrades.map((upgrade) => {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
