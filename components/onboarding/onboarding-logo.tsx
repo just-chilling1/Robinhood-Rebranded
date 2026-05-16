@@ -15,13 +15,13 @@ export function OnboardingLogo({ size = "md" }: OnboardingLogoProps) {
 
   return (
     <div
-      className={`relative ${s.outer} ${s.rounded} bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center shadow-[0_0_60px_rgba(14,165,233,0.5)]`}
+      className={`relative ${s.outer} ${s.rounded} bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-200`}
       aria-hidden
     >
       <div
-        className={`${s.inner} ${s.rounded} bg-[#020617] flex items-center justify-center`}
+        className={`${s.inner} ${s.rounded} bg-white flex items-center justify-center`}
       >
-        <Brain className={`${s.icon} text-[#0ea5e9]`} />
+        <Brain className={`${s.icon} text-sky-600`} />
       </div>
     </div>
   )

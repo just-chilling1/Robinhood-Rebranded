@@ -5,9 +5,6 @@
 export const ONBOARDING_FINAL_CTA_URL =
   "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
 
-/** Local path (e.g. "/videos/upgrades.mp4") or full https URL. Empty = show placeholder. */
-export const ONBOARDING_UPGRADES_VIDEO_URL = ""
-
 export const onboardingConfig = {
   productName: "Robinhood",
   productTagline: "Neural Engagement System",
@@ -22,19 +19,6 @@ export const onboardingConfig = {
       { label: "Connecting your comment pack workflow" },
       { label: "Unlocking Premium Tier tools & Academy" },
     ],
-    continueLabel: "Continue",
-  },
-
-  upgrades: {
-    title: "Did You Purchase Any Upgrades?",
-    intro: (name: string) =>
-      `If you bought any extras, here is where to find them in ${name}:`,
-    steps: [
-      "Open Robinhood.",
-      "Look at the left sidebar and scroll to the Premium Tier section.",
-      'Under Premium Tier, you will see Accelerator, Recurring Streams, Social Payouts, and Protector when your account has access.',
-    ],
-    videoPlaceholder: "Add your upgrades walkthrough video in ONBOARDING_UPGRADES_VIDEO_URL",
     continueLabel: "Continue",
   },
 
@@ -93,3 +77,14 @@ export const onboardingConfig = {
     ],
   },
 } as const
+
+export const ONBOARDING_STEPS = [
+  "preparing",
+  "congratulations",
+  "beta-offer",
+  "qualification",
+  "loading-66",
+  "activation",
+] as const
+
+export type OnboardingStepId = (typeof ONBOARDING_STEPS)[number]
