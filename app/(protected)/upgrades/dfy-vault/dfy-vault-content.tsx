@@ -1010,7 +1010,7 @@ export function DFYVaultContent() {
             anytime and we'll help you get started.
           </p>
           <Button asChild className="bg-cyan-500 hover:bg-cyan-600 text-white font-black text-xl px-16 py-6" size="lg">
-            <a href="https://p55account.zendesk.com/" target="_blank" rel="noopener noreferrer">
+            <a href="/support">
               Contact Support
             </a>
           </Button>

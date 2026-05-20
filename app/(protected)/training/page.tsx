@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import { SUPPORT_PORTAL_URL } from "@/lib/support"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Play } from "lucide-react"
@@ -107,12 +108,12 @@ export default async function TrainingPage() {
             <p className="text-lg text-muted-foreground">
               Questions about the training? Visit our{" "}
               <a
-                href="https://p55account.zendesk.com/"
+                href={SUPPORT_PORTAL_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent hover:underline font-bold"
               >
-                support center
+                support portal
               </a>{" "}
               anytime for help
             </p>

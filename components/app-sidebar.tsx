@@ -11,6 +11,7 @@ import {
   Sparkles,
   Zap,
   ShieldCheck,
+  Headphones,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -114,7 +115,18 @@ export function AppSidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t-2 border-[#0ea5e9]/20">
+      <div className="p-4 border-t-2 border-[#0ea5e9]/20 space-y-2">
+        <Link
+          href="/support"
+          className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-bold transition-all duration-200 border-2 ${
+            pathname === "/support"
+              ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-lg shadow-[#06b6d4]/20"
+              : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border-transparent"
+          }`}
+        >
+          <Headphones className="w-5 h-5 flex-shrink-0" />
+          <span>Support</span>
+        </Link>
         <button
           onClick={handleSignOut}
           className="w-full h-14 text-base font-bold text-[#7dd3fc] bg-transparent border-2 border-[#0ea5e9]/20 rounded-2xl hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"

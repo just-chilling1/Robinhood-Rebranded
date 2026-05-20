@@ -93,9 +93,7 @@ export default async function DashboardPage() {
                   </div>
                 </div>
                 <Button asChild size="lg" className="bg-gradient-to-r from-[#06b6d4] to-[#0ea5e9] hover:from-[#0ea5e9] hover:to-[#06b6d4] text-white font-extrabold px-8 py-5 text-base rounded-2xl shadow-lg shadow-[#06b6d4]/30 hover:shadow-[#06b6d4]/50 transition-all duration-300">
-                  <a href="https://p55account.zendesk.com/" target="_blank" rel="noopener noreferrer">
-                    Contact Support
-                  </a>
+                  <a href="/support">Contact Support</a>
                 </Button>
               </div>
             </CardContent>
