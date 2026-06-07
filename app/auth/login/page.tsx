@@ -9,15 +9,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Brain } from "lucide-react"
 
 export default function LoginPage() {
+  const [callbackError, setCallbackError] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("error") === "auth_callback_failed") {
+      setCallbackError(true)
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,9 +81,17 @@ export default function LoginPage() {
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="password" className="text-base font-bold text-white">
-                  Password
-                </Label>
+                <div className="flex items-center justify-between gap-3">
+                  <Label htmlFor="password" className="text-base font-bold text-white">
+                    Password
+                  </Label>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-sm text-[#fbbf24] hover:text-[#fb923c] font-bold transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <Input
                   id="password"
                   type="password"
@@ -85,6 +101,13 @@ export default function LoginPage() {
                   className="h-14 text-lg glass border-2 border-[#a855f7]/30 focus:border-[#a855f7] rounded-2xl"
                 />
               </div>
+              {callbackError && (
+                <div className="p-4 rounded-2xl bg-destructive/15 border-2 border-destructive/30">
+                  <p className="text-sm text-destructive font-semibold">
+                    Your sign-in link expired or is invalid. Please try again or request a new password reset.
+                  </p>
+                </div>
+              )}
               {error && (
                 <div className="p-4 rounded-2xl bg-destructive/15 border-2 border-destructive/30">
                   <p className="text-sm text-destructive font-semibold">{error}</p>

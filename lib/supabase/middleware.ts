@@ -45,16 +45,29 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages
+  const authPathsAllowedWhenLoggedIn = ["/auth/callback", "/auth/reset-password"]
+  const isResetPasswordRoute = request.nextUrl.pathname.startsWith("/auth/reset-password")
+
+  // Redirect authenticated users away from auth pages (except password reset flow)
   if (user && request.nextUrl.pathname.startsWith("/auth")) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/onboarding"
-    return NextResponse.redirect(url)
+    const isAllowed = authPathsAllowedWhenLoggedIn.some(
+      (path) => request.nextUrl.pathname === path || request.nextUrl.pathname.startsWith(`${path}/`),
+    )
+    if (!isAllowed) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/onboarding"
+      return NextResponse.redirect(url)
+    }
   }
 
   const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding")
 
-  if (user && !isOnboardingRoute && !request.nextUrl.pathname.startsWith("/secret-p55-admin-panel-2029")) {
+  if (
+    user &&
+    !isOnboardingRoute &&
+    !isResetPasswordRoute &&
+    !request.nextUrl.pathname.startsWith("/secret-p55-admin-panel-2029")
+  ) {
     const { data: profile, error: profileError } = await supabase
       .from("users")
       .select("onboarding_completed_at")
