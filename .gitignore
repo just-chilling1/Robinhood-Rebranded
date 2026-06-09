@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# macOS AppleDouble resource forks (common on external drives)
+._*
+
 # dependencies
 /node_modules
 

@@ -1,0 +1,2 @@
+# Normalize line endings to LF on checkout/commit (prevents CRLF churn on external drives).
+* text=auto eol=lf
