@@ -1,8 +1,15 @@
 import { updateSession } from "@/lib/supabase/middleware"
-import type { NextRequest } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
+
+const ROBOTS_TAG = "noindex, nofollow, noarchive, nosnippet"
+
+function withRobotsTag(response: NextResponse) {
+  response.headers.set("X-Robots-Tag", ROBOTS_TAG)
+  return response
+}
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  return withRobotsTag(await updateSession(request))
 }
 
 export const config = {
