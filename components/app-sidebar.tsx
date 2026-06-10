@@ -43,26 +43,26 @@ export function AppSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-72 border-r-2 border-[#0ea5e9]/20 bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#020617] flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-60 border-r border-[#0ea5e9]/20 bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#020617] flex flex-col z-50">
       {/* Header - Brain Logo */}
-      <div className="p-6 border-b-2 border-[#0ea5e9]/20">
-        <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-90 transition-opacity group">
-          <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center shadow-[0_0_60px_rgba(14,165,233,0.6)] group-hover:shadow-[0_0_80px_rgba(14,165,233,0.8)] transition-shadow duration-300">
-            <div className="w-12 h-12 rounded-xl bg-[#020617] flex items-center justify-center">
-              <Brain className="w-7 h-7 text-[#0ea5e9]" />
+      <div className="p-4 border-b border-[#0ea5e9]/20">
+        <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group">
+          <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center shadow-[0_0_40px_rgba(14,165,233,0.5)] group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)] transition-shadow duration-300">
+            <div className="w-8 h-8 rounded-md bg-[#020617] flex items-center justify-center">
+              <Brain className="w-5 h-5 text-[#0ea5e9]" />
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-white tracking-tight">Robinhood</h2>
-            <p className="text-xs text-[#7dd3fc] font-semibold">Neural Engagement System</p>
+            <h2 className="text-base font-bold text-white tracking-tight">Robinhood</h2>
+            <p className="text-[11px] text-[#7dd3fc] font-medium">Neural Engagement System</p>
           </div>
         </Link>
       </div>
 
       {/* Menu */}
-      <div className="flex-1 py-6 overflow-y-auto">
-        <p className="text-xs font-bold text-[#0ea5e9]/60 px-6 mb-3 uppercase tracking-widest">Main Functions</p>
-        <nav className="space-y-1 px-3">
+      <div className="flex-1 py-4 overflow-y-auto">
+        <p className="text-[11px] font-semibold text-[#0ea5e9]/60 px-4 mb-2 uppercase tracking-widest">Main Functions</p>
+        <nav className="space-y-0.5 px-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.url
             const Icon = item.icon
@@ -70,13 +70,13 @@ export function AppSidebar() {
               <Link
                 key={item.title}
                 href={item.url}
-                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-bold transition-all duration-200 ${
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                   isActive
-                    ? "bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white border-2 border-[#0ea5e9]/40 shadow-lg shadow-[#0ea5e9]/20"
-                    : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border-2 border-transparent"
+                    ? "bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white border border-[#0ea5e9]/40 shadow-md shadow-[#0ea5e9]/20"
+                    : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border border-transparent"
                 }`}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" />
+                <Icon className="w-4 h-4 flex-shrink-0" />
                 <span>{item.title}</span>
               </Link>
             )
@@ -84,14 +84,14 @@ export function AppSidebar() {
         </nav>
 
         {/* Premium Features */}
-        <div className="mt-8">
-          <div className="mx-6 mb-4 p-3 rounded-xl bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border border-[#fbbf24]/30">
-            <p className="text-xs font-bold text-[#fbbf24] uppercase tracking-widest flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5" />
+        <div className="mt-6">
+          <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border border-[#fbbf24]/30">
+            <p className="text-[11px] font-semibold text-[#fbbf24] uppercase tracking-widest flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3" />
               Premium Tier
             </p>
           </div>
-          <nav className="space-y-2 px-3">
+          <nav className="space-y-0.5 px-2">
             {premiumItems.map((item) => {
               const isActive = pathname === item.url
               const Icon = item.icon
@@ -99,13 +99,13 @@ export function AppSidebar() {
                 <Link
                   key={item.title}
                   href={item.url}
-                  className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-bold transition-all duration-200 border-2 ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
                     isActive
-                      ? "bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 border-[#fbbf24]/60 text-[#fbbf24] shadow-lg shadow-[#fbbf24]/30"
+                      ? "bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 border-[#fbbf24]/60 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
                       : "border-[#fbbf24]/25 text-[#fbbf24]/80 hover:border-[#fbbf24]/50 hover:bg-[#fbbf24]/10 hover:text-[#fbbf24]"
                   }`}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <Icon className="w-4 h-4 flex-shrink-0" />
                   <span>{item.title}</span>
                 </Link>
               )
@@ -115,23 +115,23 @@ export function AppSidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t-2 border-[#0ea5e9]/20 space-y-2">
+      <div className="p-3 border-t border-[#0ea5e9]/20 space-y-1">
         <Link
           href="/support"
-          className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-base font-bold transition-all duration-200 border-2 ${
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
             pathname === "/support"
-              ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-lg shadow-[#06b6d4]/20"
+              ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-md shadow-[#06b6d4]/20"
               : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border-transparent"
           }`}
         >
-          <Headphones className="w-5 h-5 flex-shrink-0" />
+          <Headphones className="w-4 h-4 flex-shrink-0" />
           <span>Support</span>
         </Link>
         <button
           onClick={handleSignOut}
-          className="w-full h-14 text-base font-bold text-[#7dd3fc] bg-transparent border-2 border-[#0ea5e9]/20 rounded-2xl hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full h-9 text-sm font-semibold text-[#7dd3fc] bg-transparent border border-[#0ea5e9]/20 rounded-lg hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-4 h-4" />
           Exit Platform
         </button>
       </div>

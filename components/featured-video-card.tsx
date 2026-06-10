@@ -9,17 +9,17 @@ export function FeaturedVideoCard() {
   const [isPlaying, setIsPlaying] = useState(false)
 
   return (
-    <Card className="glass-strong border-2 border-[#a855f7]/40 glow-purple overflow-hidden shadow-2xl shadow-[#a855f7]/20">
+    <Card className="glass-strong border border-[#a855f7]/40 glow-purple overflow-hidden shadow-lg shadow-[#a855f7]/20">
       <CardContent className="p-0">
         <div className="space-y-0">
           {/* Video Info - Clean header */}
-          <div className="p-6 border-b-2 border-[#a855f7]/20">
-            <div className="flex items-center gap-3 mb-3">
-              <Sparkles className="w-6 h-6 text-[#fbbf24] animate-pulse" />
-              <span className="text-[#fbbf24] font-extrabold text-sm uppercase tracking-wider">Must Watch First</span>
+          <div className="p-4 border-b border-[#a855f7]/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-[#fbbf24] animate-pulse" />
+              <span className="text-[#fbbf24] font-semibold text-xs uppercase tracking-wider">Must Watch First</span>
             </div>
-            <h3 className="text-3xl font-extrabold text-white mb-2 tracking-tight">Watch This Video To Get Started</h3>
-            <p className="text-lg text-[#c4b5fd] font-semibold">
+            <h3 className="text-lg font-bold text-white mb-1 tracking-tight">Watch This Video To Get Started</h3>
+            <p className="text-sm text-[#c4b5fd] font-medium">
               This 5-minute video shows you exactly how to use Robinhood
             </p>
           </div>
@@ -45,14 +45,14 @@ export function FeaturedVideoCard() {
                 <Button
                   size="lg"
                   onClick={() => setIsPlaying(true)}
-                  className="relative z-10 h-28 w-28 rounded-full bg-gradient-to-br from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-[#fbbf24]/30 glow-purple"
+                  className="relative z-10 h-16 w-16 rounded-full bg-gradient-to-br from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] text-white shadow-lg hover:scale-105 transition-all duration-300 border-2 border-[#fbbf24]/30 glow-purple"
                 >
-                  <Play className="w-14 h-14 ml-1 fill-white" />
+                  <Play className="w-8 h-8 ml-0.5 fill-white" />
                 </Button>
 
                 {/* Click to play text */}
-                <div className="absolute bottom-8 left-0 right-0 text-center">
-                  <p className="text-white text-xl font-extrabold drop-shadow-lg">▶ Click to Play Video</p>
+                <div className="absolute bottom-4 left-0 right-0 text-center">
+                  <p className="text-white text-sm font-semibold drop-shadow-lg">▶ Click to Play Video</p>
                 </div>
               </div>
             ) : (

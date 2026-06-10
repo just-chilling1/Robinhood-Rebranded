@@ -23,18 +23,18 @@ export function QuickActionCard({ title, description, icon: Icon, href, buttonTe
     : "bg-gradient-to-r from-[#06b6d4] to-[#0ea5e9] hover:from-[#0ea5e9] hover:to-[#06b6d4]"
 
   return (
-    <Card className={`glass-strong border-2 ${borderClass} ${glowClass} hover:scale-105 transition-transform duration-300`}>
-      <CardHeader className="space-y-4">
-        <div className="flex items-center gap-4">
-          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${glowColor === "blue" ? "from-[#0ea5e9]/20 to-[#06b6d4]/20" : glowColor === "pink" ? "from-[#ec4899]/20 to-[#0ea5e9]/20" : "from-[#06b6d4]/20 to-[#0ea5e9]/20"} flex items-center justify-center border-2 ${borderClass}`}>
-            <Icon className={`w-7 h-7 ${iconColorClass}`} />
+    <Card className={`glass-strong border ${borderClass} ${glowClass} hover:scale-[1.02] transition-transform duration-300`}>
+      <CardHeader className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${glowColor === "blue" ? "from-[#0ea5e9]/20 to-[#06b6d4]/20" : glowColor === "pink" ? "from-[#ec4899]/20 to-[#0ea5e9]/20" : "from-[#06b6d4]/20 to-[#0ea5e9]/20"} flex items-center justify-center border ${borderClass}`}>
+            <Icon className={`w-5 h-5 ${iconColorClass}`} />
           </div>
-          <CardTitle className="text-2xl font-extrabold text-white tracking-tight">{title}</CardTitle>
+          <CardTitle className="text-lg font-bold text-white tracking-tight">{title}</CardTitle>
         </div>
-        <CardDescription className="text-base text-[#7dd3fc] leading-relaxed">{description}</CardDescription>
+        <CardDescription className="text-sm text-[#7dd3fc] leading-relaxed">{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Button asChild className={`w-full h-14 text-base font-extrabold rounded-2xl ${buttonClass} text-white shadow-lg transition-all duration-300`}>
+        <Button asChild className={`w-full h-9 text-sm font-semibold rounded-lg ${buttonClass} text-white shadow-md transition-all duration-300`}>
           <Link href={href}>{buttonText}</Link>
         </Button>
       </CardContent>

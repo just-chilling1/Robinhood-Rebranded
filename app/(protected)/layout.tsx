@@ -7,7 +7,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen w-full bg-[#0A0E12]">
       <AppSidebar />
-      <main className="flex-1 min-w-0 ml-72 p-6 lg:p-8">
+      <main className="flex-1 min-w-0 ml-60 p-4 lg:p-6">
         <EarningsBanner />
         {children}
       </main>

@@ -36,13 +36,13 @@ export default async function DashboardPage() {
     }
 
     return (
-      <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="space-y-6 max-w-7xl mx-auto">
           {/* Compact Welcome */}
-          <div className="glass-strong rounded-2xl p-5 border-2 border-[#0ea5e9]/30">
-            <h1 className="text-3xl font-extrabold text-white mb-1">
+          <div className="glass-strong rounded-lg p-4 border border-[#0ea5e9]/30">
+            <h1 className="text-xl font-bold text-white mb-1">
               Welcome back, {profile?.full_name || "Creator"}
             </h1>
-            <p className="text-base text-[#7dd3fc]">Your AI engagement system is ready</p>
+            <p className="text-sm text-[#7dd3fc]">Your AI engagement system is ready</p>
           </div>
 
           {/* VIDEO CARD - FIRST THING THEY SEE */}
@@ -50,8 +50,8 @@ export default async function DashboardPage() {
 
           {/* Quick Actions */}
           <div>
-            <h2 className="text-3xl font-extrabold text-white mb-6 tracking-tight">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <h2 className="text-lg font-bold text-white mb-4 tracking-tight">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <QuickActionCard
                 title="Gold Rush"
                 description="Find trending Shorts and generate comment packs instantly"
