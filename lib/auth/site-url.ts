@@ -1,13 +1,32 @@
-const DEFAULT_SITE_URL = "https://robinhoodaccess.com"
+export const APP_ORIGINS = [
+  "https://robinhoodaccess.com",
+  "https://rhappaccess.com",
+] as const
+
+const DEFAULT_SITE_URL = APP_ORIGINS[0]
+
+function normalizeOrigin(url: string): string {
+  return url.replace(/\/$/, "")
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  return APP_ORIGINS.includes(normalizeOrigin(origin) as (typeof APP_ORIGINS)[number])
+}
 
 /** Canonical app URL for auth redirects (password reset, email links). */
 export function getSiteUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")
+  if (typeof window !== "undefined") {
+    const origin = window.location.origin
+    if (isAllowedOrigin(origin)) {
+      return normalizeOrigin(origin)
+    }
   }
 
-  if (typeof window !== "undefined") {
-    return window.location.origin
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    const configured = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL)
+    if (isAllowedOrigin(configured)) {
+      return configured
+    }
   }
 
   if (process.env.VERCEL_URL) {
