@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { ArrowRight, Check, X } from "lucide-react"
 
-const ACCOUNT_VERIFIED_WITHDRAW_URL =
-  "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
+const ACCOUNT_VERIFIED_WITHDRAW_URL = "https://jvz4.com/c/3547097/442443/"
 
 const TITLE_ID = "account-verified-modal-title"
 

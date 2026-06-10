@@ -12,6 +12,8 @@ import {
   Zap,
   ShieldCheck,
   Headphones,
+  UserPlus,
+  ExternalLink,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -30,6 +32,21 @@ const premiumItems = [
   { title: "Recurring Streams", url: "/upgrades/instant-income", icon: Sparkles },
   { title: "Social Payouts", url: "/upgrades/automated-income", icon: Zap },
   { title: "Protector", url: "/upgrades/protector", icon: ShieldCheck },
+]
+
+const exclusiveOffers = [
+  {
+    title: "Create your Q-LAPS2000 account",
+    cta: "Create Now",
+    href: "https://jvz4.com/c/3547097/442443/",
+    icon: UserPlus,
+  },
+  {
+    title: "Watch this Free training",
+    cta: "Watch Now",
+    href: "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea",
+    icon: Play,
+  },
 ]
 
 export function AppSidebar() {
@@ -108,6 +125,40 @@ export function AppSidebar() {
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   <span>{item.title}</span>
                 </Link>
+              )
+            })}
+          </nav>
+        </div>
+
+        {/* Exclusive Offers */}
+        <div className="mt-6">
+          <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 border border-emerald-500/30">
+            <p className="text-[11px] font-semibold text-emerald-400 uppercase tracking-widest">
+              Exclusive Offers
+            </p>
+          </div>
+          <nav className="space-y-2 px-2">
+            {exclusiveOffers.map((offer) => {
+              const Icon = offer.icon
+              return (
+                <a
+                  key={offer.href}
+                  href={offer.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2.5 transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-500/10"
+                >
+                  <div className="flex items-start gap-2">
+                    <Icon className="mt-0.5 w-4 h-4 flex-shrink-0 text-emerald-400" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold leading-snug text-slate-200">{offer.title}</p>
+                      <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-bold text-emerald-400">
+                        {offer.cta}
+                        <ExternalLink className="w-3 h-3" />
+                      </span>
+                    </div>
+                  </div>
+                </a>
               )
             })}
           </nav>
