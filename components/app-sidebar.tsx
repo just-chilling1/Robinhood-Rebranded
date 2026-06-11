@@ -14,6 +14,7 @@ import {
   Headphones,
   UserPlus,
   ExternalLink,
+  Wallet,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -46,6 +47,12 @@ const exclusiveOffers = [
     cta: "Watch Now",
     href: "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea",
     icon: Play,
+  },
+  {
+    title: "Create you Cashapp Account",
+    cta: "CashTap AI",
+    href: "https://jvz1.com/c/3547097/443257/",
+    icon: Wallet,
   },
 ]
 
