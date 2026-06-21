@@ -35,7 +35,7 @@ function getSecurityChecks(data: ProtectorViewModel) {
     {
       icon: Lock,
       title: "Secure Connection",
-      description: "Your Robinhood session uses encrypted TLS 1.3 connections",
+      description: "Your Robinhood session uses a private, encrypted connection",
     },
     {
       icon: Key,
@@ -98,8 +98,8 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
-            label: "Security Score",
-            value: isEmailVerified ? "100%" : "85%",
+            label: "Protection",
+            value: isEmailVerified ? "Strong" : "Good",
             valueClass: "text-[#22c55e]",
           },
           {
@@ -107,8 +107,8 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
             value: accountStatus,
             valueClass: isEmailVerified ? "text-[#22c55e] italic" : "text-[#fbbf24] italic",
           },
-          { label: "Encryption", value: "AES-256", valueClass: "text-[#a855f7]" },
-          { label: "Uptime", value: "99.9%", valueClass: "text-[#22c55e]" },
+          { label: "Security", value: "Bank-level", valueClass: "text-[#a855f7]" },
+          { label: "Availability", value: "Always On", valueClass: "text-[#22c55e]" },
         ].map((metric) => (
           <div
             key={metric.label}

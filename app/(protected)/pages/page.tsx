@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Eye, Copy, Calendar, Zap, Flame, ExternalLink, Youtube, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { PageActions } from "@/components/page-actions"
+import { InfoHint } from "@/components/ui/info-hint"
 
 export default async function MyVaultPage() {
   const supabase = await createClient()
@@ -133,12 +134,18 @@ export default async function MyVaultPage() {
                     <div className="glass rounded-xl p-3 text-center border-2 border-[#0ea5e9]/30">
                       <Eye className="w-5 h-5 text-[#0ea5e9] mx-auto mb-1" />
                       <p className="text-2xl font-black text-white">{page.views || 0}</p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5">Opens</p>
+                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5 flex items-center justify-center gap-1">
+                        Opens
+                        <InfoHint label="How many times people have opened this comment pack." />
+                      </p>
                     </div>
                     <div className="glass rounded-xl p-3 text-center border-2 border-[#06b6d4]/30">
                       <Copy className="w-5 h-5 text-[#06b6d4] mx-auto mb-1" />
                       <p className="text-2xl font-black text-white">{page.clicks || 0}</p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5">Copies</p>
+                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5 flex items-center justify-center gap-1">
+                        Copies
+                        <InfoHint label="How many times a comment from this pack has been copied." />
+                      </p>
                     </div>
                     <div className="glass rounded-xl p-3 text-center border-2 border-[#a855f7]/30">
                       <Calendar className="w-5 h-5 text-[#a855f7] mx-auto mb-1" />

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { InfoHint } from "@/components/ui/info-hint"
 import { createClient } from "@/lib/supabase/client"
 
 interface AffiliateLink {
@@ -105,6 +106,10 @@ export default function LinkVaultClient() {
         <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border-2 border-[#fbbf24]/40">
           <DollarSign className="w-5 h-5 text-[#fbbf24]" />
           <span className="text-sm font-black text-white uppercase tracking-wider">Money Link Storage</span>
+          <InfoHint
+            label="A 'Money Link' is your affiliate link — the personal web link you share. When someone buys through it, you earn a commission."
+            side="bottom"
+          />
         </div>
         <h1 className="text-6xl font-black text-white tracking-tight">Link Vault</h1>
         <p className="text-2xl text-[#7dd3fc] font-bold">

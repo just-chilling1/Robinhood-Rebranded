@@ -6,7 +6,9 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TrendingUp, Search, Zap, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { InfoHint } from "@/components/ui/info-hint"
+import { TrendingUp, Search, Zap, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check, AlertTriangle, RotateCw } from "lucide-react"
 import { fetchTrendingShorts, searchVideosByKeyword, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 
@@ -23,6 +25,10 @@ export default function GoldRushPage() {
   const [videos, setVideos] = useState<VideoOpportunity[]>([])
   const [loadingVideos, setLoadingVideos] = useState(false)
   const [generatingFor, setGeneratingFor] = useState<string | null>(null)
+  const [searched, setSearched] = useState(false)
+
+  // Inline form/validation messages (shown on screen instead of browser alerts)
+  const [error, setError] = useState<string | null>(null)
   
   // Step 3: Generated Comments (per video)
   const [generatedCommentsMap, setGeneratedCommentsMap] = useState<Record<string, string[]>>({})
@@ -30,39 +36,42 @@ export default function GoldRushPage() {
 
   const handleProductSubmit = () => {
     if (!productName.trim() || !productDescription.trim() || !affiliateLink.trim()) {
-      alert("Please fill in all fields")
+      setError("Please add your product name, a short description, and your affiliate link to continue.")
       return
     }
+    setError(null)
     setStep("videos")
   }
 
   const handleFindVideos = async () => {
+    if (searchMode === "niche" && !nicheKeyword.trim()) {
+      setError("Please type a topic to search for, like \"weight loss\" or \"crypto\".")
+      return
+    }
+    setError(null)
     setLoadingVideos(true)
+    setSearched(true)
     setGeneratedCommentsMap({}) // Clear previous comments
     try {
       let results: VideoOpportunity[]
-      
+
       if (searchMode === "trending") {
         results = await fetchTrendingShorts()
       } else {
-        if (!nicheKeyword.trim()) {
-          alert("Please enter a niche keyword")
-          setLoadingVideos(false)
-          return
-        }
         results = await searchVideosByKeyword(nicheKeyword)
       }
-      
+
       setVideos(results)
     } catch (error) {
       console.error("Error fetching videos:", error)
-      alert("Failed to fetch videos. Please try again.")
+      setError("We couldn't load videos right now. Please try again in a moment.")
     }
     setLoadingVideos(false)
   }
 
   const handleGenerateComments = async (video: VideoOpportunity) => {
     setGeneratingFor(video.videoId)
+    setError(null)
     
     try {
       const result = await generateViralCommentsAction({
@@ -80,11 +89,11 @@ export default function GoldRushPage() {
           [video.videoId]: result.comments
         }))
       } else {
-        alert(result.error || "Failed to generate comments")
+        setError(result.error || "We couldn't create comments for this video. Please try again.")
       }
     } catch (error) {
       console.error("Error:", error)
-      alert("An error occurred")
+      setError("Something went wrong while creating comments. Please try again.")
     }
     
     setGeneratingFor(null)
@@ -106,13 +115,20 @@ export default function GoldRushPage() {
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-6xl font-black text-white tracking-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
           💰 Gold Rush Generator
         </h1>
-        <p className="text-2xl text-[#7dd3fc] font-bold">
+        <p className="text-lg sm:text-xl lg:text-2xl text-[#7dd3fc] font-bold">
           Find viral videos, generate money-making comments, explode your traffic
         </p>
       </div>
+
+      {error && (
+        <Alert variant="destructive" className="glass-strong border-2 border-[#ef4444]/50 text-[#fca5a5]">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription className="text-[#fca5a5] font-semibold">{error}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Step 1: Product Info */}
       {step === "product" && (
@@ -123,14 +139,17 @@ export default function GoldRushPage() {
                 <Zap className="w-7 h-7 text-[#0ea5e9]" />
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white">Step 1: Connect Your Money Link</h2>
+                <h2 className="text-2xl sm:text-3xl font-black text-white">Step 1: Add your affiliate link</h2>
                 <p className="text-[#7dd3fc] font-semibold">What are you promoting today?</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <Label className="text-white font-bold text-lg mb-2 block">Product/Offer Name</Label>
+                <Label className="text-white font-bold text-lg mb-2 flex items-center gap-2">
+                  Product/Offer Name
+                  <InfoHint label="The product or service you're sharing — like a weight-loss program, a course, or an app." />
+                </Label>
                 <Input
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
@@ -153,7 +172,10 @@ export default function GoldRushPage() {
               </div>
 
               <div>
-                <Label className="text-white font-bold text-lg mb-2 block">Your Affiliate Link</Label>
+                <Label className="text-white font-bold text-lg mb-2 flex items-center gap-2">
+                  Your Affiliate Link
+                  <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it. You can get a free link from sites like DigiStore24 or ClickBank." />
+                </Label>
                 <Input
                   value={affiliateLink}
                   onChange={(e) => setAffiliateLink(e.target.value)}
@@ -178,15 +200,15 @@ export default function GoldRushPage() {
         <>
           <Card className="glass-strong border-2 border-[#ec4899]/40 p-6">
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-black text-white">Promoting: {productName}</h2>
-                  <p className="text-[#7dd3fc] font-semibold text-sm truncate max-w-lg">{affiliateLink}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h2 className="text-xl sm:text-2xl font-black text-white">Promoting: {productName}</h2>
+                  <p className="text-[#7dd3fc] font-semibold text-sm truncate max-w-full sm:max-w-lg">{affiliateLink}</p>
                 </div>
                 <Button
                   variant="outline"
                   onClick={() => setStep("product")}
-                  className="glass border-2 border-[#0ea5e9]/30 text-white font-bold"
+                  className="glass border-2 border-[#0ea5e9]/30 text-white font-bold shrink-0"
                 >
                   Change Product
                 </Button>
@@ -241,12 +263,12 @@ export default function GoldRushPage() {
           {/* Video Results */}
           {videos.length > 0 && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-3xl font-black text-white">
-                  💎 {videos.length} Money-Making Opportunities Found
-                </h3>
-                <p className="text-[#7dd3fc] font-bold">Sorted by viral potential</p>
-              </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h3 className="text-2xl sm:text-3xl font-black text-white">
+                💎 {videos.length} Videos to comment on
+              </h3>
+              <p className="text-[#7dd3fc] font-bold">Sorted by viral potential</p>
+            </div>
 
               {videos.map((video) => {
                 const comments = generatedCommentsMap[video.videoId]
@@ -259,13 +281,13 @@ export default function GoldRushPage() {
                       : "border-[#0ea5e9]/30 hover:border-[#ec4899]/50"
                   }`}>
                     <div className="space-y-6">
-                      <div className="flex gap-6">
+                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                         {/* Thumbnail */}
                         <div className="relative flex-shrink-0">
                           <img
                             src={video.thumbnailUrl}
                             alt={video.title}
-                            className="w-48 h-27 object-cover rounded-xl border-2 border-[#0ea5e9]/40"
+                            className="w-full sm:w-48 h-auto sm:h-27 object-cover rounded-xl border-2 border-[#0ea5e9]/40"
                           />
                           <div className="absolute top-2 right-2 bg-black/80 text-white text-xs font-black px-2 py-1 rounded">
                             <Youtube className="w-3 h-3 inline mr-1" />
@@ -290,12 +312,18 @@ export default function GoldRushPage() {
                             <div className="glass rounded-lg p-3 border-2 border-[#ec4899]/30">
                               <Flame className="w-4 h-4 text-[#ec4899] mb-1" />
                               <p className="text-lg font-black text-white">{video.viralScore}/100</p>
-                              <p className="text-xs text-[#7dd3fc] font-bold">Viral Score</p>
+                              <p className="text-xs text-[#7dd3fc] font-bold flex items-center gap-1">
+                                Viral Score
+                                <InfoHint label="How likely this video is to keep getting lots of views. A higher number means more people may see your comment." />
+                              </p>
                             </div>
                             <div className="glass rounded-lg p-3 border-2 border-[#06b6d4]/30">
                               <TrendingUp className="w-4 h-4 text-[#06b6d4] mb-1" />
                               <p className="text-lg font-black text-white">{formatNumber(video.estimatedClicks)}</p>
-                              <p className="text-xs text-[#7dd3fc] font-bold">Est. Clicks</p>
+                              <p className="text-xs text-[#7dd3fc] font-bold flex items-center gap-1">
+                                Est. Clicks
+                                <InfoHint label="A rough guess of how many people could click your link if you comment on this video." />
+                              </p>
                             </div>
                           </div>
 
@@ -385,6 +413,36 @@ export default function GoldRushPage() {
                 )
               })}
             </div>
+          )}
+
+          {/* Empty state: a search ran but returned nothing */}
+          {searched && !loadingVideos && videos.length === 0 && (
+            <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-10 text-center">
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-[#0ea5e9]/10 flex items-center justify-center border-2 border-[#0ea5e9]/30 mb-5">
+                <Search className="w-8 h-8 text-[#0ea5e9]" />
+              </div>
+              <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
+              <p className="text-[#7dd3fc] font-semibold max-w-md mx-auto mb-6">
+                We couldn't find any videos to match that. Try a different topic, or look at what's trending right now.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={handleFindVideos}
+                  disabled={loadingVideos}
+                  className="h-12 px-6 font-black bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] hover:from-[#06b6d4] hover:to-[#0ea5e9] rounded-xl"
+                >
+                  <RotateCw className="w-5 h-5 mr-2" />
+                  Try Again
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setStep("product")}
+                  className="h-12 px-6 glass border-2 border-[#0ea5e9]/30 text-white font-bold rounded-xl"
+                >
+                  Back to Step 1
+                </Button>
+              </div>
+            </Card>
           )}
         </>
       )}

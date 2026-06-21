@@ -9,7 +9,7 @@ const upgrades = [
   {
     id: "dfy_vault",
     name: "Accelerator",
-    tagline: "Done-For-You Templates",
+    tagline: "Ready-made templates",
     icon: Crown,
     color: "cyan",
     features: [
@@ -33,7 +33,7 @@ const upgrades = [
       "Paid Traffic Training",
       "FB Ads Masterclass",
       "Landing Page Builder",
-      "Split Testing Tools",
+      "Test what works best",
       "1-on-1 Strategy Call",
     ],
     href: "/upgrades/instant-income",
@@ -47,7 +47,7 @@ const upgrades = [
     features: [
       "Everything in Recurring Streams",
       "Email Automation System",
-      "Auto-Responder Sequences",
+      "Automatic follow-up emails",
       "Traffic Automation Tools",
       "Advanced Analytics Dashboard",
       "Lifetime Updates & Support",

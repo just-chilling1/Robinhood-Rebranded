@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { 
   Loader2, 
   Search, 
@@ -18,7 +19,8 @@ import {
   Flame,
   Zap,
   ExternalLink,
-  Play
+  Play,
+  AlertTriangle
 } from "lucide-react"
 import { fetchDFYLibrary, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 
@@ -38,6 +40,7 @@ export default function DFYVaultClient() {
   const [productName, setProductName] = useState("")
   const [productLink, setProductLink] = useState("")
   const [productSelected, setProductSelected] = useState(false)
+  const [productError, setProductError] = useState<string | null>(null)
   
   // Copy tracking
   const [copiedComment, setCopiedComment] = useState<string | null>(null)
@@ -81,9 +84,10 @@ export default function DFYVaultClient() {
 
   const handleSelectProduct = () => {
     if (!productName.trim() || !productLink.trim()) {
-      alert("Please enter both product name and link")
+      setProductError("Please enter both your product name and your affiliate link to continue.")
       return
     }
+    setProductError(null)
     setProductSelected(true)
   }
 
@@ -218,6 +222,13 @@ export default function DFYVaultClient() {
                 />
               </div>
             </div>
+
+            {productError && (
+              <Alert variant="destructive" className="glass-strong border-2 border-[#ef4444]/50 text-[#fca5a5]">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription className="text-[#fca5a5] font-semibold">{productError}</AlertDescription>
+              </Alert>
+            )}
 
             <Button
               onClick={handleSelectProduct}

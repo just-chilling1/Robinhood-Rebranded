@@ -15,17 +15,20 @@ import {
   UserPlus,
   ExternalLink,
   Wallet,
+  Menu,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 const menuItems = [
-  { title: "Command Center", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Gold Rush", url: "/create", icon: Brain },
-  { title: "My Vault", url: "/pages", icon: FolderOpen },
-  { title: "Link Vault", url: "/share", icon: Upload },
-  { title: "Academy", url: "/training", icon: Play },
+  { title: "Dashboard", subtitle: "Home", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Gold Rush", subtitle: "Make comments", url: "/create", icon: Brain },
+  { title: "My Vault", subtitle: "Your saved comments", url: "/pages", icon: FolderOpen },
+  { title: "Your links", subtitle: "Saved affiliate links", url: "/share", icon: Upload },
+  { title: "Academy", subtitle: "Training videos", url: "/training", icon: Play },
 ]
 
 const premiumItems = [
@@ -56,21 +59,24 @@ const exclusiveOffers = [
   },
 ]
 
-export function AppSidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const handleSignOut = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push("/auth/login")
-  }
-
+function SidebarBody({
+  pathname,
+  onNavigate,
+  onSignOut,
+}: {
+  pathname: string
+  onNavigate?: () => void
+  onSignOut: () => void
+}) {
   return (
-    <aside className="fixed left-0 top-0 h-screen w-60 border-r border-[#0ea5e9]/20 bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#020617] flex flex-col z-50">
+    <div className="flex h-full flex-col bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#020617]">
       {/* Header - Brain Logo */}
       <div className="p-4 border-b border-[#0ea5e9]/20">
-        <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group">
+        <Link
+          href="/dashboard"
+          onClick={onNavigate}
+          className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group"
+        >
           <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center shadow-[0_0_40px_rgba(14,165,233,0.5)] group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)] transition-shadow duration-300">
             <div className="w-8 h-8 rounded-md bg-[#020617] flex items-center justify-center">
               <Brain className="w-5 h-5 text-[#0ea5e9]" />
@@ -78,7 +84,7 @@ export function AppSidebar() {
           </div>
           <div>
             <h2 className="text-base font-bold text-white tracking-tight">Robinhood</h2>
-            <p className="text-[11px] text-[#7dd3fc] font-medium">Neural Engagement System</p>
+            <p className="text-[11px] text-[#7dd3fc] font-medium">Your comment helper</p>
           </div>
         </Link>
       </div>
@@ -94,6 +100,7 @@ export function AppSidebar() {
               <Link
                 key={item.title}
                 href={item.url}
+                onClick={onNavigate}
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                   isActive
                     ? "bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white border border-[#0ea5e9]/40 shadow-md shadow-[#0ea5e9]/20"
@@ -101,7 +108,12 @@ export function AppSidebar() {
                 }`}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{item.title}</span>
+                <span className="flex flex-col leading-tight">
+                  <span>{item.title}</span>
+                  {item.subtitle && (
+                    <span className="text-[10px] font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
+                  )}
+                </span>
               </Link>
             )
           })}
@@ -123,6 +135,7 @@ export function AppSidebar() {
                 <Link
                   key={item.title}
                   href={item.url}
+                  onClick={onNavigate}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
                     isActive
                       ? "bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 border-[#fbbf24]/60 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
@@ -176,6 +189,7 @@ export function AppSidebar() {
       <div className="p-3 border-t border-[#0ea5e9]/20 space-y-1">
         <Link
           href="/support"
+          onClick={onNavigate}
           className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
             pathname === "/support"
               ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-md shadow-[#06b6d4]/20"
@@ -186,13 +200,65 @@ export function AppSidebar() {
           <span>Support</span>
         </Link>
         <button
-          onClick={handleSignOut}
+          onClick={onSignOut}
           className="w-full h-9 text-sm font-semibold text-[#7dd3fc] bg-transparent border border-[#0ea5e9]/20 rounded-lg hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
         >
           <LogOut className="w-4 h-4" />
           Exit Platform
         </button>
       </div>
-    </aside>
+    </div>
+  )
+}
+
+export function AppSidebar() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/auth/login")
+  }
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-60 border-r border-[#0ea5e9]/20 flex-col z-50">
+        <SidebarBody pathname={pathname} onSignOut={handleSignOut} />
+      </aside>
+
+      {/* Mobile top bar with hamburger */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center gap-3 h-14 px-4 border-b border-[#0ea5e9]/20 bg-[#020617]/95 backdrop-blur">
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              aria-label="Open menu"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#0ea5e9]/30 text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 max-w-[85vw] border-r border-[#0ea5e9]/20 p-0">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
+            <SidebarBody
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
+              onSignOut={handleSignOut}
+            />
+          </SheetContent>
+        </Sheet>
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-[#020617] flex items-center justify-center">
+              <Brain className="w-4 h-4 text-[#0ea5e9]" />
+            </div>
+          </div>
+          <span className="text-base font-bold text-white tracking-tight">Robinhood</span>
+        </Link>
+      </div>
+    </>
   )
 }
