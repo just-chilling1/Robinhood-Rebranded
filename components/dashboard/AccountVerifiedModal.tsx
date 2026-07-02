@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { ArrowRight, Check, X } from "lucide-react"
 
-const ACCOUNT_VERIFIED_WITHDRAW_URL = "https://jvz4.com/c/3547097/442443/"
+const ACCOUNT_VERIFIED_WITHDRAW_URL = "https://jvz1.com/c/3547097/442055/"
 
 const TITLE_ID = "account-verified-modal-title"
 
