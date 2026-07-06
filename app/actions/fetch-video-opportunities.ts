@@ -24,12 +24,191 @@ export interface FetchVideosInput {
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/
 /** Shorts below this view count are excluded from Gold Rush results. */
 const MIN_VIEWS = 50_000
+
+/** Too broad to search or match on alone — causes irrelevant viral results. */
+const GENERIC_WORDS = new Set([
+  "money", "make", "course", "teach", "people", "online", "system", "program",
+  "using", "learn", "guide", "best", "free", "easy", "fast", "quick", "help",
+  "start", "started", "works", "work", "method", "secret", "secrets", "tips",
+  "trick", "tricks", "hack", "hacks", "simple", "steps", "step", "ways",
+  "income", "profit", "profits", "business", "success", "successful",
+])
+
 const STOP_WORDS = new Set([
   "the", "and", "for", "with", "that", "this", "from", "your", "you", "are", "was",
   "how", "what", "when", "who", "why", "can", "get", "has", "have", "had", "not",
   "but", "all", "any", "our", "out", "day", "way", "new", "old", "one", "two",
-  "teaches", "people", "about", "into", "over", "after", "before", "without", "using",
+  "teaches", "about", "into", "over", "after", "before", "without",
 ])
+
+type NicheProfile = {
+  titleKeywords: string[]
+  searchQueries: string[]
+}
+
+async function callChatGpt(prompt: string): Promise<string | null> {
+  const rapidApiKey = process.env.RAPIDAPI_KEY
+  const rapidApiHost = process.env.RAPIDAPI_HOST || "chatgpt-42.p.rapidapi.com"
+
+  if (!rapidApiKey) return null
+
+  try {
+    const response = await fetch(`https://${rapidApiHost}/gpt4o`, {
+      method: "POST",
+      headers: {
+        "x-rapidapi-key": rapidApiKey,
+        "x-rapidapi-host": rapidApiHost,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messages: [{ role: "user", content: prompt }],
+        web_access: false,
+      }),
+      cache: "no-store",
+    })
+
+    if (!response.ok) {
+      console.error("[youtube] AI keyword extraction failed:", response.status)
+      return null
+    }
+
+    const data = await response.json()
+    if (typeof data.result === "string") return data.result
+    if (data.choices?.[0]?.message?.content) return data.choices[0].message.content
+    if (data.message?.content) return data.message.content
+    if (typeof data === "string") return data
+    return null
+  } catch (error) {
+    console.error("[youtube] AI keyword extraction error:", error)
+    return null
+  }
+}
+
+function parseAiSearchProfile(text: string): NicheProfile | null {
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) return null
+
+    const parsed = JSON.parse(jsonMatch[0]) as {
+      searchQueries?: unknown
+      titleKeywords?: unknown
+    }
+
+    const searchQueries = Array.isArray(parsed.searchQueries)
+      ? parsed.searchQueries
+          .filter((q): q is string => typeof q === "string" && q.trim().length >= 3)
+          .map((q) => q.trim())
+          .slice(0, 6)
+      : []
+
+    const titleKeywords = Array.isArray(parsed.titleKeywords)
+      ? parsed.titleKeywords
+          .filter((k): k is string => typeof k === "string" && k.trim().length >= 3)
+          .map((k) => k.trim().toLowerCase())
+          .slice(0, 15)
+      : []
+
+    if (searchQueries.length === 0 || titleKeywords.length === 0) return null
+
+    return { searchQueries, titleKeywords }
+  } catch {
+    return null
+  }
+}
+
+/** Use AI to understand the product and derive YouTube search keywords. */
+async function extractSearchProfileWithAI(
+  productName: string,
+  productDescription: string,
+  userKeyword?: string,
+): Promise<NicheProfile | null> {
+  const prompt = `You help affiliate marketers find the right YouTube Shorts to comment on.
+
+PRODUCT NAME: ${productName}
+PRODUCT DESCRIPTION: ${productDescription}
+${userKeyword ? `USER'S NICHE KEYWORD: ${userKeyword}` : ""}
+
+Understand what this product is really about and who the target audience is. Then figure out what viral YouTube Shorts that audience watches — where leaving a helpful comment with an affiliate link would feel natural.
+
+Return ONLY valid JSON (no markdown, no explanation):
+{
+  "searchQueries": ["query 1", "query 2", "query 3", "query 4", "query 5"],
+  "titleKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5", "keyword6", "keyword7", "keyword8"]
+}
+
+RULES:
+- searchQueries: 5 specific YouTube search phrases real people would use (2-5 words each). These must match the product niche exactly.
+- titleKeywords: 8-12 words/phrases that relevant video TITLES would contain. Include synonyms and related terms.
+- Do NOT use generic phrases like "make money online", "online course", "side hustle", "passive income" unless the product is specifically about that exact topic.
+- Focus on the TOPIC of the product (e.g. crypto → "bitcoin trading", "crypto investing", "ethereum price").
+- Think about what Shorts the buyer of this product already watches before buying.
+${userKeyword ? `- Include "${userKeyword}" as one search query and related terms in titleKeywords.` : ""}`
+
+  console.log("[youtube] AI analyzing product for search keywords...")
+  const aiResponse = await callChatGpt(prompt)
+  if (!aiResponse) return null
+
+  const profile = parseAiSearchProfile(aiResponse)
+  if (!profile) {
+    console.error("[youtube] Failed to parse AI keyword response")
+    return null
+  }
+
+  console.log("[youtube] AI keywords:", profile)
+  return profile
+}
+
+const NICHE_PATTERNS: Array<{ pattern: RegExp; profile: NicheProfile }> = [
+  {
+    pattern: /crypto|bitcoin|ethereum|blockchain|defi|nft|altcoin|trading crypto/i,
+    profile: {
+      titleKeywords: ["crypto", "cryptocurrency", "bitcoin", "ethereum", "blockchain", "trading", "altcoin", "defi", "nft", "btc", "eth", "binance", "coinbase"],
+      searchQueries: ["crypto trading shorts", "cryptocurrency investing", "bitcoin trading tips", "make money crypto", "crypto for beginners"],
+    },
+  },
+  {
+    pattern: /weight loss|lose weight|keto|diet|fat loss|slim|calories/i,
+    profile: {
+      titleKeywords: ["weight", "keto", "diet", "fat", "calories", "pounds", "lbs", "slim", "fitness", "workout", "gym"],
+      searchQueries: ["weight loss transformation", "keto diet results", "lose weight fast", "fat loss tips"],
+    },
+  },
+  {
+    pattern: /dropship|ecommerce|e-commerce|shopify|amazon fba/i,
+    profile: {
+      titleKeywords: ["dropship", "dropshipping", "shopify", "ecommerce", "amazon", "fba", "store", "selling online"],
+      searchQueries: ["dropshipping tutorial", "shopify store", "amazon fba beginner", "ecommerce side hustle"],
+    },
+  },
+  {
+    pattern: /forex|day trad|stock market|investing|investment/i,
+    profile: {
+      titleKeywords: ["forex", "trading", "stocks", "invest", "market", "portfolio", "dividend", "options"],
+      searchQueries: ["stock market investing", "day trading tips", "forex trading beginner", "investing for beginners"],
+    },
+  },
+  {
+    pattern: /affiliate|clickbank|digistore|jvzoo/i,
+    profile: {
+      titleKeywords: ["affiliate", "clickbank", "commission", "passive", "marketing", "promote"],
+      searchQueries: ["affiliate marketing beginner", "make money affiliate", "clickbank tutorial"],
+    },
+  },
+  {
+    pattern: /ai |artificial intelligence|chatgpt|midjourney/i,
+    profile: {
+      titleKeywords: ["ai", "chatgpt", "artificial", "automation", "prompt", "midjourney", "openai"],
+      searchQueries: ["make money with ai", "chatgpt tutorial", "ai side hustle", "ai tools"],
+    },
+  },
+  {
+    pattern: /water|survival|prepper|off grid/i,
+    profile: {
+      titleKeywords: ["water", "survival", "prepper", "offgrid", "off-grid", "filter", "well", "drought"],
+      searchQueries: ["water survival tips", "off grid water", "emergency water filter", "prepper water"],
+    },
+  },
+]
 
 function getRapidApiKey(): string | undefined {
   return process.env.RAPIDAPI_KEY
@@ -39,49 +218,91 @@ function isValidYouTubeVideoId(videoId: string): boolean {
   return YOUTUBE_ID_PATTERN.test(videoId)
 }
 
-/** Build search terms from product info so results match what the user is promoting. */
-function extractSearchTerms(productName: string, productDescription: string): string[] {
-  const terms = new Set<string>()
-
-  const trimmedName = productName.trim()
-  if (trimmedName.length >= 3) {
-    terms.add(trimmedName)
-  }
-
-  const descriptionWords =
-    productDescription
+function getSignificantWords(text: string): string[] {
+  return (
+    text
       .toLowerCase()
       .match(/\b[a-z]{4,}\b/g)
-      ?.filter((word) => !STOP_WORDS.has(word)) ?? []
+      ?.filter((word) => !STOP_WORDS.has(word) && !GENERIC_WORDS.has(word)) ?? []
+  )
+}
 
-  for (const word of descriptionWords.slice(0, 4)) {
-    terms.add(word)
-  }
+function detectNicheProfile(productName: string, productDescription: string): NicheProfile {
+  const combined = `${productName} ${productDescription}`
 
-  if (trimmedName.includes(" ")) {
-    const nameWords = trimmedName.toLowerCase().split(/\s+/).filter((w) => w.length >= 4 && !STOP_WORDS.has(w))
-    for (const word of nameWords.slice(0, 2)) {
-      terms.add(word)
+  for (const { pattern, profile } of NICHE_PATTERNS) {
+    if (pattern.test(combined)) {
+      return profile
     }
   }
 
-  return [...terms].slice(0, 5)
+  const nameWords = getSignificantWords(productName)
+  return {
+    titleKeywords: nameWords,
+    searchQueries: nameWords.length > 0 ? [`${productName.trim()} shorts`] : [productName.trim()],
+  }
 }
 
-/** Score how well a video title matches the user's product/niche. */
-function calculateRelevanceScore(title: string, searchTerms: string[]): number {
+/** Build focused YouTube search queries — never single generic words like "money". */
+function buildSearchQueries(
+  productName: string,
+  productDescription: string,
+  niche: NicheProfile,
+  userKeyword?: string,
+): string[] {
+  const queries = new Set<string>()
+
+  const trimmedName = productName.trim()
+  if (trimmedName.length >= 3) {
+    queries.add(trimmedName)
+    queries.add(`${trimmedName} shorts`)
+  }
+
+  if (userKeyword && userKeyword.length >= 3) {
+    queries.add(userKeyword)
+    queries.add(`${userKeyword} shorts`)
+  }
+
+  for (const query of niche.searchQueries) {
+    queries.add(query)
+  }
+
+  const significant = getSignificantWords(`${productName} ${productDescription}`)
+  for (const word of significant.slice(0, 2)) {
+    if (word.length >= 5) {
+      queries.add(`${word} shorts`)
+    }
+  }
+
+  return [...queries]
+    .filter((q) => {
+      const words = q.toLowerCase().split(/\s+/).filter((w) => w.length >= 3 && w !== "shorts")
+      return words.some((w) => !GENERIC_WORDS.has(w))
+    })
+    .slice(0, 6)
+}
+
+function isTitleRelevant(title: string, titleKeywords: string[]): boolean {
+  if (titleKeywords.length === 0) return true
+
+  const lowerTitle = title.toLowerCase()
+  return titleKeywords.some((keyword) => lowerTitle.includes(keyword.toLowerCase()))
+}
+
+function calculateRelevanceScore(title: string, titleKeywords: string[], searchQueries: string[]): number {
   const lowerTitle = title.toLowerCase()
   let score = 0
 
-  for (const term of searchTerms) {
-    const lowerTerm = term.toLowerCase()
-    if (lowerTitle.includes(lowerTerm)) {
-      score += lowerTerm.includes(" ") ? 3 : 1
-    } else {
-      const words = lowerTerm.split(/\s+/).filter((w) => w.length >= 4)
-      for (const word of words) {
-        if (lowerTitle.includes(word)) score += 1
-      }
+  for (const keyword of titleKeywords) {
+    if (lowerTitle.includes(keyword.toLowerCase())) {
+      score += keyword.length >= 8 ? 3 : 2
+    }
+  }
+
+  for (const query of searchQueries) {
+    const phrase = query.replace(/\s*shorts\s*$/i, "").trim().toLowerCase()
+    if (phrase.length >= 4 && lowerTitle.includes(phrase)) {
+      score += 4
     }
   }
 
@@ -141,7 +362,6 @@ function mapRawVideo(video: Record<string, unknown>, relevanceScore: number): Vi
   }
 }
 
-/** YouTube oEmbed returns 404 for removed, private, or invalid videos. */
 async function isVideoAvailable(videoId: string): Promise<boolean> {
   if (!isValidYouTubeVideoId(videoId)) return false
 
@@ -173,10 +393,8 @@ async function validateVideos(videos: VideoOpportunity[]): Promise<VideoOpportun
 
 async function searchShortsByQuery(query: string, sortBy: "views" | "date" = "views"): Promise<Record<string, unknown>[]> {
   const apiKey = getRapidApiKey()
-  if (!apiKey) {
-    console.error("[youtube] Missing RAPIDAPI_KEY")
-    return []
-  }
+  if (!apiKey) return []
+
   const encodedQuery = encodeURIComponent(query)
 
   const response = await fetch(
@@ -192,7 +410,7 @@ async function searchShortsByQuery(query: string, sortBy: "views" | "date" = "vi
   )
 
   if (!response.ok) {
-    console.error("[youtube] Search API failed:", response.status, query)
+    console.error("[youtube] RapidAPI search failed:", response.status, query)
     return []
   }
 
@@ -205,12 +423,16 @@ async function searchWithYouTubeApi(query: string): Promise<Record<string, unkno
   if (!apiKey) return []
 
   try {
-    const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString()
+    const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 90).toISOString()
+    const searchQuery = query.includes("shorts") ? query : `${query} shorts`
     const searchUrl =
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=25&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=25&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(searchQuery)}&key=${encodeURIComponent(apiKey)}`
 
     const searchResponse = await fetch(searchUrl, { cache: "no-store" })
-    if (!searchResponse.ok) return []
+    if (!searchResponse.ok) {
+      console.error("[youtube] YouTube API search failed:", searchResponse.status, query)
+      return []
+    }
 
     const searchData = await searchResponse.json()
     const ids = (searchData.items || [])
@@ -253,35 +475,57 @@ async function searchWithYouTubeApi(query: string): Promise<Record<string, unkno
   }
 }
 
-export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
-  const productTerms = extractSearchTerms(input.productName, input.productDescription)
-  const userKeyword = input.keyword?.trim()
+/** Prefer YouTube Data API — RapidAPI often returns unrelated trending Shorts. */
+async function searchVideos(query: string): Promise<Record<string, unknown>[]> {
+  const youtubeResults = await searchWithYouTubeApi(query)
+  if (youtubeResults.length > 0) return youtubeResults
 
-  const queries =
-    input.mode === "niche" && userKeyword
-      ? [userKeyword, ...productTerms.filter((t) => t.toLowerCase() !== userKeyword.toLowerCase())]
-      : productTerms.length > 0
-        ? productTerms
-        : [input.productName.trim()].filter(Boolean)
+  return searchShortsByQuery(query, "views")
+}
+
+export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
+  const userKeyword = input.mode === "niche" ? input.keyword?.trim() : undefined
+
+  const aiProfile = await extractSearchProfileWithAI(
+    input.productName,
+    input.productDescription,
+    userKeyword,
+  )
+
+  const fallbackProfile = detectNicheProfile(input.productName, input.productDescription)
+  const niche = aiProfile ?? fallbackProfile
+  const queries = aiProfile
+    ? [
+        ...new Set([
+          ...(userKeyword ? [userKeyword, `${userKeyword} shorts`] : []),
+          ...aiProfile.searchQueries,
+        ]),
+      ].slice(0, 6)
+    : buildSearchQueries(input.productName, input.productDescription, fallbackProfile, userKeyword)
 
   if (queries.length === 0) {
     console.error("[youtube] No search terms derived from product info")
     return []
   }
 
-  const sortBy = input.mode === "trending" ? "views" : "views"
+  console.log("[youtube] Gold Rush search:", {
+    source: aiProfile ? "ai" : "fallback",
+    queries,
+    titleKeywords: niche.titleKeywords,
+  })
+
   const seenIds = new Set<string>()
   const candidates: VideoOpportunity[] = []
 
-  for (const query of queries.slice(0, 4)) {
-    let rawVideos = await searchShortsByQuery(query, sortBy)
-
-    if (rawVideos.length === 0) {
-      rawVideos = await searchWithYouTubeApi(`${query} shorts`)
-    }
+  for (const query of queries) {
+    const rawVideos = await searchVideos(query)
 
     for (const raw of rawVideos) {
-      const relevanceScore = calculateRelevanceScore(String(raw.title || ""), [...queries, ...productTerms])
+      const title = String(raw.title || "")
+
+      if (!isTitleRelevant(title, niche.titleKeywords)) continue
+
+      const relevanceScore = calculateRelevanceScore(title, niche.titleKeywords, queries)
       const mapped = mapRawVideo(raw, relevanceScore)
       if (!mapped || seenIds.has(mapped.videoId)) continue
 
@@ -291,15 +535,25 @@ export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<
   }
 
   if (candidates.length === 0) {
-    console.warn("[youtube] No videos with 50k+ views found for queries:", queries)
+    console.warn("[youtube] No relevant 50k+ view videos for:", queries)
     return []
   }
 
-  candidates.sort((a, b) => b.viewCount - a.viewCount)
+  candidates.sort((a, b) => {
+    const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
+    if (relevanceDiff !== 0) return relevanceDiff
+    return b.viewCount - a.viewCount
+  })
 
   const validated = await validateVideos(candidates.slice(0, 60))
 
-  return validated.sort((a, b) => b.viewCount - a.viewCount).slice(0, 20)
+  return validated
+    .sort((a, b) => {
+      const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
+      if (relevanceDiff !== 0) return relevanceDiff
+      return b.viewCount - a.viewCount
+    })
+    .slice(0, 20)
 }
 
 /** @deprecated Use fetchVideoOpportunities with product context instead. */
