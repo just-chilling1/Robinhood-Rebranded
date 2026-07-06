@@ -14,7 +14,12 @@ interface GenerateCommentPackInput {
 
 // RapidAPI ChatGPT function
 async function generateAIComments(videoTitle: string, channelTitle: string, niche: string, offerName?: string): Promise<string[]> {
-  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || 'e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316'
+  const rapidApiKey = process.env.RAPIDAPI_KEY
+  const rapidApiHost = process.env.RAPIDAPI_HOST || "chatgpt-42.p.rapidapi.com"
+
+  if (!rapidApiKey) {
+    throw new Error("Missing RAPIDAPI_KEY")
+  }
   
   const prompt = offerName 
     ? `You are a YouTube comment expert. Generate 10 high-quality, engaging comments for this YouTube Short:
@@ -51,11 +56,11 @@ Requirements:
 Return ONLY the 10 comments, one per line.`
 
   try {
-    const response = await fetch('https://chatgpt-42.p.rapidapi.com/gpt4o', {
+    const response = await fetch(`https://${rapidApiHost}/gpt4o`, {
       method: 'POST',
       headers: {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+        'x-rapidapi-key': rapidApiKey,
+        'x-rapidapi-host': rapidApiHost,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

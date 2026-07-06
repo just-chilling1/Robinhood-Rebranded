@@ -11,10 +11,84 @@ export interface VideoOpportunity {
   publishedAt: string
   estimatedClicks: number
   viralScore: number
+  relevanceScore?: number
 }
 
-/** Engagement-oriented metrics for prioritizing Shorts (no revenue estimates). */
-function calculateOpportunityMetrics(video: any): { estimatedClicks: number; viralScore: number } {
+export interface FetchVideosInput {
+  productName: string
+  productDescription: string
+  keyword?: string
+  mode: "trending" | "niche"
+}
+
+const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/
+const STOP_WORDS = new Set([
+  "the", "and", "for", "with", "that", "this", "from", "your", "you", "are", "was",
+  "how", "what", "when", "who", "why", "can", "get", "has", "have", "had", "not",
+  "but", "all", "any", "our", "out", "day", "way", "new", "old", "one", "two",
+  "teaches", "people", "about", "into", "over", "after", "before", "without", "using",
+])
+
+function getRapidApiKey(): string | undefined {
+  return process.env.RAPIDAPI_KEY
+}
+
+function isValidYouTubeVideoId(videoId: string): boolean {
+  return YOUTUBE_ID_PATTERN.test(videoId)
+}
+
+/** Build search terms from product info so results match what the user is promoting. */
+function extractSearchTerms(productName: string, productDescription: string): string[] {
+  const terms = new Set<string>()
+
+  const trimmedName = productName.trim()
+  if (trimmedName.length >= 3) {
+    terms.add(trimmedName)
+  }
+
+  const descriptionWords =
+    productDescription
+      .toLowerCase()
+      .match(/\b[a-z]{4,}\b/g)
+      ?.filter((word) => !STOP_WORDS.has(word)) ?? []
+
+  for (const word of descriptionWords.slice(0, 4)) {
+    terms.add(word)
+  }
+
+  if (trimmedName.includes(" ")) {
+    const nameWords = trimmedName.toLowerCase().split(/\s+/).filter((w) => w.length >= 4 && !STOP_WORDS.has(w))
+    for (const word of nameWords.slice(0, 2)) {
+      terms.add(word)
+    }
+  }
+
+  return [...terms].slice(0, 5)
+}
+
+/** Score how well a video title matches the user's product/niche. */
+function calculateRelevanceScore(title: string, searchTerms: string[]): number {
+  const lowerTitle = title.toLowerCase()
+  let score = 0
+
+  for (const term of searchTerms) {
+    const lowerTerm = term.toLowerCase()
+    if (lowerTitle.includes(lowerTerm)) {
+      score += lowerTerm.includes(" ") ? 3 : 1
+    } else {
+      const words = lowerTerm.split(/\s+/).filter((w) => w.length >= 4)
+      for (const word of words) {
+        if (lowerTitle.includes(word)) score += 1
+      }
+    }
+  }
+
+  return score
+}
+
+function calculateOpportunityMetrics(video: {
+  statistics?: { viewCount?: string; likeCount?: string; commentCount?: string }
+}): { estimatedClicks: number; viralScore: number } {
   const views = parseInt(video.statistics?.viewCount || "0")
   const likes = parseInt(video.statistics?.likeCount || "0")
   const comments = parseInt(video.statistics?.commentCount || "0")
@@ -31,349 +105,230 @@ function calculateOpportunityMetrics(video: any): { estimatedClicks: number; vir
   return { estimatedClicks, viralScore }
 }
 
-export async function fetchTrendingShorts(): Promise<VideoOpportunity[]> {
-  const apiKey = process.env.RAPIDAPI_KEY || "e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316"
+function mapRawVideo(video: Record<string, unknown>, relevanceScore: number): VideoOpportunity | null {
+  const videoId = String(video.videoId || "")
+  if (!isValidYouTubeVideoId(videoId)) return null
+
+  const viewCount = parseInt(String(video.viewCount || "0"))
+  const likeCount = parseInt(String(video.likeCount || "0"))
+  const commentCount = parseInt(String(video.commentCount || "0"))
+
+  const metrics = calculateOpportunityMetrics({
+    statistics: {
+      viewCount: viewCount.toString(),
+      likeCount: likeCount.toString(),
+      commentCount: commentCount.toString(),
+    },
+  })
+
+  const thumbnail = video.thumbnail as Array<{ url?: string }> | undefined
+
+  return {
+    videoId,
+    title: String(video.title || "Untitled"),
+    channelTitle: String(video.channelTitle || video.channelName || "Unknown Channel"),
+    thumbnailUrl: thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+    viewCount,
+    likeCount,
+    commentCount,
+    publishedAt: String(video.publishedTime || new Date().toISOString()),
+    relevanceScore,
+    ...metrics,
+  }
+}
+
+/** YouTube oEmbed returns 404 for removed, private, or invalid videos. */
+async function isVideoAvailable(videoId: string): Promise<boolean> {
+  if (!isValidYouTubeVideoId(videoId)) return false
 
   try {
-    const response = await fetch("https://yt-api.p.rapidapi.com/trending?geo=US&type=shorts", {
+    const response = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`,
+      { method: "GET", cache: "no-store" },
+    )
+    return response.ok
+  } catch {
+    return false
+  }
+}
+
+async function validateVideos(videos: VideoOpportunity[]): Promise<VideoOpportunity[]> {
+  const batchSize = 8
+  const valid: VideoOpportunity[] = []
+
+  for (let i = 0; i < videos.length; i += batchSize) {
+    const batch = videos.slice(i, i + batchSize)
+    const checks = await Promise.all(
+      batch.map(async (video) => ((await isVideoAvailable(video.videoId)) ? video : null)),
+    )
+    valid.push(...checks.filter((v): v is VideoOpportunity => v !== null))
+  }
+
+  return valid
+}
+
+async function searchShortsByQuery(query: string, sortBy: "views" | "date" = "views"): Promise<Record<string, unknown>[]> {
+  const apiKey = getRapidApiKey()
+  if (!apiKey) {
+    console.error("[youtube] Missing RAPIDAPI_KEY")
+    return []
+  }
+  const encodedQuery = encodeURIComponent(query)
+
+  const response = await fetch(
+    `https://yt-api.p.rapidapi.com/search?query=${encodedQuery}&type=shorts&sort_by=${sortBy}`,
+    {
       method: "GET",
       headers: {
         "x-rapidapi-key": apiKey,
         "x-rapidapi-host": "yt-api.p.rapidapi.com",
       },
-    })
+      cache: "no-store",
+    },
+  )
 
-    if (!response.ok) {
-      console.error("[youtube] Trending API failed:", response.status)
-      return generateSampleOpportunities()
-    }
-
-    const data = await response.json()
-    const videos = data.data || []
-
-    if (videos.length === 0) {
-      return generateSampleOpportunities()
-    }
-
-    return videos.slice(0, 20).map((video: any) => {
-      const viewCount = parseInt(video.viewCount || "0")
-      const likeCount = parseInt(video.likeCount || "0")
-      const commentCount = parseInt(video.commentCount || "0")
-
-      const metrics = calculateOpportunityMetrics({
-        statistics: {
-          viewCount: viewCount.toString(),
-          likeCount: likeCount.toString(),
-          commentCount: commentCount.toString(),
-        },
-      })
-
-      return {
-        videoId: video.videoId,
-        title: video.title,
-        channelTitle: video.channelTitle || video.channelName || "Unknown Channel",
-        thumbnailUrl: video.thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`,
-        viewCount,
-        likeCount,
-        commentCount,
-        publishedAt: video.publishedTime || new Date().toISOString(),
-        ...metrics,
-      }
-    }).sort((a: VideoOpportunity, b: VideoOpportunity) => b.viralScore - a.viralScore)
-  } catch (error) {
-    console.error("[youtube] Error fetching trending shorts:", error)
-    return generateSampleOpportunities()
+  if (!response.ok) {
+    console.error("[youtube] Search API failed:", response.status, query)
+    return []
   }
+
+  const data = await response.json()
+  return Array.isArray(data.data) ? data.data : []
 }
 
-export async function searchVideosByKeyword(keyword: string): Promise<VideoOpportunity[]> {
-  const apiKey = process.env.RAPIDAPI_KEY || "e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316"
+async function searchWithYouTubeApi(query: string): Promise<Record<string, unknown>[]> {
+  const apiKey = process.env.YOUTUBE_API_KEY
+  if (!apiKey) return []
 
   try {
-    const encodedKeyword = encodeURIComponent(keyword)
-    const response = await fetch(
-      `https://yt-api.p.rapidapi.com/search?query=${encodedKeyword}&type=shorts&sort_by=views`,
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": apiKey,
-          "x-rapidapi-host": "yt-api.p.rapidapi.com",
-        },
-      },
-    )
+    const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString()
+    const searchUrl =
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=15&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`
 
-    if (!response.ok) {
-      console.error("[youtube] Search API failed:", response.status)
-      return generateSampleOpportunities()
-    }
+    const searchResponse = await fetch(searchUrl, { cache: "no-store" })
+    if (!searchResponse.ok) return []
 
-    const data = await response.json()
-    const videos = data.data || []
+    const searchData = await searchResponse.json()
+    const ids = (searchData.items || [])
+      .map((item: { id?: { videoId?: string } }) => item.id?.videoId)
+      .filter(Boolean)
 
-    if (videos.length === 0) {
-      return generateSampleOpportunities()
-    }
+    if (ids.length === 0) return []
 
-    return videos.slice(0, 20).map((video: any) => {
-      const viewCount = parseInt(video.viewCount || "0")
-      const likeCount = parseInt(video.likeCount || "0")
-      const commentCount = parseInt(video.commentCount || "0")
+    const videosUrl =
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${encodeURIComponent(ids.join(","))}&key=${encodeURIComponent(apiKey)}`
 
-      const metrics = calculateOpportunityMetrics({
-        statistics: {
-          viewCount: viewCount.toString(),
-          likeCount: likeCount.toString(),
-          commentCount: commentCount.toString(),
-        },
-      })
+    const videosResponse = await fetch(videosUrl, { cache: "no-store" })
+    if (!videosResponse.ok) return []
+
+    const videosData = await videosResponse.json()
+
+    return (videosData.items || []).map((video: Record<string, unknown>) => {
+      const snippet = video.snippet as Record<string, unknown> | undefined
+      const statistics = video.statistics as Record<string, string> | undefined
+      const thumbnails = snippet?.thumbnails as Record<string, { url?: string }> | undefined
 
       return {
-        videoId: video.videoId,
-        title: video.title,
-        channelTitle: video.channelTitle || video.channelName || "Unknown Channel",
-        thumbnailUrl: video.thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`,
-        viewCount,
-        likeCount,
-        commentCount,
-        publishedAt: video.publishedTime || new Date().toISOString(),
-        ...metrics,
+        videoId: video.id,
+        title: snippet?.title,
+        channelTitle: snippet?.channelTitle,
+        viewCount: statistics?.viewCount,
+        likeCount: statistics?.likeCount,
+        commentCount: statistics?.commentCount,
+        publishedTime: snippet?.publishedAt,
+        thumbnail: thumbnails?.medium?.url
+          ? [{ url: thumbnails.medium.url }]
+          : thumbnails?.default?.url
+            ? [{ url: thumbnails.default.url }]
+            : [],
       }
-    }).sort((a: VideoOpportunity, b: VideoOpportunity) => b.viralScore - a.viralScore)
+    })
   } catch (error) {
-    console.error("[youtube] Error searching videos:", error)
-    return generateSampleOpportunities()
+    console.error("[youtube] YouTube API search failed:", error)
+    return []
   }
 }
 
-function generateSampleOpportunities(): VideoOpportunity[] {
-  return [
-    {
-      videoId: "dQw4w9WgXcQ",
-      title: "I Lost 50 Pounds in 90 Days - Here's How",
-      channelTitle: "FitLife Journey",
-      thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-      viewCount: 2847000,
-      likeCount: 89000,
-      commentCount: 4200,
-      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 87,
-      viralScore: 92,
-    },
-    {
-      videoId: "sample123",
-      title: "Side Projects That Taught Me Real Skills",
-      channelTitle: "Money Makers",
-      thumbnailUrl: "https://i.ytimg.com/vi/sample123/mqdefault.jpg",
-      viewCount: 1920000,
-      likeCount: 67000,
-      commentCount: 3100,
-      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 76,
-      viralScore: 88,
-    },
-    {
-      videoId: "crypto456",
-      title: "Crypto Basics Without the Hype",
-      channelTitle: "Crypto Millionaire",
-      thumbnailUrl: "https://i.ytimg.com/vi/crypto456/mqdefault.jpg",
-      viewCount: 1450000,
-      likeCount: 52000,
-      commentCount: 2800,
-      publishedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 68,
-      viralScore: 85,
-    },
-    {
-      videoId: "fitness789",
-      title: "30 Day Body Transformation - No Gym Needed",
-      channelTitle: "Home Fitness Pro",
-      thumbnailUrl: "https://i.ytimg.com/vi/fitness789/mqdefault.jpg",
-      viewCount: 1280000,
-      likeCount: 44000,
-      commentCount: 2100,
-      publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 62,
-      viralScore: 81,
-    },
-    {
-      videoId: "business234",
-      title: "Starting a Small Business From a Spare Room",
-      channelTitle: "Entrepreneur Life",
-      thumbnailUrl: "https://i.ytimg.com/vi/business234/mqdefault.jpg",
-      viewCount: 980000,
-      likeCount: 38000,
-      commentCount: 1900,
-      publishedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 58,
-      viralScore: 78,
-    },
-    {
-      videoId: "invest567",
-      title: "Simple Investing Habits for Busy Weeks",
-      channelTitle: "Financial Freedom",
-      thumbnailUrl: "https://i.ytimg.com/vi/invest567/mqdefault.jpg",
-      viewCount: 870000,
-      likeCount: 32000,
-      commentCount: 1600,
-      publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 54,
-      viralScore: 75,
-    },
-    {
-      videoId: "drop890",
-      title: "Dropshipping Setup Walkthrough (Beginner Friendly)",
-      channelTitle: "Ecom Kings",
-      thumbnailUrl: "https://i.ytimg.com/vi/drop890/mqdefault.jpg",
-      viewCount: 720000,
-      likeCount: 28000,
-      commentCount: 1400,
-      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 49,
-      viralScore: 72,
-    },
-    {
-      videoId: "mindset345",
-      title: "This Mindset Shift Changed My Life Forever",
-      channelTitle: "Success Mindset",
-      thumbnailUrl: "https://i.ytimg.com/vi/mindset345/mqdefault.jpg",
-      viewCount: 650000,
-      likeCount: 24000,
-      commentCount: 1200,
-      publishedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 45,
-      viralScore: 69,
-    },
-    {
-      videoId: "passive678",
-      title: "Three Long-Term Systems for Reinvesting Your Time",
-      channelTitle: "Passive Income Pro",
-      thumbnailUrl: "https://i.ytimg.com/vi/passive678/mqdefault.jpg",
-      viewCount: 590000,
-      likeCount: 21000,
-      commentCount: 1000,
-      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 41,
-      viralScore: 66,
-    },
-    {
-      videoId: "amazon901",
-      title: "Amazon FBA: Inventory and Listing Checklist",
-      channelTitle: "Amazon Secrets",
-      thumbnailUrl: "https://i.ytimg.com/vi/amazon901/mqdefault.jpg",
-      viewCount: 480000,
-      likeCount: 18000,
-      commentCount: 850,
-      publishedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 37,
-      viralScore: 63,
-    },
-    {
-      videoId: "social234",
-      title: "I Grew My Instagram to 100k in 90 Days",
-      channelTitle: "Social Media Boss",
-      thumbnailUrl: "https://i.ytimg.com/vi/social234/mqdefault.jpg",
-      viewCount: 420000,
-      likeCount: 16000,
-      commentCount: 780,
-      publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 34,
-      viralScore: 61,
-    },
-    {
-      videoId: "diet567",
-      title: "I Ate This Every Day and Lost 30 Pounds",
-      channelTitle: "Diet Hacks",
-      thumbnailUrl: "https://i.ytimg.com/vi/diet567/mqdefault.jpg",
-      viewCount: 380000,
-      likeCount: 14000,
-      commentCount: 690,
-      publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 31,
-      viralScore: 58,
-    },
-    {
-      videoId: "youtube890",
-      title: "How Small YouTubers Grow an Audience From Zero",
-      channelTitle: "YouTube Money",
-      thumbnailUrl: "https://i.ytimg.com/vi/youtube890/mqdefault.jpg",
-      viewCount: 340000,
-      likeCount: 12000,
-      commentCount: 610,
-      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 28,
-      viralScore: 55,
-    },
-    {
-      videoId: "trade123",
-      title: "Day Trading: What One Session Actually Looks Like",
-      channelTitle: "Trading Academy",
-      thumbnailUrl: "https://i.ytimg.com/vi/trade123/mqdefault.jpg",
-      viewCount: 310000,
-      likeCount: 11000,
-      commentCount: 550,
-      publishedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 25,
-      viralScore: 52,
-    },
-    {
-      videoId: "affiliate456",
-      title: "Affiliate Marketing: Tracking Your First Conversions",
-      channelTitle: "Affiliate Secrets",
-      thumbnailUrl: "https://i.ytimg.com/vi/affiliate456/mqdefault.jpg",
-      viewCount: 280000,
-      likeCount: 9500,
-      commentCount: 490,
-      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 22,
-      viralScore: 49,
-    },
-    {
-      videoId: "freelance789",
-      title: "Freelancing: How I Booked My First Ten Clients",
-      channelTitle: "Freelance Freedom",
-      thumbnailUrl: "https://i.ytimg.com/vi/freelance789/mqdefault.jpg",
-      viewCount: 250000,
-      likeCount: 8500,
-      commentCount: 420,
-      publishedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 19,
-      viralScore: 46,
-    },
-    {
-      videoId: "tiktok012",
-      title: "TikTok Shop: Getting Comfortable on Camera",
-      channelTitle: "TikTok Money",
-      thumbnailUrl: "https://i.ytimg.com/vi/tiktok012/mqdefault.jpg",
-      viewCount: 220000,
-      likeCount: 7500,
-      commentCount: 380,
-      publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 16,
-      viralScore: 43,
-    },
-    {
-      videoId: "course345",
-      title: "How I Launched a Digital Course From a Small List",
-      channelTitle: "Course Creator",
-      thumbnailUrl: "https://i.ytimg.com/vi/course345/mqdefault.jpg",
-      viewCount: 190000,
-      likeCount: 6500,
-      commentCount: 320,
-      publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 13,
-      viralScore: 40,
-    },
-    {
-      videoId: "saas678",
-      title: "Building a SaaS: From Idea to First Users",
-      channelTitle: "SaaS Startup",
-      thumbnailUrl: "https://i.ytimg.com/vi/saas678/mqdefault.jpg",
-      viewCount: 170000,
-      likeCount: 5800,
-      commentCount: 280,
-      publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      estimatedClicks: 11,
-      viralScore: 38,
-    },
-  ]
+export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
+  const productTerms = extractSearchTerms(input.productName, input.productDescription)
+  const userKeyword = input.keyword?.trim()
+
+  const queries =
+    input.mode === "niche" && userKeyword
+      ? [userKeyword, ...productTerms.filter((t) => t.toLowerCase() !== userKeyword.toLowerCase())]
+      : productTerms.length > 0
+        ? productTerms
+        : [input.productName.trim()].filter(Boolean)
+
+  if (queries.length === 0) {
+    console.error("[youtube] No search terms derived from product info")
+    return []
+  }
+
+  const sortBy = input.mode === "trending" ? "views" : "views"
+  const seenIds = new Set<string>()
+  const candidates: VideoOpportunity[] = []
+
+  for (const query of queries.slice(0, 3)) {
+    let rawVideos = await searchShortsByQuery(query, sortBy)
+
+    if (rawVideos.length === 0) {
+      rawVideos = await searchWithYouTubeApi(`${query} shorts`)
+    }
+
+    for (const raw of rawVideos) {
+      const relevanceScore = calculateRelevanceScore(String(raw.title || ""), [...queries, ...productTerms])
+      const mapped = mapRawVideo(raw, relevanceScore)
+      if (!mapped || seenIds.has(mapped.videoId)) continue
+
+      seenIds.add(mapped.videoId)
+      candidates.push(mapped)
+    }
+  }
+
+  if (candidates.length === 0) {
+    console.warn("[youtube] No relevant videos found for queries:", queries)
+    return []
+  }
+
+  candidates.sort((a, b) => {
+    const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
+    if (relevanceDiff !== 0) return relevanceDiff
+    return b.viralScore - a.viralScore
+  })
+
+  const validated = await validateVideos(candidates.slice(0, 40))
+
+  return validated.slice(0, 20)
+}
+
+/** @deprecated Use fetchVideoOpportunities with product context instead. */
+export async function fetchTrendingShorts(
+  productName?: string,
+  productDescription?: string,
+): Promise<VideoOpportunity[]> {
+  if (productName && productDescription) {
+    return fetchVideoOpportunities({
+      productName,
+      productDescription,
+      mode: "trending",
+    })
+  }
+
+  console.warn("[youtube] fetchTrendingShorts called without product context — returning empty")
+  return []
+}
+
+/** @deprecated Use fetchVideoOpportunities with product context instead. */
+export async function searchVideosByKeyword(
+  keyword: string,
+  productName?: string,
+  productDescription?: string,
+): Promise<VideoOpportunity[]> {
+  return fetchVideoOpportunities({
+    productName: productName || keyword,
+    productDescription: productDescription || keyword,
+    keyword,
+    mode: "niche",
+  })
 }

@@ -15,7 +15,13 @@ interface GenerateViralCommentsInput {
 
 // Generate viral comments with embedded affiliate link
 async function generateViralCommentsWithAI(input: GenerateViralCommentsInput): Promise<string[]> {
-  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || 'e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316'
+  const rapidApiKey = process.env.RAPIDAPI_KEY
+  const rapidApiHost = process.env.RAPIDAPI_HOST || "chatgpt-42.p.rapidapi.com"
+
+  if (!rapidApiKey) {
+    console.error("[robinhood] Missing RAPIDAPI_KEY — using template fallback")
+    return generateTemplateViralComments(input)
+  }
   
   const prompt = `You're writing a YouTube comment. Be natural and conversational like a real person.
 
@@ -51,11 +57,11 @@ Now write 3 unique comments. Each should feel different. Mix up the storytelling
   console.log("[robinhood] Calling ChatGPT API...")
 
   try {
-    const response = await fetch('https://chatgpt-42.p.rapidapi.com/gpt4o', {
+    const response = await fetch(`https://${rapidApiHost}/gpt4o`, {
       method: 'POST',
       headers: {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+        'x-rapidapi-key': rapidApiKey,
+        'x-rapidapi-host': rapidApiHost,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

@@ -45,7 +45,12 @@ function calculateMetrics(viewCount: number): { estimatedClicks: number; viralSc
 }
 
 export async function fetchDFYLibrary(): Promise<DFYVideo[]> {
-  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || 'e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316'
+  const rapidApiKey = process.env.RAPIDAPI_KEY
+  if (!rapidApiKey) {
+    console.error("[DFY] Missing RAPIDAPI_KEY")
+    return []
+  }
+
   const allVideos: DFYVideo[] = []
 
   try {
@@ -58,7 +63,7 @@ export async function fetchDFYLibrary(): Promise<DFYVideo[]> {
           {
             method: 'GET',
             headers: {
-              'x-rapidapi-key': RAPIDAPI_KEY,
+              'x-rapidapi-key': rapidApiKey,
               'x-rapidapi-host': 'yt-api.p.rapidapi.com'
             }
           }

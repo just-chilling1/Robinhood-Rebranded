@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { InfoHint } from "@/components/ui/info-hint"
 import { TrendingUp, Search, Zap, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check, AlertTriangle, RotateCw } from "lucide-react"
-import { fetchTrendingShorts, searchVideosByKeyword, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
+import { fetchVideoOpportunities, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 
 export default function GoldRushPage() {
@@ -40,6 +40,7 @@ export default function GoldRushPage() {
       return
     }
     setError(null)
+    setNicheKeyword(productName.trim())
     setStep("videos")
   }
 
@@ -53,13 +54,12 @@ export default function GoldRushPage() {
     setSearched(true)
     setGeneratedCommentsMap({}) // Clear previous comments
     try {
-      let results: VideoOpportunity[]
-
-      if (searchMode === "trending") {
-        results = await fetchTrendingShorts()
-      } else {
-        results = await searchVideosByKeyword(nicheKeyword)
-      }
+      const results = await fetchVideoOpportunities({
+        productName,
+        productDescription,
+        keyword: searchMode === "niche" ? nicheKeyword : undefined,
+        mode: searchMode,
+      })
 
       setVideos(results)
     } catch (error) {
@@ -218,7 +218,7 @@ export default function GoldRushPage() {
                 <TabsList className="grid w-full grid-cols-2 h-14 glass border-2 border-[#0ea5e9]/30">
                   <TabsTrigger value="trending" className="text-lg font-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0ea5e9]/30 data-[state=active]:to-[#ec4899]/30">
                     <TrendingUp className="w-5 h-5 mr-2" />
-                    Trending Now
+                    Hot in Your Niche
                   </TabsTrigger>
                   <TabsTrigger value="niche" className="text-lg font-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0ea5e9]/30 data-[state=active]:to-[#ec4899]/30">
                     <Search className="w-5 h-5 mr-2" />
@@ -227,13 +227,16 @@ export default function GoldRushPage() {
                 </TabsList>
 
                 <TabsContent value="trending" className="space-y-4 mt-6">
+                  <p className="text-[#7dd3fc] font-semibold text-sm">
+                    Finds high-view Shorts related to <span className="text-white">{productName}</span>
+                  </p>
                   <Button
                     onClick={handleFindVideos}
                     disabled={loadingVideos}
                     className="w-full h-16 text-xl font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] rounded-xl"
                   >
                     {loadingVideos ? <Loader2 className="w-6 h-6 mr-2 animate-spin" /> : <Flame className="w-6 h-6 mr-2" />}
-                    Find Trending Viral Videos
+                    Find Viral Videos for My Product
                   </Button>
                 </TabsContent>
 
@@ -423,7 +426,7 @@ export default function GoldRushPage() {
               </div>
               <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
               <p className="text-[#7dd3fc] font-semibold max-w-md mx-auto mb-6">
-                We couldn't find any videos to match that. Try a different topic, or look at what's trending right now.
+                We couldn't find live Shorts that match your product yet. Try a broader niche keyword, or add more detail to your product description.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
