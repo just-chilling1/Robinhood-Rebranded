@@ -444,7 +444,7 @@ export default function GoldRushPage() {
               </div>
               <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
               <p className="text-[#7dd3fc] font-semibold max-w-md mx-auto mb-6">
-                We couldn't find live Shorts about your product with 50K+ views. Try a more specific niche keyword like "crypto trading" or "bitcoin investing".
+                We couldn't find Shorts about your product right now. Try the "Search by Niche" tab with a keyword like "crypto trading" or "bitcoin investing".
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button

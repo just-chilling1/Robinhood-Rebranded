@@ -53,7 +53,7 @@ async function callChatGpt(prompt: string): Promise<string | null> {
   if (!rapidApiKey) return null
 
   try {
-    const response = await fetch(`https://${rapidApiHost}/gpt4o`, {
+    const response = await fetchWithTimeout(`https://${rapidApiHost}/gpt4o`, {
       method: "POST",
       headers: {
         "x-rapidapi-key": rapidApiKey,
@@ -65,7 +65,7 @@ async function callChatGpt(prompt: string): Promise<string | null> {
         web_access: false,
       }),
       cache: "no-store",
-    })
+    }, 9000)
 
     if (!response.ok) {
       console.error("[youtube] AI keyword extraction failed:", response.status)
@@ -214,6 +214,17 @@ function getRapidApiKey(): string | undefined {
   return process.env.RAPIDAPI_KEY
 }
 
+/** Fetch with a hard timeout so a slow upstream can never hang the server action. */
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 8000): Promise<Response> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...options, signal: controller.signal })
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 function isValidYouTubeVideoId(videoId: string): boolean {
   return YOUTUBE_ID_PATTERN.test(videoId)
 }
@@ -285,8 +296,55 @@ function buildSearchQueries(
 function isTitleRelevant(title: string, titleKeywords: string[]): boolean {
   if (titleKeywords.length === 0) return true
 
-  const lowerTitle = title.toLowerCase()
-  return titleKeywords.some((keyword) => lowerTitle.includes(keyword.toLowerCase()))
+  const lowerTitle = title.toLowerCase().replace(/#/g, " ")
+
+  for (const keyword of titleKeywords) {
+    const kw = keyword.toLowerCase().replace(/#/g, " ").trim()
+    if (kw.length >= 3 && lowerTitle.includes(kw)) return true
+
+    const words = kw.split(/\s+/).filter((w) => w.length >= 4)
+    if (words.some((w) => lowerTitle.includes(w))) return true
+  }
+
+  return false
+}
+
+function mapRawVideoWithMinViews(
+  video: Record<string, unknown>,
+  relevanceScore: number,
+  minViews: number,
+): VideoOpportunity | null {
+  const videoId = String(video.videoId || "")
+  if (!isValidYouTubeVideoId(videoId)) return null
+
+  const viewCount = parseInt(String(video.viewCount || "0"))
+  if (viewCount < minViews) return null
+
+  const likeCount = parseInt(String(video.likeCount || "0"))
+  const commentCount = parseInt(String(video.commentCount || "0"))
+
+  const metrics = calculateOpportunityMetrics({
+    statistics: {
+      viewCount: viewCount.toString(),
+      likeCount: likeCount.toString(),
+      commentCount: commentCount.toString(),
+    },
+  })
+
+  const thumbnail = video.thumbnail as Array<{ url?: string }> | undefined
+
+  return {
+    videoId,
+    title: String(video.title || "Untitled"),
+    channelTitle: String(video.channelTitle || video.channelName || "Unknown Channel"),
+    thumbnailUrl: thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+    viewCount,
+    likeCount,
+    commentCount,
+    publishedAt: String(video.publishedTime || new Date().toISOString()),
+    relevanceScore,
+    ...metrics,
+  }
 }
 
 function calculateRelevanceScore(title: string, titleKeywords: string[], searchQueries: string[]): number {
@@ -329,46 +387,17 @@ function calculateOpportunityMetrics(video: {
 }
 
 function mapRawVideo(video: Record<string, unknown>, relevanceScore: number): VideoOpportunity | null {
-  const videoId = String(video.videoId || "")
-  if (!isValidYouTubeVideoId(videoId)) return null
-
-  const viewCount = parseInt(String(video.viewCount || "0"))
-  if (viewCount < MIN_VIEWS) return null
-
-  const likeCount = parseInt(String(video.likeCount || "0"))
-  const commentCount = parseInt(String(video.commentCount || "0"))
-
-  const metrics = calculateOpportunityMetrics({
-    statistics: {
-      viewCount: viewCount.toString(),
-      likeCount: likeCount.toString(),
-      commentCount: commentCount.toString(),
-    },
-  })
-
-  const thumbnail = video.thumbnail as Array<{ url?: string }> | undefined
-
-  return {
-    videoId,
-    title: String(video.title || "Untitled"),
-    channelTitle: String(video.channelTitle || video.channelName || "Unknown Channel"),
-    thumbnailUrl: thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
-    viewCount,
-    likeCount,
-    commentCount,
-    publishedAt: String(video.publishedTime || new Date().toISOString()),
-    relevanceScore,
-    ...metrics,
-  }
+  return mapRawVideoWithMinViews(video, relevanceScore, MIN_VIEWS)
 }
 
 async function isVideoAvailable(videoId: string): Promise<boolean> {
   if (!isValidYouTubeVideoId(videoId)) return false
 
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`,
       { method: "GET", cache: "no-store" },
+      5000,
     )
     return response.ok
   } catch {
@@ -376,19 +405,17 @@ async function isVideoAvailable(videoId: string): Promise<boolean> {
   }
 }
 
+/** Validate availability in parallel; if the whole step is slow, keep the candidates. */
 async function validateVideos(videos: VideoOpportunity[]): Promise<VideoOpportunity[]> {
-  const batchSize = 8
-  const valid: VideoOpportunity[] = []
-
-  for (let i = 0; i < videos.length; i += batchSize) {
-    const batch = videos.slice(i, i + batchSize)
+  try {
     const checks = await Promise.all(
-      batch.map(async (video) => ((await isVideoAvailable(video.videoId)) ? video : null)),
+      videos.map(async (video) => ((await isVideoAvailable(video.videoId)) ? video : null)),
     )
-    valid.push(...checks.filter((v): v is VideoOpportunity => v !== null))
+    const valid = checks.filter((v): v is VideoOpportunity => v !== null)
+    return valid.length > 0 ? valid : videos
+  } catch {
+    return videos
   }
-
-  return valid
 }
 
 async function searchShortsByQuery(query: string, sortBy: "views" | "date" = "views"): Promise<Record<string, unknown>[]> {
@@ -397,25 +424,31 @@ async function searchShortsByQuery(query: string, sortBy: "views" | "date" = "vi
 
   const encodedQuery = encodeURIComponent(query)
 
-  const response = await fetch(
-    `https://yt-api.p.rapidapi.com/search?query=${encodedQuery}&type=shorts&sort_by=${sortBy}`,
-    {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": apiKey,
-        "x-rapidapi-host": "yt-api.p.rapidapi.com",
+  try {
+    const response = await fetchWithTimeout(
+      `https://yt-api.p.rapidapi.com/search?query=${encodedQuery}&type=shorts&sort_by=${sortBy}`,
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": apiKey,
+          "x-rapidapi-host": "yt-api.p.rapidapi.com",
+        },
+        cache: "no-store",
       },
-      cache: "no-store",
-    },
-  )
+      8000,
+    )
 
-  if (!response.ok) {
-    console.error("[youtube] RapidAPI search failed:", response.status, query)
+    if (!response.ok) {
+      console.error("[youtube] RapidAPI search failed:", response.status, query)
+      return []
+    }
+
+    const data = await response.json()
+    return Array.isArray(data.data) ? data.data : []
+  } catch (error) {
+    console.error("[youtube] RapidAPI search error:", query, error)
     return []
   }
-
-  const data = await response.json()
-  return Array.isArray(data.data) ? data.data : []
 }
 
 async function searchWithYouTubeApi(query: string): Promise<Record<string, unknown>[]> {
@@ -423,12 +456,12 @@ async function searchWithYouTubeApi(query: string): Promise<Record<string, unkno
   if (!apiKey) return []
 
   try {
-    const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 90).toISOString()
+    const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 365).toISOString()
     const searchQuery = query.includes("shorts") ? query : `${query} shorts`
     const searchUrl =
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=25&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(searchQuery)}&key=${encodeURIComponent(apiKey)}`
 
-    const searchResponse = await fetch(searchUrl, { cache: "no-store" })
+    const searchResponse = await fetchWithTimeout(searchUrl, { cache: "no-store" }, 8000)
     if (!searchResponse.ok) {
       console.error("[youtube] YouTube API search failed:", searchResponse.status, query)
       return []
@@ -484,6 +517,15 @@ async function searchVideos(query: string): Promise<Record<string, unknown>[]> {
 }
 
 export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
+  try {
+    return await fetchVideoOpportunitiesInternal(input)
+  } catch (error) {
+    console.error("[youtube] fetchVideoOpportunities failed:", error)
+    return []
+  }
+}
+
+async function fetchVideoOpportunitiesInternal(input: FetchVideosInput): Promise<VideoOpportunity[]> {
   const userKeyword = input.mode === "niche" ? input.keyword?.trim() : undefined
 
   const aiProfile = await extractSearchProfileWithAI(
@@ -493,15 +535,22 @@ export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<
   )
 
   const fallbackProfile = detectNicheProfile(input.productName, input.productDescription)
-  const niche = aiProfile ?? fallbackProfile
-  const queries = aiProfile
-    ? [
-        ...new Set([
-          ...(userKeyword ? [userKeyword, `${userKeyword} shorts`] : []),
-          ...aiProfile.searchQueries,
-        ]),
-      ].slice(0, 6)
-    : buildSearchQueries(input.productName, input.productDescription, fallbackProfile, userKeyword)
+
+  const titleKeywords = [
+    ...new Set([
+      ...fallbackProfile.titleKeywords.map((k) => k.toLowerCase()),
+      ...(aiProfile?.titleKeywords ?? []),
+      ...getSignificantWords(`${input.productName} ${input.productDescription}`),
+    ]),
+  ]
+
+  const queries = [
+    ...new Set([
+      ...(userKeyword ? [userKeyword, `${userKeyword} shorts`] : []),
+      ...(aiProfile?.searchQueries ?? []),
+      ...buildSearchQueries(input.productName, input.productDescription, fallbackProfile, userKeyword),
+    ]),
+  ].slice(0, 6)
 
   if (queries.length === 0) {
     console.error("[youtube] No search terms derived from product info")
@@ -509,49 +558,76 @@ export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<
   }
 
   console.log("[youtube] Gold Rush search:", {
-    source: aiProfile ? "ai" : "fallback",
+    source: aiProfile ? "ai+rules" : "rules",
     queries,
-    titleKeywords: niche.titleKeywords,
+    titleKeywords,
   })
 
+  const searchBatches = await Promise.all(queries.map((query) => searchVideos(query)))
   const seenIds = new Set<string>()
-  const candidates: VideoOpportunity[] = []
+  const allRaw: Array<{ raw: Record<string, unknown>; title: string }> = []
 
-  for (const query of queries) {
-    const rawVideos = await searchVideos(query)
-
+  for (const rawVideos of searchBatches) {
     for (const raw of rawVideos) {
-      const title = String(raw.title || "")
-
-      if (!isTitleRelevant(title, niche.titleKeywords)) continue
-
-      const relevanceScore = calculateRelevanceScore(title, niche.titleKeywords, queries)
-      const mapped = mapRawVideo(raw, relevanceScore)
-      if (!mapped || seenIds.has(mapped.videoId)) continue
-
-      seenIds.add(mapped.videoId)
-      candidates.push(mapped)
+      const videoId = String(raw.videoId || "")
+      if (!isValidYouTubeVideoId(videoId) || seenIds.has(videoId)) continue
+      seenIds.add(videoId)
+      allRaw.push({ raw, title: String(raw.title || "") })
     }
   }
 
+  const buildCandidates = (minViews: number, requireTitleMatch: boolean): VideoOpportunity[] => {
+    const results: VideoOpportunity[] = []
+    const added = new Set<string>()
+
+    for (const { raw, title } of allRaw) {
+      if (requireTitleMatch && !isTitleRelevant(title, titleKeywords)) continue
+
+      const relevanceScore = calculateRelevanceScore(title, titleKeywords, queries)
+      const mapped = mapRawVideoWithMinViews(raw, relevanceScore, minViews)
+      if (!mapped || added.has(mapped.videoId)) continue
+
+      added.add(mapped.videoId)
+      results.push(mapped)
+    }
+
+    return results
+  }
+
+  let candidates =
+    buildCandidates(MIN_VIEWS, true) ||
+    []
+
+  if (candidates.length < 5) {
+    candidates = buildCandidates(MIN_VIEWS, false)
+  }
+
+  if (candidates.length < 5) {
+    candidates = buildCandidates(25_000, true)
+  }
+
   if (candidates.length === 0) {
-    console.warn("[youtube] No relevant 50k+ view videos for:", queries)
+    candidates = buildCandidates(25_000, false)
+  }
+
+  if (candidates.length === 0) {
+    console.warn("[youtube] No relevant videos found for:", queries)
     return []
   }
 
   candidates.sort((a, b) => {
-    const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
-    if (relevanceDiff !== 0) return relevanceDiff
-    return b.viewCount - a.viewCount
+    const viewDiff = b.viewCount - a.viewCount
+    if (viewDiff !== 0) return viewDiff
+    return (b.relevanceScore || 0) - (a.relevanceScore || 0)
   })
 
-  const validated = await validateVideos(candidates.slice(0, 60))
+  const validated = await validateVideos(candidates.slice(0, 40))
 
   return validated
     .sort((a, b) => {
-      const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
-      if (relevanceDiff !== 0) return relevanceDiff
-      return b.viewCount - a.viewCount
+      const viewDiff = b.viewCount - a.viewCount
+      if (viewDiff !== 0) return viewDiff
+      return (b.relevanceScore || 0) - (a.relevanceScore || 0)
     })
     .slice(0, 20)
 }
