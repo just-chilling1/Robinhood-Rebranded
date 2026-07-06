@@ -22,6 +22,8 @@ export interface FetchVideosInput {
 }
 
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/
+/** Shorts below this view count are excluded from Gold Rush results. */
+const MIN_VIEWS = 50_000
 const STOP_WORDS = new Set([
   "the", "and", "for", "with", "that", "this", "from", "your", "you", "are", "was",
   "how", "what", "when", "who", "why", "can", "get", "has", "have", "had", "not",
@@ -110,6 +112,8 @@ function mapRawVideo(video: Record<string, unknown>, relevanceScore: number): Vi
   if (!isValidYouTubeVideoId(videoId)) return null
 
   const viewCount = parseInt(String(video.viewCount || "0"))
+  if (viewCount < MIN_VIEWS) return null
+
   const likeCount = parseInt(String(video.likeCount || "0"))
   const commentCount = parseInt(String(video.commentCount || "0"))
 
@@ -203,7 +207,7 @@ async function searchWithYouTubeApi(query: string): Promise<Record<string, unkno
   try {
     const publishedAfter = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString()
     const searchUrl =
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=15&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=25&order=viewCount&publishedAfter=${encodeURIComponent(publishedAfter)}&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`
 
     const searchResponse = await fetch(searchUrl, { cache: "no-store" })
     if (!searchResponse.ok) return []
@@ -269,7 +273,7 @@ export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<
   const seenIds = new Set<string>()
   const candidates: VideoOpportunity[] = []
 
-  for (const query of queries.slice(0, 3)) {
+  for (const query of queries.slice(0, 4)) {
     let rawVideos = await searchShortsByQuery(query, sortBy)
 
     if (rawVideos.length === 0) {
@@ -287,19 +291,15 @@ export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<
   }
 
   if (candidates.length === 0) {
-    console.warn("[youtube] No relevant videos found for queries:", queries)
+    console.warn("[youtube] No videos with 50k+ views found for queries:", queries)
     return []
   }
 
-  candidates.sort((a, b) => {
-    const relevanceDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
-    if (relevanceDiff !== 0) return relevanceDiff
-    return b.viralScore - a.viralScore
-  })
+  candidates.sort((a, b) => b.viewCount - a.viewCount)
 
-  const validated = await validateVideos(candidates.slice(0, 40))
+  const validated = await validateVideos(candidates.slice(0, 60))
 
-  return validated.slice(0, 20)
+  return validated.sort((a, b) => b.viewCount - a.viewCount).slice(0, 20)
 }
 
 /** @deprecated Use fetchVideoOpportunities with product context instead. */

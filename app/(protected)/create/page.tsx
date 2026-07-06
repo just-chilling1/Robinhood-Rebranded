@@ -270,7 +270,7 @@ export default function GoldRushPage() {
               <h3 className="text-2xl sm:text-3xl font-black text-white">
                 💎 {videos.length} Videos to comment on
               </h3>
-              <p className="text-[#7dd3fc] font-bold">Sorted by viral potential</p>
+              <p className="text-[#7dd3fc] font-bold">Sorted by most views (50K+ only)</p>
             </div>
 
               {videos.map((video) => {
@@ -426,7 +426,7 @@ export default function GoldRushPage() {
               </div>
               <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
               <p className="text-[#7dd3fc] font-semibold max-w-md mx-auto mb-6">
-                We couldn't find live Shorts that match your product yet. Try a broader niche keyword, or add more detail to your product description.
+                We couldn't find live Shorts with 50K+ views that match your product yet. Try a broader niche keyword, or add more detail to your product description.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
