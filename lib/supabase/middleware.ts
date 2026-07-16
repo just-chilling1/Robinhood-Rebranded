@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 
 export async function updateSession(request: NextRequest) {
+  if (isDevAuthBypassEnabled(request.nextUrl.hostname)) {
+    return NextResponse.next({ request })
+  }
+
   // If Supabase env vars are missing, skip auth middleware so the app can render
   // and show a clear setup error in the UI.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {

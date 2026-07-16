@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 
 interface GenerateViralCommentsInput {
   videoId: string
@@ -144,7 +145,7 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user) {
+    if (!user && !isDevAuthBypassEnabled()) {
       return { success: false, error: "Not authenticated" }
     }
 
@@ -155,6 +156,14 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
 
     console.log("[robinhood] Successfully generated", comments.length, "comments")
     console.log("[robinhood] Comments preview:", comments[0]?.substring(0, 50) + "...")
+
+    if (isDevAuthBypassEnabled()) {
+      return {
+        success: true,
+        comments,
+        videoUrl: `https://youtube.com/watch?v=${input.videoId}`,
+      }
+    }
 
     // Create the comment pack
     const packData = {
