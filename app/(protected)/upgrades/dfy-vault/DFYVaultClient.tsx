@@ -22,7 +22,7 @@ import {
   Play,
   AlertTriangle
 } from "lucide-react"
-import { fetchDFYLibrary, type DFYVideo } from "@/app/actions/fetch-dfy-library"
+import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 
 interface UserProduct {
   name: string
@@ -35,6 +35,8 @@ export default function DFYVaultClient() {
   const [filteredVideos, setFilteredVideos] = useState<DFYVideo[]>([])
   const [selectedNiche, setSelectedNiche] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [liveSearching, setLiveSearching] = useState(false)
+  const [liveResults, setLiveResults] = useState<DFYVideo[] | null>(null)
   
   // User's product selection
   const [productName, setProductName] = useState("")
@@ -64,6 +66,15 @@ export default function DFYVaultClient() {
     setLoading(false)
   }
 
+  // Match any word of the query against title, channel and niche —
+  // a strict full-phrase title match almost always returned 0 results.
+  const matchesQuery = (video: DFYVideo, query: string) => {
+    const words = query.toLowerCase().split(/\s+/).filter(w => w.length >= 2)
+    if (words.length === 0) return true
+    const haystack = `${video.title} ${video.channelTitle} ${video.niche}`.toLowerCase()
+    return words.some(w => haystack.includes(w))
+  }
+
   const filterVideos = () => {
     let filtered = videos
 
@@ -74,13 +85,46 @@ export default function DFYVaultClient() {
 
     // Filter by search
     if (searchQuery.trim()) {
-      filtered = filtered.filter(v => 
-        v.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      filtered = filtered.filter(v => matchesQuery(v, searchQuery.trim()))
     }
 
     setFilteredVideos(filtered)
   }
+
+  // When the library has nothing for this search, fetch fresh videos
+  // straight from YouTube instead of showing "0 opportunities".
+  useEffect(() => {
+    const query = searchQuery.trim()
+    setLiveResults(null)
+
+    if (query.length < 3 || loading) {
+      setLiveSearching(false)
+      return
+    }
+
+    const localMatches = videos.filter(v =>
+      (selectedNiche === "all" || v.niche === selectedNiche) && matchesQuery(v, query)
+    )
+    if (localMatches.length > 0) {
+      setLiveSearching(false)
+      return
+    }
+
+    let cancelled = false
+    setLiveSearching(true)
+
+    const timer = setTimeout(async () => {
+      const results = await searchDFYVideos(query)
+      if (cancelled) return
+      setLiveResults(results)
+      setLiveSearching(false)
+    }, 700)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [searchQuery, selectedNiche, videos, loading])
 
   const handleSelectProduct = () => {
     if (!productName.trim() || !productLink.trim()) {
@@ -121,6 +165,8 @@ export default function DFYVaultClient() {
       </div>
     )
   }
+
+  const displayedVideos = filteredVideos.length > 0 ? filteredVideos : (liveResults ?? [])
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -290,13 +336,36 @@ export default function DFYVaultClient() {
               </div>
             </div>
             <p className="text-sm text-[#7dd3fc] font-semibold mt-4">
-              Showing {filteredVideos.length} opportunities
+              {liveSearching
+                ? `Searching YouTube for "${searchQuery.trim()}"...`
+                : `Showing ${displayedVideos.length} opportunities`}
             </p>
           </Card>
 
+          {/* While searching YouTube live */}
+          {liveSearching && (
+            <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-10 text-center">
+              <Loader2 className="w-10 h-10 text-[#0ea5e9] animate-spin mx-auto mb-4" />
+              <p className="text-xl font-black text-white">
+                Finding fresh viral videos for "{searchQuery.trim()}"...
+              </p>
+            </Card>
+          )}
+
+          {/* Empty state after a live search found nothing */}
+          {!liveSearching && searchQuery.trim() && displayedVideos.length === 0 && (
+            <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-10 text-center">
+              <Search className="w-10 h-10 text-[#0ea5e9] mx-auto mb-4" />
+              <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
+              <p className="text-[#7dd3fc] font-semibold">
+                Try a broader keyword like "crypto", "weight loss" or "side hustle".
+              </p>
+            </Card>
+          )}
+
           {/* Video Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredVideos.map((video) => (
+            {displayedVideos.map((video) => (
               <Card key={video.videoId} className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#10b981]/50 transition-all p-6">
                 <div className="space-y-4">
                   {/* Video Info */}
