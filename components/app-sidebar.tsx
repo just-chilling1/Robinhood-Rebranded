@@ -15,13 +15,10 @@ import {
   UserPlus,
   ExternalLink,
   Wallet,
-  Menu,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 const menuItems = [
   { title: "Dashboard", subtitle: "Home", url: "/dashboard", icon: LayoutDashboard },
@@ -214,7 +211,6 @@ function SidebarBody({
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -229,27 +225,11 @@ export function AppSidebar() {
         <SidebarBody pathname={pathname} onSignOut={handleSignOut} />
       </aside>
 
-      {/* Mobile top bar with hamburger */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center gap-3 h-14 px-4 border-b border-[#0ea5e9]/20 bg-[#020617]/95 backdrop-blur">
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild>
-            <button
-              type="button"
-              aria-label="Open menu"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#0ea5e9]/30 text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white transition-colors"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 max-w-[85vw] border-r border-[#0ea5e9]/20 p-0">
-            <SheetTitle className="sr-only">Menu</SheetTitle>
-            <SidebarBody
-              pathname={pathname}
-              onNavigate={() => setMobileOpen(false)}
-              onSignOut={handleSignOut}
-            />
-          </SheetContent>
-        </Sheet>
+      {/* Slim mobile top bar — navigation lives in the bottom tab bar */}
+      <div
+        className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center gap-2 h-12 px-4 border-b border-[#0ea5e9]/20 bg-[#020617]/95 backdrop-blur"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center">
             <div className="w-6 h-6 rounded-md bg-[#020617] flex items-center justify-center">

@@ -33,12 +33,12 @@ export default async function MyVaultPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-5xl font-black text-white tracking-tight">Your Comment Vault</h1>
+          <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tight">Your Comment Vault</h1>
           <p className="text-xl text-[#7dd3fc] font-bold">All your AI-generated comment packs in one place 🔥</p>
         </div>
-        <Button asChild className="h-16 px-8 text-lg font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white rounded-2xl shadow-lg" size="lg">
+        <Button asChild className="h-14 sm:h-16 w-full sm:w-auto px-8 text-lg font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white rounded-2xl shadow-lg" size="lg">
           <Link href="/create">
             <Flame className="w-5 h-5 mr-2" />
             Generate New Pack
@@ -118,7 +118,7 @@ export default async function MyVaultPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4 pt-4">
-                  <div className="grid grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="glass rounded-xl p-3 text-center border-2 border-[#ec4899]/30 bg-gradient-to-br from-[#ec4899]/10 to-[#f97316]/10">
                       <MessageCircle className="w-5 h-5 text-[#ec4899] mx-auto mb-1" />
                       <p className="text-2xl font-black text-white">{commentCount}</p>

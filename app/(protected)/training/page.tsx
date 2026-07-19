@@ -56,8 +56,8 @@ export default async function TrainingPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-2">Robinhood Training Center</h1>
-        <p className="text-xl text-muted-foreground">
+        <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white mb-2">Robinhood Training Center</h1>
+        <p className="text-xl text-[#a5c9e8]">
           Follow these 5 simple steps to comment safely and build engagement over time
         </p>
       </div>

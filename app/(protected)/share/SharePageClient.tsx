@@ -56,14 +56,14 @@ export default function SharePageClient() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10">
+    <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#0ea5e9]/20 to-[#ec4899]/20 border-2 border-[#0ea5e9]/40">
           <Target className="w-5 h-5 text-[#ec4899]" />
           <span className="text-sm font-black text-white uppercase tracking-wider">Distribution Command</span>
         </div>
-        <h1 className="text-6xl font-black text-white tracking-tight">Deployment Center</h1>
+        <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tight">Deployment Center</h1>
         <p className="text-2xl text-[#7dd3fc] font-bold">
           Copy links, blast social media, and spread your comment packs everywhere 🚀
         </p>

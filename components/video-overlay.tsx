@@ -72,7 +72,7 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
   // can't trap the fixed overlay inside their own box.
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Video player"}
@@ -82,7 +82,7 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/10"
+        className="relative w-full max-w-5xl max-h-[92dvh] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/10"
         style={{
           backgroundColor: "rgba(5, 10, 8, 0.92)",
           boxShadow: "0 0 0 1px rgba(0,163,108,0.10) inset, 0 24px 80px rgba(0,0,0,0.7)",

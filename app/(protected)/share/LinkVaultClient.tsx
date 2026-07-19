@@ -101,7 +101,7 @@ export default function LinkVaultClient() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10">
+    <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border-2 border-[#fbbf24]/40">
@@ -112,7 +112,7 @@ export default function LinkVaultClient() {
             side="bottom"
           />
         </div>
-        <h1 className="text-6xl font-black text-white tracking-tight">Link Vault</h1>
+        <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tight">Link Vault</h1>
         <p className="text-2xl text-[#7dd3fc] font-bold">
           Store your DigiStore, ClickBank, and affiliate links here. Use them in your comment campaigns 💰
         </p>

@@ -18,7 +18,7 @@ export default function SupportPage() {
             <Headphones className="h-7 w-7 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold text-white sm:text-4xl">Support</h1>
+            <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white">Support</h1>
             <p className="mt-2 text-base text-[#7dd3fc]">
               Priority help for your Robinhood account. We&apos;re here when you need us.
             </p>

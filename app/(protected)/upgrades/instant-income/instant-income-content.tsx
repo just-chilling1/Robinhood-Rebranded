@@ -418,7 +418,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-950 via-slate-900 to-slate-950 p-4 md:p-8">
+    <div className="pb-12">
       <Button asChild variant="ghost" className="text-violet-400 hover:text-violet-300 mb-6">
         <Link href="/dashboard">
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -426,13 +426,13 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
         </Link>
       </Button>
 
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8">
         <div className="text-center space-y-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-2xl p-12 border border-violet-500/20">
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mx-auto shadow-lg shadow-violet-500/50">
             <Facebook className="w-12 h-12 text-white" />
           </div>
           <div>
-            <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Recurring Streams: Facebook Posts</h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">Recurring Streams: Facebook Posts</h1>
             <p className="text-2xl text-violet-300 font-bold mb-4">200+ Ready-to-Post Messages for Facebook Groups</p>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-semibold">
               Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills
@@ -464,7 +464,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     <Play className="w-12 h-12 ml-1 fill-white" />
                   </Button>
                   <div className="absolute bottom-8 left-0 right-0 text-center">
-                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Instant Income Tutorial</p>
+                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Recurring Streams Tutorial</p>
                   </div>
                 </div>
                 {isVideoPlaying && (
@@ -692,7 +692,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 We recommend using <strong className="text-blue-300">DigiStore24</strong> - a free affiliate marketplace
                 where you can find thousands of products to promote and earn commissions.
               </p>
-              <div className="bg-gray-900/50 rounded-lg p-4 space-y-3">
+              <div className="glass rounded-lg p-4 space-y-3">
                 <p className="text-sm font-bold text-gray-300">How to Get Started (3 Easy Steps):</p>
                 <ol className="space-y-2 text-sm text-gray-300 font-semibold">
                   <li className="flex items-start gap-2">
@@ -741,7 +741,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 placeholder="https://your-affiliate-link.com"
                 value={affiliateLink}
                 onChange={(e) => setAffiliateLink(e.target.value)}
-                className="bg-gray-800 border-violet-500/30 text-white text-xl font-semibold py-6"
+                className="glass border-2 border-violet-500/30 text-white text-xl font-semibold py-6"
               />
               <p className="text-base text-gray-400 font-semibold">
                 We'll automatically add your link to all the posts below
@@ -780,7 +780,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               {filteredPosts.map((post, index) => (
                 <Card
                   key={post.id}
-                  className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-violet-500/20 hover:border-violet-400/50 transition-all"
+                  className="glass-strong border-2 border-violet-500/20 hover:border-violet-400/50 transition-all duration-300"
                 >
                   <CardContent className="p-8">
                     <div className="flex items-start justify-between mb-4">
@@ -793,7 +793,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                             {post.niche}
                           </span>
                         </div>
-                        <div className="bg-gray-900/50 rounded-xl p-6 mb-4 border border-gray-700">
+                        <div className="glass rounded-xl p-6 mb-4 border border-violet-500/20">
                           <p className="text-xl text-gray-200 font-semibold leading-relaxed whitespace-pre-wrap">
                             {post.post.replace("[LINK]", affiliateLink)}
                           </p>

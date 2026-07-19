@@ -123,7 +123,7 @@ export function WelcomePopup() {
 
             <div className="mx-auto mt-5 flex max-w-xs flex-col gap-2 text-left text-sm">
               {[
-                "Fully automated income system revealed",
+                "Fully automated commission system revealed",
                 "No tech skills or experience needed",
                 "Works in just 20 minutes per day",
               ].map((perk) => (

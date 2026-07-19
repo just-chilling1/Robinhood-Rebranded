@@ -21,7 +21,7 @@ export function StatCard({ title, value, icon: Icon, trend, glowColor = "blue" }
         <div className="flex items-start justify-between">
           <div className="space-y-3">
             <p className="text-sm text-[#7dd3fc] font-bold uppercase tracking-wider">{title}</p>
-            <p className="text-5xl font-extrabold text-white tracking-tight">{value}</p>
+            <p className="text-4xl lg:text-5xl font-extrabold text-white tracking-tight">{value}</p>
             {trend && <p className="text-sm text-[#06b6d4] font-bold">{trend}</p>}
           </div>
           <div className={`w-16 h-16 rounded-2xl ${iconBgClass} flex items-center justify-center border-2 ${borderClass}`}>

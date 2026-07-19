@@ -177,10 +177,10 @@ export default function DFYVaultClient() {
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-6xl font-black text-white tracking-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
           💎 Accelerator
         </h1>
-        <p className="text-2xl text-[#7dd3fc] font-bold">
+        <p className="text-xl lg:text-2xl text-[#7dd3fc] font-bold">
           {videos.length} Pre-Loaded Viral Videos + 5 Comments Each
         </p>
         <p className="text-lg text-[#7dd3fc]">

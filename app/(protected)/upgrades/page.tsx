@@ -86,7 +86,7 @@ export default async function UpgradesPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       <div className="text-center space-y-4">
-        <h1 className="text-4xl lg:text-5xl font-bold text-foreground">Your Premium Content</h1>
+        <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white">Your Premium Content</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Access your exclusive training materials, templates, and tools
         </p>

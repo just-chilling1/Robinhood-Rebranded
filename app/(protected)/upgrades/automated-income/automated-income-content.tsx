@@ -2072,7 +2072,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <TrendingUp className="w-12 h-12 text-white" />
         </div>
         <div>
-          <h1 className="text-5xl lg:text-6xl font-black text-white mb-4">Social Payouts — Traffic On Autopilot</h1>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">Social Payouts — Hands-Free Traffic</h1>
           <p className="text-2xl text-emerald-300 font-bold mb-4">
             100+ Free Traffic Sources - Submit Once, Get Traffic Forever
           </p>
@@ -2106,7 +2106,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                   <Play className="w-12 h-12 ml-1 fill-white" />
                 </Button>
                 <div className="absolute bottom-8 left-0 right-0 text-center">
-                  <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Automated Income Tutorial</p>
+                  <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Social Payouts Tutorial</p>
                 </div>
               </div>
               {isVideoPlaying && (
@@ -2203,7 +2203,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       </Card>
 
       {/* Page URL Input */}
-      <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-emerald-500/30">
+      <Card className="glass-strong border-2 border-emerald-500/30">
         <CardContent className="p-8">
           <Label htmlFor="page-url" className="text-2xl font-black text-white mb-4 block">
             Enter Your Page URL:
@@ -2214,7 +2214,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             placeholder="https://your-page-url.com"
             value={pageUrl}
             onChange={(e) => setPageUrl(e.target.value)}
-            className="bg-gray-800 border-emerald-500/30 text-white text-xl font-semibold h-14"
+            className="glass border-2 border-emerald-500/30 text-white text-xl font-semibold h-14"
           />
           <p className="text-base text-gray-400 font-semibold mt-3">
             This is the page you want to promote. We'll automatically insert it in all the submission descriptions
@@ -2310,7 +2310,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           return (
             <Card
               key={source.id}
-              className={`bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-emerald-500/20 hover:border-emerald-400/50 transition-all cursor-pointer ${
+              className={`glass-strong border-2 border-emerald-500/20 hover:border-emerald-400/50 transition-all duration-300 cursor-pointer ${
                 isCompleted ? "opacity-60" : ""
               }`}
               onClick={() => setSelectedSource(source)}
@@ -2384,7 +2384,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
 
       {/* Source Detail Modal */}
       <Dialog open={!!selectedSource} onOpenChange={() => setSelectedSource(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 border-emerald-500/30">
+        <DialogContent className="max-w-4xl max-h-[90dvh] overflow-y-auto glass-strong border-2 border-emerald-500/30">
           <DialogHeader>
             <DialogTitle className="text-3xl font-black text-white">{selectedSource?.name}</DialogTitle>
             <DialogDescription className="text-lg font-semibold text-gray-300">
@@ -2430,9 +2430,9 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               </ol>
             </div>
 
-            <div className="bg-gray-800/50 rounded-xl p-6 border border-emerald-500/20">
+            <div className="glass rounded-xl p-6 border border-emerald-500/20">
               <h4 className="text-xl font-black text-white mb-4">📝 Use This Description When Submitting:</h4>
-              <div className="bg-gray-900 rounded-lg p-4 border border-emerald-500/20">
+              <div className="bg-[#020617]/70 rounded-lg p-4 border border-emerald-500/20">
                 <p className="text-gray-300 font-mono text-base leading-relaxed">
                   {pageUrl ? populatedDescription : selectedSource?.submissionDescription}
                 </p>

@@ -150,7 +150,7 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
               <CheckCircle2 className="w-16 h-16 text-[#0d0a1a]" />
             </div>
             <div>
-              <h2 className="text-5xl font-extrabold text-white mb-3 tracking-tight">AI Task Complete!</h2>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-3 tracking-tight">AI Task Complete!</h2>
               <p className="text-xl text-[#c4b5fd] font-semibold">Your engagement pack is secured. Redirecting to vault...</p>
             </div>
             {generatedComments && (

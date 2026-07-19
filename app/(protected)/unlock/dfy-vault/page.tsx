@@ -7,7 +7,7 @@ export default function UnlockDFYVaultPage() {
       upgradeName="Accelerator"
       upgradeValue="$47"
       features={[
-        "50+ Done-For-You comment templates",
+        "50+ Ready-Made comment templates",
         "Pre-written packs across categories",
         "Fast copy + tweak workflow",
         "Safer, non-spam patterns",
