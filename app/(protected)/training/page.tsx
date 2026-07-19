@@ -40,16 +40,10 @@ export default async function TrainingPage() {
       description: "Watch this first to maximize your results with the 200+ Accelerator videos and ready-made comment packs",
     },
     {
-      title: "Accelerator Exclusive #1",
-      feature: "Accelerator",
-      videoId: "1134928111",
-      description: "How to turn small tests into a consistent publishing rhythm without burning yourself out",
-    },
-    {
-      title: "Accelerator Exclusive #2",
+      title: "Accelerator Exclusive",
       feature: "Accelerator",
       videoId: "1134928160",
-      description: "How to borrow attention from busy publications (ethically) and route readers to your offer",
+      description: "Exclusive free traffic methods to get even more eyes on your comments and links",
     },
     {
       title: "Recurring Streams Training",

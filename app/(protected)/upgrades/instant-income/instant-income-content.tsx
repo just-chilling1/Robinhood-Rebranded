@@ -450,7 +450,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                   <div className="absolute inset-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/thumbnails/thumb-07-recurring-streams-training.png"
+                      src="/thumbnails/thumb-06-recurring-streams-training.png"
                       alt="Recurring Streams Training thumbnail"
                       className="absolute inset-0 w-full h-full object-cover"
                     />
