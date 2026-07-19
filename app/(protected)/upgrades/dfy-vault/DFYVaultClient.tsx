@@ -197,7 +197,7 @@ export default function DFYVaultClient() {
             </div>
             <div>
               <h2 className="text-3xl font-black text-white">Accelerator Training</h2>
-              <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the 200+ DFY videos</p>
+              <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the 200+ Accelerator videos</p>
             </div>
           </div>
         </div>
@@ -277,14 +277,14 @@ export default function DFYVaultClient() {
               </Alert>
             )}
 
-            {unlocking && <GenerationProgress label="Unlocking your DFY library..." />}
+            {unlocking && <GenerationProgress label="Unlocking your Accelerator library..." />}
 
             <Button
               onClick={handleSelectProduct}
               disabled={unlocking}
               className="w-full h-16 text-xl font-black bg-gradient-to-r from-[#fbbf24] to-[#f97316] hover:from-[#f97316] hover:to-[#fbbf24] rounded-xl"
             >
-              {unlocking ? "Unlocking..." : "Unlock DFY Library →"}
+              {unlocking ? "Unlocking..." : "Unlock Accelerator Library →"}
             </Button>
           </div>
         </Card>

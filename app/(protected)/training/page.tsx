@@ -37,7 +37,7 @@ export default async function TrainingPage() {
       title: "Accelerator Training",
       feature: "Accelerator",
       videoId: "1151044893",
-      description: "Watch this first to maximize your results with the 200+ DFY videos and ready-made comment packs",
+      description: "Watch this first to maximize your results with the 200+ Accelerator videos and ready-made comment packs",
     },
     {
       title: "Accelerator Exclusive #1",
