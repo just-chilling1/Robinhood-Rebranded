@@ -142,6 +142,16 @@
     font-family: "Plus Jakarta Sans", "Inter", sans-serif;
   }
 
+  /* App shell background — near-black with a very faint brand gradient */
+  .app-bg {
+    background-color: #0a0e12;
+    background-image:
+      radial-gradient(ellipse 75% 55% at 12% -8%, rgba(14, 165, 233, 0.09), transparent 62%),
+      radial-gradient(ellipse 60% 45% at 92% 6%, rgba(168, 85, 247, 0.07), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 112%, rgba(236, 72, 153, 0.06), transparent 62%);
+    background-attachment: fixed;
+  }
+
   /* Neumorphic card utilities */
   .glass {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
@@ -230,4 +240,147 @@
     opacity: 0.9;
     transform: scale(1.2) translateY(-8px);
   }
+}
+
+/* ---- Earnings banner animations ---- */
+
+@keyframes bannerBlobLeft {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(36px, 24px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes bannerBlobRight {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.15);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-32px, -20px) scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+@keyframes bannerSheen {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  55%,
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@keyframes bannerIconFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-2deg);
+  }
+}
+
+@keyframes bannerCtaPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 18px rgba(14, 165, 233, 0.35),
+      0 0 40px rgba(236, 72, 153, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(236, 72, 153, 0.55),
+      0 0 65px rgba(14, 165, 233, 0.3);
+  }
+}
+
+@keyframes bannerBorderGlow {
+  0%,
+  100% {
+    border-color: rgba(14, 165, 233, 0.3);
+    box-shadow: 0 0 24px rgba(14, 165, 233, 0.15);
+  }
+  50% {
+    border-color: rgba(236, 72, 153, 0.35);
+    box-shadow: 0 0 36px rgba(236, 72, 153, 0.2);
+  }
+}
+
+.banner-animated {
+  animation:
+    popIn 0.55s ease-out both,
+    bannerBorderGlow 5s ease-in-out 0.55s infinite;
+}
+
+.banner-blob-left {
+  animation: bannerBlobLeft 7s ease-in-out infinite;
+}
+
+.banner-blob-right {
+  animation: bannerBlobRight 8s ease-in-out infinite;
+}
+
+.banner-sheen {
+  animation: bannerSheen 5.5s ease-in-out 1.2s infinite;
+}
+
+.banner-icon-float {
+  animation: bannerIconFloat 4.5s ease-in-out infinite;
+}
+
+.banner-cta-pulse {
+  animation: bannerCtaPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes adEmeraldPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.ad-emerald-pulse {
+  animation: adEmeraldPulse 3.2s ease-in-out infinite;
+}
+
+/* Sheen that travels across the FULL width of the ad bar.
+   The element is 1/3 of the bar wide, so 420% of its own width
+   carries it completely past the right edge. */
+@keyframes adSheen {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(420%) skewX(-18deg);
+  }
+}
+
+.ad-sheen {
+  animation: adSheen 4.5s ease-in-out 0.8s infinite;
+}
+
+@keyframes adCtaGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 16px rgba(0, 163, 108, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 34px rgba(0, 163, 108, 0.7);
+  }
+}
+
+.ad-cta-glow {
+  animation: adCtaGlow 2.4s ease-in-out infinite;
 }

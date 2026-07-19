@@ -2,7 +2,8 @@ import { redirect } from "next/navigation"
 import { SUPPORT_PORTAL_URL } from "@/lib/support"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
-import { Play } from "lucide-react"
+import { Play, Gem, Sparkles } from "lucide-react"
+import { TrainingVideo } from "@/components/training-video"
 
 export default async function TrainingPage() {
   const supabase = await createClient()
@@ -31,6 +32,39 @@ export default async function TrainingPage() {
     },
   ]
 
+  const premiumTrainings = [
+    {
+      title: "Accelerator Training",
+      feature: "Accelerator",
+      videoId: "1151044893",
+      description: "Watch this first to maximize your results with the 200+ DFY videos and ready-made comment packs",
+    },
+    {
+      title: "Accelerator Exclusive #1",
+      feature: "Accelerator",
+      videoId: "1134928111",
+      description: "How to turn small tests into a consistent publishing rhythm without burning yourself out",
+    },
+    {
+      title: "Accelerator Exclusive #2",
+      feature: "Accelerator",
+      videoId: "1134928160",
+      description: "How to borrow attention from busy publications (ethically) and route readers to your offer",
+    },
+    {
+      title: "Recurring Streams Training",
+      feature: "Recurring Streams",
+      videoId: "1151045100",
+      description: "Learn how to copy the 200+ proven Facebook posts and start making money today",
+    },
+    {
+      title: "Social Payouts Training",
+      feature: "Social Payouts",
+      videoId: "1151045210",
+      description: "Learn how to submit your link to 100+ traffic sources and get automated traffic forever",
+    },
+  ]
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       <div>
@@ -47,7 +81,9 @@ export default async function TrainingPage() {
           </div>
           <div>
             <p className="text-lg font-bold text-foreground">Complete Training Program</p>
-            <p className="text-base text-muted-foreground">2 essential videos to master the system</p>
+            <p className="text-base text-muted-foreground">
+              2 essential videos to master the system + {premiumTrainings.length} premium feature trainings
+            </p>
           </div>
         </div>
       </div>
@@ -61,15 +97,7 @@ export default async function TrainingPage() {
             <CardContent className="p-0">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 {/* Video Player */}
-                <div className="relative aspect-video bg-black">
-                  <iframe
-                    src={`https://player.vimeo.com/video/${training.videoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
-                    title={training.title}
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full border-0"
-                  />
-                </div>
+                <TrainingVideo videoId={training.videoId} title={training.title} />
 
                 {/* Video Info */}
                 <div className="p-8 flex flex-col justify-center space-y-4">
@@ -96,6 +124,53 @@ export default async function TrainingPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Premium Feature Trainings */}
+      <div className="space-y-6 pt-4">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-lg border border-[#fbbf24]/30 bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 px-4 py-2 mb-3">
+            <Sparkles className="w-4 h-4 text-[#fbbf24]" />
+            <span className="text-sm font-black uppercase tracking-widest text-[#fbbf24]">Premium Tier</span>
+          </div>
+          <h2 className="text-3xl font-bold text-foreground mb-2">Premium Feature Trainings</h2>
+          <p className="text-lg text-muted-foreground">
+            Tutorials for Accelerator, Recurring Streams and Social Payouts
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8">
+          {premiumTrainings.map((training) => (
+            <Card
+              key={training.videoId}
+              className="glass-strong border-2 border-[#fbbf24]/25 overflow-hidden hover:border-[#fbbf24]/50 hover:shadow-xl transition-all"
+            >
+              <CardContent className="p-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  {/* Video Player */}
+                  <TrainingVideo videoId={training.videoId} title={training.title} />
+
+                  {/* Video Info */}
+                  <div className="p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fbbf24] to-[#f97316] px-4 py-1.5 text-sm font-black uppercase tracking-wider text-[#1a1305]">
+                        <Gem className="w-4 h-4" />
+                        Premium
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-accent/20 text-accent text-sm font-bold">
+                        {training.feature}
+                      </span>
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-foreground mb-3">{training.title}</h2>
+                      <p className="text-lg text-muted-foreground leading-relaxed">{training.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <Card className="glass-strong glow-jade border-border/50">

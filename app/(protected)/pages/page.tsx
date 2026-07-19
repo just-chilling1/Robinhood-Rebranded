@@ -6,6 +6,8 @@ import { Eye, Copy, Calendar, Zap, Flame, ExternalLink, Youtube, MessageCircle }
 import Link from "next/link"
 import { PageActions } from "@/components/page-actions"
 import { InfoHint } from "@/components/ui/info-hint"
+import { EarningsBanner } from "@/components/earnings-banner"
+import { Fragment } from "react"
 
 export default async function MyVaultPage() {
   const supabase = await createClient()
@@ -66,18 +68,20 @@ export default async function MyVaultPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          {pages.map((page) => {
-            // Parse comment pack to get count
-            let commentCount = 0
+          {pages.map((page, index) => {
+            // Parse comment pack to get the comments themselves
+            let comments: string[] = []
             try {
               const pack = JSON.parse(page.content || '{"comments":[]}')
-              commentCount = Array.isArray(pack.comments) ? pack.comments.length : (Array.isArray(pack) ? pack.length : 0)
+              comments = Array.isArray(pack.comments) ? pack.comments : Array.isArray(pack) ? pack : []
             } catch {
-              commentCount = 0
+              comments = []
             }
+            const commentCount = comments.length
 
             return (
-              <Card key={page.id} className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#ec4899]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#ec4899]/10">
+              <Fragment key={page.id}>
+              <Card className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#ec4899]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#ec4899]/10">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-3">
@@ -110,17 +114,6 @@ export default async function MyVaultPage() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className={`px-4 py-2 rounded-xl text-sm font-black border-2 ${
-                        page.status === "active"
-                          ? "bg-[#10b981]/20 text-[#10b981] border-[#10b981]/40"
-                          : page.status === "paused"
-                            ? "bg-[#fbbf24]/20 text-[#fbbf24] border-[#fbbf24]/40"
-                            : "bg-[#ef4444]/20 text-[#ef4444] border-[#ef4444]/40"
-                      }`}
-                    >
-                      {page.status.toUpperCase()}
                     </div>
                   </div>
                 </CardHeader>
@@ -156,9 +149,11 @@ export default async function MyVaultPage() {
                     </div>
                   </div>
 
-                  <PageActions pageId={page.id} status={page.status} affiliateLink={page.video_url || page.affiliate_link} videoUrl={page.video_url} />
+                  <PageActions pageId={page.id} affiliateLink={page.video_url || page.affiliate_link} videoUrl={page.video_url} comments={comments} />
                 </CardContent>
               </Card>
+              {(index + 1) % 2 === 0 && <EarningsBanner />}
+              </Fragment>
             )
           })}
         </div>

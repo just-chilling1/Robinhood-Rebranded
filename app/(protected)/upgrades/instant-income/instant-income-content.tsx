@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Copy, CheckCircle2, Facebook, Play, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { GenerationProgress } from "@/components/generation-progress"
+import { EarningsBanner } from "@/components/earnings-banner"
+import { VideoOverlay } from "@/components/video-overlay"
 
 interface FacebookPost {
   id: string
@@ -388,6 +391,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   const [selectedNiche, setSelectedNiche] = useState<string>("all")
   const [affiliateLink, setAffiliateLink] = useState("")
   const [showPosts, setShowPosts] = useState(false)
+  const [generating, setGenerating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
@@ -403,9 +407,14 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   }
 
   const handleGeneratePosts = () => {
-    if (affiliateLink.trim()) {
+    if (!affiliateLink.trim()) return
+    setShowPosts(false)
+    setGenerating(true)
+    // Short generation phase: the posts get personalized with the user's link
+    setTimeout(() => {
+      setGenerating(false)
       setShowPosts(true)
-    }
+    }, 4500)
   }
 
   return (
@@ -437,38 +446,33 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
               {/* Video Player */}
               <div className="relative aspect-video bg-black">
-                {!isVideoPlaying ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                    <div className="absolute inset-0">
-                      <iframe
-                        src="https://player.vimeo.com/video/1151045100?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                        title="Instant Income Preview"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-black/40" />
-                    <Button
-                      size="lg"
-                      onClick={() => setIsVideoPlaying(true)}
-                      className="relative z-10 h-24 w-24 rounded-full bg-violet-500 hover:bg-violet-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                    >
-                      <Play className="w-12 h-12 ml-1 fill-white" />
-                    </Button>
-                    <div className="absolute bottom-8 left-0 right-0 text-center">
-                      <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Instant Income Tutorial</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="relative w-full h-full">
-                    <iframe
-                      src="https://player.vimeo.com/video/1151045100?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                      title="Instant Income Tutorial"
-                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full border-0"
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                  <div className="absolute inset-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/thumbnails/thumb-07-recurring-streams-training.png"
+                      alt="Recurring Streams Training thumbnail"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
+                  <div className="absolute inset-0 bg-black/10" />
+                  <Button
+                    size="lg"
+                    onClick={() => setIsVideoPlaying(true)}
+                    className="relative z-10 h-24 w-24 rounded-full bg-violet-500 hover:bg-violet-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+                  >
+                    <Play className="w-12 h-12 ml-1 fill-white" />
+                  </Button>
+                  <div className="absolute bottom-8 left-0 right-0 text-center">
+                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Instant Income Tutorial</p>
+                  </div>
+                </div>
+                {isVideoPlaying && (
+                  <VideoOverlay
+                    videoUrl="https://player.vimeo.com/video/1151045100"
+                    title="Recurring Streams Training"
+                    onClose={() => setIsVideoPlaying(false)}
+                  />
                 )}
               </div>
 
@@ -744,14 +748,21 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               </p>
             </div>
 
+            {/* While generating: loading bar + offer banner above the CTA (banner stays after) */}
+            {generating ? (
+              <GenerationProgress label={`Personalizing ${filteredPosts.length} posts with your affiliate link...`} />
+            ) : showPosts ? (
+              <EarningsBanner />
+            ) : null}
+
             <Button
               onClick={handleGeneratePosts}
-              disabled={!affiliateLink.trim()}
+              disabled={!affiliateLink.trim() || generating}
               className="w-full bg-violet-500 hover:bg-violet-600 text-white font-black text-2xl py-8"
               size="lg"
             >
               <CheckCircle2 className="w-8 h-8 mr-3" />
-              Show Me My {filteredPosts.length} Posts!
+              {generating ? "Generating Your Posts..." : `Show Me My ${filteredPosts.length} Posts!`}
             </Button>
           </CardContent>
         </Card>

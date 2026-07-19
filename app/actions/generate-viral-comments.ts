@@ -157,7 +157,9 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
     console.log("[robinhood] Successfully generated", comments.length, "comments")
     console.log("[robinhood] Comments preview:", comments[0]?.substring(0, 50) + "...")
 
-    if (isDevAuthBypassEnabled()) {
+    // Only skip saving when there's no real session (anonymous dev-bypass testing).
+    // A logged-in user should always get their pack saved to the vault, even in dev.
+    if (!user) {
       return {
         success: true,
         comments,

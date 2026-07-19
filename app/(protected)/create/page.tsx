@@ -11,6 +11,8 @@ import { InfoHint } from "@/components/ui/info-hint"
 import { TrendingUp, Search, Zap, Eye, Flame, Youtube, Loader2, ExternalLink, Copy, Check, AlertTriangle, RotateCw } from "lucide-react"
 import { fetchVideoOpportunities, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
+import { GenerationProgress } from "@/components/generation-progress"
+import { EarningsBanner } from "@/components/earnings-banner"
 
 export default function GoldRushPage() {
   // Step 1: Product Info
@@ -230,6 +232,11 @@ export default function GoldRushPage() {
                   <p className="text-[#7dd3fc] font-semibold text-sm">
                     Finds high-view Shorts related to <span className="text-white">{productName}</span>
                   </p>
+                  {loadingVideos ? (
+                    <GenerationProgress label="AI finding videos for your niche..." />
+                  ) : searched ? (
+                    <EarningsBanner />
+                  ) : null}
                   <Button
                     onClick={handleFindVideos}
                     disabled={loadingVideos}
@@ -259,6 +266,11 @@ export default function GoldRushPage() {
                       className="h-14 text-lg glass border-2 border-[#0ea5e9]/30"
                     />
                   </div>
+                  {loadingVideos ? (
+                    <GenerationProgress label="AI finding videos for your niche..." />
+                  ) : searched ? (
+                    <EarningsBanner />
+                  ) : null}
                   <Button
                     onClick={handleFindVideos}
                     disabled={loadingVideos || !nicheKeyword.trim()}
@@ -347,6 +359,13 @@ export default function GoldRushPage() {
                               </p>
                             </div>
                           </div>
+
+                          {/* While generating comments: loading bar + offer banner above the CTA (banner stays after) */}
+                          {generatingFor === video.videoId ? (
+                            <GenerationProgress label="AI writing your money-making comments..." />
+                          ) : hasComments ? (
+                            <EarningsBanner />
+                          ) : null}
 
                           {/* Actions */}
                           <div className="flex gap-3">

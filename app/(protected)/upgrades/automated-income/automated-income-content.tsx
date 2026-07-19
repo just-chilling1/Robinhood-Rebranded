@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { ArrowLeft, TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Play, Sparkles } from "lucide-react"
+import { ArrowLeft, TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Play, Sparkles, Copy, Check } from "lucide-react"
 import Link from "next/link"
+import { GenerationProgress } from "@/components/generation-progress"
+import { EarningsBanner } from "@/components/earnings-banner"
+import { VideoOverlay } from "@/components/video-overlay"
 
 interface TrafficSource {
   id: string
@@ -1988,8 +1991,14 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
   const [selectedSource, setSelectedSource] = useState<TrafficSource | null>(null)
   const [pageUrl, setPageUrl] = useState("")
   const [selectedNiche, setSelectedNiche] = useState<string>("All")
+  const [generating, setGenerating] = useState(false)
+  const [hasGenerated, setHasGenerated] = useState(false)
   const [completedSources, setCompletedSources] = useState<Set<string>>(new Set())
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [savingLink, setSavingLink] = useState(false)
+  const [linkSaved, setLinkSaved] = useState(false)
+  const [linkError, setLinkError] = useState<string | null>(null)
+  const [copiedSourceId, setCopiedSourceId] = useState<string | null>(null)
 
   const niches = [
     "All",
@@ -2006,8 +2015,42 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
   const filteredSources =
     selectedNiche === "All" ? trafficSources : trafficSources.filter((s) => s.niche === selectedNiche)
 
+  const handleSelectNiche = (niche: string) => {
+    if (niche === selectedNiche) return
+    setSelectedNiche(niche)
+    // Short generation phase while we "find" the sources for this niche
+    setGenerating(true)
+    setHasGenerated(true)
+    setTimeout(() => setGenerating(false), 3500)
+  }
+
   const handleMarkComplete = (sourceId: string) => {
     setCompletedSources((prev) => new Set([...prev, sourceId]))
+  }
+
+  const handleSaveLink = () => {
+    if (!pageUrl.trim()) {
+      setLinkError("Please enter your page URL first.")
+      return
+    }
+    setLinkError(null)
+    setLinkSaved(false)
+    // Short "saving" phase so the ad shows below the CTA.
+    setSavingLink(true)
+    setTimeout(() => {
+      setSavingLink(false)
+      setLinkSaved(true)
+    }, 4000)
+  }
+
+  const getPopulatedDescription = (source: TrafficSource) =>
+    source.submissionDescription.replace("[YOUR_LINK]", pageUrl.trim() || "[YOUR_LINK]")
+
+  const handleCopyDescription = (e: React.MouseEvent, source: TrafficSource) => {
+    e.stopPropagation()
+    navigator.clipboard.writeText(getPopulatedDescription(source))
+    setCopiedSourceId(source.id)
+    setTimeout(() => setCopiedSourceId(null), 1500)
   }
 
   const populatedDescription = selectedSource
@@ -2045,38 +2088,33 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Video Player */}
             <div className="relative aspect-video bg-black">
-              {!isVideoPlaying ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                  <div className="absolute inset-0">
-                    <iframe
-                      src="https://player.vimeo.com/video/1151045210?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                      title="Automated Income Preview"
-                      allow="autoplay; fullscreen; picture-in-picture"
-                      className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/40" />
-                  <Button
-                    size="lg"
-                    onClick={() => setIsVideoPlaying(true)}
-                    className="relative z-10 h-24 w-24 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                  >
-                    <Play className="w-12 h-12 ml-1 fill-white" />
-                  </Button>
-                  <div className="absolute bottom-8 left-0 right-0 text-center">
-                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Automated Income Tutorial</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative w-full h-full">
-                  <iframe
-                    src="https://player.vimeo.com/video/1151045210?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                    title="Automated Income Tutorial"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full border-0"
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                <div className="absolute inset-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/thumbnails/thumb-08-social-payouts-training.png"
+                    alt="Social Payouts Training thumbnail"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
+                <div className="absolute inset-0 bg-black/10" />
+                <Button
+                  size="lg"
+                  onClick={() => setIsVideoPlaying(true)}
+                  className="relative z-10 h-24 w-24 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+                >
+                  <Play className="w-12 h-12 ml-1 fill-white" />
+                </Button>
+                <div className="absolute bottom-8 left-0 right-0 text-center">
+                  <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Automated Income Tutorial</p>
+                </div>
+              </div>
+              {isVideoPlaying && (
+                <VideoOverlay
+                  videoUrl="https://player.vimeo.com/video/1151045210"
+                  title="Social Payouts Training"
+                  onClose={() => setIsVideoPlaying(false)}
+                />
               )}
             </div>
 
@@ -2182,6 +2220,30 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             This is the page you want to promote. We'll automatically insert it in all the submission descriptions
             below.
           </p>
+
+          {linkError && (
+            <p className="mt-4 text-lg font-bold text-[#fca5a5]">{linkError}</p>
+          )}
+
+          {savingLink && (
+            <div className="mt-6">
+              <GenerationProgress label="Inserting your link into 100+ submission descriptions..." />
+            </div>
+          )}
+
+          {!savingLink && linkSaved && (
+            <div className="mt-6">
+              <EarningsBanner />
+            </div>
+          )}
+
+          <Button
+            onClick={handleSaveLink}
+            disabled={savingLink}
+            className="mt-6 w-full h-16 text-xl font-black bg-gradient-to-r from-emerald-500 to-green-500 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/25"
+          >
+            {savingLink ? "Saving Your Link..." : linkSaved ? "Link Saved ✓ — Update It Anytime" : "Save My Link →"}
+          </Button>
         </CardContent>
       </Card>
 
@@ -2190,7 +2252,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         {niches.map((niche) => (
           <Button
             key={niche}
-            onClick={() => setSelectedNiche(niche)}
+            onClick={() => handleSelectNiche(niche)}
             variant={selectedNiche === niche ? "default" : "outline"}
             className={
               selectedNiche === niche
@@ -2204,6 +2266,17 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         ))}
       </div>
 
+      {/* While generating the niche's sources: loading bar + offer banner (banner stays after) */}
+      {generating ? (
+        <GenerationProgress
+          label={`Finding the best ${selectedNiche === "All" ? "" : `${selectedNiche} `}traffic sources for you...`}
+        />
+      ) : hasGenerated ? (
+        <EarningsBanner />
+      ) : null}
+
+      {!generating && (
+      <>
       {/* Progress Tracker */}
       <Card className="bg-gradient-to-br from-emerald-900/30 to-green-900/30 border-emerald-500/30">
         <CardContent className="p-6">
@@ -2272,6 +2345,31 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                     </div>
                   </div>
                 </div>
+
+                {/* Submission description — visible without opening instructions */}
+                <div
+                  className="mb-4 rounded-xl border border-emerald-500/25 bg-emerald-500/[0.07] p-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <p className="text-base font-black text-white">📝 Use This Description When Submitting:</p>
+                    <Button
+                      size="sm"
+                      onClick={(e) => handleCopyDescription(e, source)}
+                      className={`h-9 px-3 font-black rounded-lg flex-shrink-0 ${
+                        copiedSourceId === source.id
+                          ? "bg-green-500 hover:bg-green-500"
+                          : "bg-emerald-500 hover:bg-emerald-600"
+                      } text-white`}
+                    >
+                      {copiedSourceId === source.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                  <p className="text-base font-semibold leading-relaxed text-emerald-200 break-words">
+                    {getPopulatedDescription(source)}
+                  </p>
+                </div>
+
                 <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg" size="lg">
                   <ExternalLink className="w-5 h-5 mr-2" />
                   View Instructions
@@ -2281,6 +2379,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           )
         })}
       </div>
+      </>
+      )}
 
       {/* Source Detail Modal */}
       <Dialog open={!!selectedSource} onOpenChange={() => setSelectedSource(null)}>

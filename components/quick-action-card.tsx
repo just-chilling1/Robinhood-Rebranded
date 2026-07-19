@@ -1,6 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import type { LucideIcon } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 interface QuickActionCardProps {
@@ -12,32 +11,55 @@ interface QuickActionCardProps {
   glowColor?: "blue" | "pink" | "cyan"
 }
 
-export function QuickActionCard({ title, description, icon: Icon, href, buttonText, glowColor = "blue" }: QuickActionCardProps) {
-  const glowClass = glowColor === "blue" ? "glow-blue" : glowColor === "pink" ? "glow-pink" : "glow-cyan"
-  const borderClass = glowColor === "blue" ? "border-[#0ea5e9]/40" : glowColor === "pink" ? "border-[#ec4899]/40" : "border-[#06b6d4]/40"
-  const iconColorClass = glowColor === "blue" ? "text-[#0ea5e9]" : glowColor === "pink" ? "text-[#ec4899]" : "text-[#06b6d4]"
-  const buttonClass = glowColor === "blue" 
-    ? "bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] hover:from-[#06b6d4] hover:to-[#0ea5e9]" 
-    : glowColor === "pink" 
-    ? "bg-gradient-to-r from-[#ec4899] to-[#0ea5e9] hover:from-[#0ea5e9] hover:to-[#ec4899]"
-    : "bg-gradient-to-r from-[#06b6d4] to-[#0ea5e9] hover:from-[#0ea5e9] hover:to-[#06b6d4]"
+const accents = {
+  blue: {
+    text: "text-[#0ea5e9]",
+    tile: "bg-[#0ea5e9]/15 border-[#0ea5e9]/30",
+    hoverBorder: "hover:border-[#0ea5e9]/60",
+    hoverShadow: "hover:shadow-[#0ea5e9]/10",
+  },
+  pink: {
+    text: "text-[#ec4899]",
+    tile: "bg-[#ec4899]/15 border-[#ec4899]/30",
+    hoverBorder: "hover:border-[#ec4899]/60",
+    hoverShadow: "hover:shadow-[#ec4899]/10",
+  },
+  cyan: {
+    text: "text-[#06b6d4]",
+    tile: "bg-[#06b6d4]/15 border-[#06b6d4]/30",
+    hoverBorder: "hover:border-[#06b6d4]/60",
+    hoverShadow: "hover:shadow-[#06b6d4]/10",
+  },
+} as const
+
+export function QuickActionCard({
+  title,
+  description,
+  icon: Icon,
+  href,
+  buttonText,
+  glowColor = "blue",
+}: QuickActionCardProps) {
+  const accent = accents[glowColor]
 
   return (
-    <Card className={`glass-strong border ${borderClass} ${glowClass} hover:scale-[1.02] transition-transform duration-300`}>
-      <CardHeader className="space-y-3">
-        <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${glowColor === "blue" ? "from-[#0ea5e9]/20 to-[#06b6d4]/20" : glowColor === "pink" ? "from-[#ec4899]/20 to-[#0ea5e9]/20" : "from-[#06b6d4]/20 to-[#0ea5e9]/20"} flex items-center justify-center border ${borderClass}`}>
-            <Icon className={`w-5 h-5 ${iconColorClass}`} />
-          </div>
-          <CardTitle className="text-lg font-bold text-white tracking-tight">{title}</CardTitle>
+    <Link
+      href={href}
+      className={`group glass-strong flex h-full flex-col rounded-2xl border border-white/10 p-5 shadow-lg transition-all duration-300 hover:-translate-y-0.5 ${accent.hoverBorder} ${accent.hoverShadow}`}
+    >
+      <div className="mb-4 flex items-center gap-3">
+        <div className={`flex h-12 w-12 items-center justify-center rounded-xl border ${accent.tile}`}>
+          <Icon className={`h-6 w-6 ${accent.text}`} />
         </div>
-        <CardDescription className="text-sm text-[#7dd3fc] leading-relaxed">{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Button asChild className={`w-full h-9 text-sm font-semibold rounded-lg ${buttonClass} text-white shadow-md transition-all duration-300`}>
-          <Link href={href}>{buttonText}</Link>
-        </Button>
-      </CardContent>
-    </Card>
+        <h3 className="text-xl font-black tracking-tight text-white">{title}</h3>
+      </div>
+
+      <p className="mb-5 flex-1 text-base leading-relaxed text-[#a5c9e8]">{description}</p>
+
+      <span className={`inline-flex items-center gap-2 text-base font-black ${accent.text}`}>
+        {buttonText}
+        <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+      </span>
+    </Link>
   )
 }

@@ -23,6 +23,9 @@ import {
   AlertTriangle
 } from "lucide-react"
 import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
+import { GenerationProgress } from "@/components/generation-progress"
+import { EarningsBanner } from "@/components/earnings-banner"
+import { VideoOverlay } from "@/components/video-overlay"
 
 interface UserProduct {
   name: string
@@ -43,6 +46,7 @@ export default function DFYVaultClient() {
   const [productLink, setProductLink] = useState("")
   const [productSelected, setProductSelected] = useState(false)
   const [productError, setProductError] = useState<string | null>(null)
+  const [unlocking, setUnlocking] = useState(false)
   
   // Copy tracking
   const [copiedComment, setCopiedComment] = useState<string | null>(null)
@@ -132,7 +136,12 @@ export default function DFYVaultClient() {
       return
     }
     setProductError(null)
-    setProductSelected(true)
+    // Short "unlocking" phase so the ad shows before the library appears.
+    setUnlocking(true)
+    setTimeout(() => {
+      setUnlocking(false)
+      setProductSelected(true)
+    }, 4000)
   }
 
   const handleCopyComment = async (comment: string, videoId: string, index: number) => {
@@ -156,12 +165,8 @@ export default function DFYVaultClient() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-16 h-16 text-[#0ea5e9] animate-spin mx-auto" />
-          <p className="text-2xl text-white font-bold">Loading Accelerator Library...</p>
-          <p className="text-[#7dd3fc]">Fetching 200+ viral opportunities across 6 niches</p>
-        </div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-12 h-12 text-[#0ea5e9] animate-spin" />
       </div>
     )
   }
@@ -198,41 +203,37 @@ export default function DFYVaultClient() {
         </div>
 
         <div className="relative aspect-video bg-black">
-          {!isVideoPlaying ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0d0a1a] to-[#1a1429]">
-              <div className="absolute inset-0">
-                <iframe
-                  src="https://player.vimeo.com/video/1151044893?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                  title="DFY Training Preview"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                />
-              </div>
-              <div className="absolute inset-0 bg-black/50" />
-              <Button
-                size="lg"
-                onClick={() => setIsVideoPlaying(true)}
-                className="relative z-10 h-28 w-28 rounded-full bg-gradient-to-br from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-              >
-                <Play className="w-14 h-14 ml-1 fill-white" />
-              </Button>
-              <div className="absolute bottom-8 left-0 right-0 text-center">
-                <p className="text-white text-xl font-extrabold drop-shadow-lg">▶ Click to Play Training</p>
-              </div>
-            </div>
-          ) : (
-            <div className="relative w-full h-full">
-              <iframe
-                src="https://player.vimeo.com/video/1151044893?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                title="DFY Vault Training"
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full border-0"
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0d0a1a] to-[#1a1429]">
+            <div className="absolute inset-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/thumbnails/thumb-04-accelerator-training.png"
+                alt="Accelerator Training thumbnail"
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
-          )}
+            <div className="absolute inset-0 bg-black/10" />
+            <Button
+              size="lg"
+              onClick={() => setIsVideoPlaying(true)}
+              className="relative z-10 h-28 w-28 rounded-full bg-gradient-to-br from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+            >
+              <Play className="w-14 h-14 ml-1 fill-white" />
+            </Button>
+            <div className="absolute bottom-8 left-0 right-0 text-center">
+              <p className="text-white text-xl font-extrabold drop-shadow-lg">▶ Click to Play Training</p>
+            </div>
+          </div>
         </div>
       </Card>
+
+      {isVideoPlaying && (
+        <VideoOverlay
+          videoUrl="https://player.vimeo.com/video/1151044893"
+          title="Accelerator Training"
+          onClose={() => setIsVideoPlaying(false)}
+        />
+      )}
 
       {/* Product Selection */}
       {!productSelected ? (
@@ -276,16 +277,22 @@ export default function DFYVaultClient() {
               </Alert>
             )}
 
+            {unlocking && <GenerationProgress label="Unlocking your DFY library..." />}
+
             <Button
               onClick={handleSelectProduct}
+              disabled={unlocking}
               className="w-full h-16 text-xl font-black bg-gradient-to-r from-[#fbbf24] to-[#f97316] hover:from-[#f97316] hover:to-[#fbbf24] rounded-xl"
             >
-              Unlock DFY Library →
+              {unlocking ? "Unlocking..." : "Unlock DFY Library →"}
             </Button>
           </div>
         </Card>
       ) : (
         <>
+          {/* Ad stays visible after unlocking */}
+          <EarningsBanner />
+
           {/* Selected Product Bar */}
           <Card className="glass-strong border-2 border-[#10b981]/40 p-6">
             <div className="flex items-center justify-between">
@@ -342,15 +349,12 @@ export default function DFYVaultClient() {
             </p>
           </Card>
 
-          {/* While searching YouTube live */}
-          {liveSearching && (
-            <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-10 text-center">
-              <Loader2 className="w-10 h-10 text-[#0ea5e9] animate-spin mx-auto mb-4" />
-              <p className="text-xl font-black text-white">
-                Finding fresh viral videos for "{searchQuery.trim()}"...
-              </p>
-            </Card>
-          )}
+          {/* While searching live: loading bar + offer banner (banner stays after the search) */}
+          {liveSearching ? (
+            <GenerationProgress label={`AI finding fresh viral videos for "${searchQuery.trim()}"...`} />
+          ) : searchQuery.trim() ? (
+            <EarningsBanner />
+          ) : null}
 
           {/* Empty state after a live search found nothing */}
           {!liveSearching && searchQuery.trim() && displayedVideos.length === 0 && (

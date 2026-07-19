@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { createPageFromTemplate } from "./actions"
+import { VideoOverlay } from "@/components/video-overlay"
 
 // Note: this upgrade content is still legacy "affiliate article templates" from the original app.
 // We keep the route/structure, but the Robinhood core product is comment packs for YouTube Shorts.
@@ -672,38 +673,33 @@ export function DFYVaultContent() {
         <CardContent className="p-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             <div className="relative aspect-video bg-black">
-              {!isVideoPlaying ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                  <div className="absolute inset-0">
-                    <iframe
-                      src="https://player.vimeo.com/video/1151044893?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                      title="DFY Vault Preview"
-                      allow="autoplay; fullscreen; picture-in-picture"
-                      className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/40" />
-                  <Button
-                    size="lg"
-                    onClick={() => setIsVideoPlaying(true)}
-                    className="relative z-10 h-24 w-24 rounded-full bg-cyan-500 hover:bg-cyan-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                  >
-                    <Play className="w-12 h-12 ml-1 fill-white" />
-                  </Button>
-                  <div className="absolute bottom-8 left-0 right-0 text-center">
-                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch DFY Vault Tutorial</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative w-full h-full">
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                <div className="absolute inset-0">
                   <iframe
-                    src="https://player.vimeo.com/video/1151044893?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                    title="DFY Vault Tutorial"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full border-0"
+                    src="https://player.vimeo.com/video/1151044893?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
+                    title="DFY Vault Preview"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    className="absolute inset-0 w-full h-full border-0 pointer-events-none"
                   />
                 </div>
+                <div className="absolute inset-0 bg-black/40" />
+                <Button
+                  size="lg"
+                  onClick={() => setIsVideoPlaying(true)}
+                  className="relative z-10 h-24 w-24 rounded-full bg-cyan-500 hover:bg-cyan-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+                >
+                  <Play className="w-12 h-12 ml-1 fill-white" />
+                </Button>
+                <div className="absolute bottom-8 left-0 right-0 text-center">
+                  <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch DFY Vault Tutorial</p>
+                </div>
+              </div>
+              {isVideoPlaying && (
+                <VideoOverlay
+                  videoUrl="https://player.vimeo.com/video/1151044893"
+                  title="DFY Vault Tutorial"
+                  onClose={() => setIsVideoPlaying(false)}
+                />
               )}
             </div>
 
@@ -730,38 +726,33 @@ export function DFYVaultContent() {
           <CardContent className="p-0">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
               <div className="relative aspect-video bg-black">
-                {!isVideo1Playing ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                    <div className="absolute inset-0">
-                      <iframe
-                        src="https://player.vimeo.com/video/1134928111?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                        title="Exclusive Training 1 Preview"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-black/40" />
-                    <Button
-                      size="lg"
-                      onClick={() => setIsVideo1Playing(true)}
-                      className="relative z-10 h-24 w-24 rounded-full bg-yellow-500 hover:bg-yellow-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                    >
-                      <Play className="w-12 h-12 ml-1 fill-white" />
-                    </Button>
-                    <div className="absolute bottom-8 left-0 right-0 text-center">
-                      <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Exclusive Training #1</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="relative w-full h-full">
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                  <div className="absolute inset-0">
                     <iframe
-                      src="https://player.vimeo.com/video/1134928111?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                      title="DFY Exclusive Training 1"
-                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full border-0"
+                      src="https://player.vimeo.com/video/1134928111?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
+                      title="Exclusive Training 1 Preview"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      className="absolute inset-0 w-full h-full border-0 pointer-events-none"
                     />
                   </div>
+                  <div className="absolute inset-0 bg-black/40" />
+                  <Button
+                    size="lg"
+                    onClick={() => setIsVideo1Playing(true)}
+                    className="relative z-10 h-24 w-24 rounded-full bg-yellow-500 hover:bg-yellow-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+                  >
+                    <Play className="w-12 h-12 ml-1 fill-white" />
+                  </Button>
+                  <div className="absolute bottom-8 left-0 right-0 text-center">
+                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Exclusive Training #1</p>
+                  </div>
+                </div>
+                {isVideo1Playing && (
+                  <VideoOverlay
+                    videoUrl="https://player.vimeo.com/video/1134928111"
+                    title="Exclusive Training #1"
+                    onClose={() => setIsVideo1Playing(false)}
+                  />
                 )}
               </div>
 
@@ -789,38 +780,33 @@ export function DFYVaultContent() {
           <CardContent className="p-0">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
               <div className="relative aspect-video bg-black">
-                {!isVideo2Playing ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                    <div className="absolute inset-0">
-                      <iframe
-                        src="https://player.vimeo.com/video/1134928160?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
-                        title="Exclusive Training 2 Preview"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-black/40" />
-                    <Button
-                      size="lg"
-                      onClick={() => setIsVideo2Playing(true)}
-                      className="relative z-10 h-24 w-24 rounded-full bg-orange-500 hover:bg-orange-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                    >
-                      <Play className="w-12 h-12 ml-1 fill-white" />
-                    </Button>
-                    <div className="absolute bottom-8 left-0 right-0 text-center">
-                      <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Exclusive Training #2</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="relative w-full h-full">
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                  <div className="absolute inset-0">
                     <iframe
-                      src="https://player.vimeo.com/video/1134928160?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&controls=1"
-                      title="DFY Exclusive Training 2"
-                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full border-0"
+                      src="https://player.vimeo.com/video/1134928160?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1"
+                      title="Exclusive Training 2 Preview"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      className="absolute inset-0 w-full h-full border-0 pointer-events-none"
                     />
                   </div>
+                  <div className="absolute inset-0 bg-black/40" />
+                  <Button
+                    size="lg"
+                    onClick={() => setIsVideo2Playing(true)}
+                    className="relative z-10 h-24 w-24 rounded-full bg-orange-500 hover:bg-orange-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+                  >
+                    <Play className="w-12 h-12 ml-1 fill-white" />
+                  </Button>
+                  <div className="absolute bottom-8 left-0 right-0 text-center">
+                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Exclusive Training #2</p>
+                  </div>
+                </div>
+                {isVideo2Playing && (
+                  <VideoOverlay
+                    videoUrl="https://player.vimeo.com/video/1134928160"
+                    title="Exclusive Training #2"
+                    onClose={() => setIsVideo2Playing(false)}
+                  />
                 )}
               </div>
 

@@ -83,15 +83,15 @@ function SidebarBody({
             </div>
           </div>
           <div>
-            <h2 className="text-base font-bold text-white tracking-tight">Robinhood</h2>
-            <p className="text-[11px] text-[#7dd3fc] font-medium">Your comment helper</p>
+            <h2 className="text-lg font-bold text-white tracking-tight">Robinhood</h2>
+            <p className="text-[13px] text-[#7dd3fc] font-medium">Your comment helper</p>
           </div>
         </Link>
       </div>
 
       {/* Menu */}
       <div className="flex-1 py-4 overflow-y-auto">
-        <p className="text-[11px] font-semibold text-[#0ea5e9]/60 px-4 mb-2 uppercase tracking-widest">Main Functions</p>
+        <p className="text-[13px] font-semibold text-[#0ea5e9]/60 px-4 mb-2 uppercase tracking-widest">Main Functions</p>
         <nav className="space-y-0.5 px-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.url
@@ -101,17 +101,17 @@ function SidebarBody({
                 key={item.title}
                 href={item.url}
                 onClick={onNavigate}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 ${
                   isActive
                     ? "bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white border border-[#0ea5e9]/40 shadow-md shadow-[#0ea5e9]/20"
                     : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border border-transparent"
                 }`}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
+                <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="flex flex-col leading-tight">
                   <span>{item.title}</span>
                   {item.subtitle && (
-                    <span className="text-[10px] font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
+                    <span className="text-xs font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
                   )}
                 </span>
               </Link>
@@ -122,8 +122,8 @@ function SidebarBody({
         {/* Premium Features */}
         <div className="mt-6">
           <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border border-[#fbbf24]/30">
-            <p className="text-[11px] font-semibold text-[#fbbf24] uppercase tracking-widest flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3" />
+            <p className="text-[13px] font-semibold text-[#fbbf24] uppercase tracking-widest flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
               Premium Tier
             </p>
           </div>
@@ -136,13 +136,13 @@ function SidebarBody({
                   key={item.title}
                   href={item.url}
                   onClick={onNavigate}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 border ${
                     isActive
                       ? "bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 border-[#fbbf24]/60 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
                       : "border-[#fbbf24]/25 text-[#fbbf24]/80 hover:border-[#fbbf24]/50 hover:bg-[#fbbf24]/10 hover:text-[#fbbf24]"
                   }`}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <Icon className="w-5 h-5 flex-shrink-0" />
                   <span>{item.title}</span>
                 </Link>
               )
@@ -153,7 +153,7 @@ function SidebarBody({
         {/* Exclusive Offers */}
         <div className="mt-6">
           <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 border border-emerald-500/30">
-            <p className="text-[11px] font-semibold text-emerald-400 uppercase tracking-widest">
+            <p className="text-[13px] font-semibold text-emerald-400 uppercase tracking-widest">
               Exclusive Offers
             </p>
           </div>
@@ -169,12 +169,12 @@ function SidebarBody({
                   className="block rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2.5 transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-500/10"
                 >
                   <div className="flex items-start gap-2">
-                    <Icon className="mt-0.5 w-4 h-4 flex-shrink-0 text-emerald-400" />
+                    <Icon className="mt-0.5 w-5 h-5 flex-shrink-0 text-emerald-400" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-semibold leading-snug text-slate-200">{offer.title}</p>
-                      <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-bold text-emerald-400">
+                      <p className="text-sm font-semibold leading-snug text-slate-200">{offer.title}</p>
+                      <span className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-emerald-400">
                         {offer.cta}
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </span>
                     </div>
                   </div>
@@ -190,20 +190,20 @@ function SidebarBody({
         <Link
           href="/support"
           onClick={onNavigate}
-          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border ${
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 border ${
             pathname === "/support"
               ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-md shadow-[#06b6d4]/20"
               : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border-transparent"
           }`}
         >
-          <Headphones className="w-4 h-4 flex-shrink-0" />
+          <Headphones className="w-5 h-5 flex-shrink-0" />
           <span>Support</span>
         </Link>
         <button
           onClick={onSignOut}
-          className="w-full h-9 text-sm font-semibold text-[#7dd3fc] bg-transparent border border-[#0ea5e9]/20 rounded-lg hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full h-10 text-base font-semibold text-[#7dd3fc] bg-transparent border border-[#0ea5e9]/20 rounded-lg hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-5 h-5" />
           Exit Platform
         </button>
       </div>

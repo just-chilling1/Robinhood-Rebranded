@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from "@/lib/supabase/server"
 import { QuickActionCard } from "@/components/quick-action-card"
 import { FeaturedVideoCard } from "@/components/featured-video-card"
+import { HowItWorks } from "@/components/how-it-works"
 import { Brain, Play, Gem, Headphones } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,21 +37,28 @@ export default async function DashboardPage() {
     }
 
     return (
-      <div className="space-y-6 max-w-7xl mx-auto">
-          {/* Compact Welcome */}
-          <div className="glass-strong rounded-lg p-4 border border-[#0ea5e9]/30">
-            <h1 className="text-xl font-bold text-white mb-1">
-              Welcome back, {profile?.full_name || "Creator"}
+      <div className="space-y-8 max-w-7xl mx-auto">
+          {/* Welcome */}
+          <div className="pt-2">
+            <p className="mb-3 text-sm font-black uppercase tracking-[0.25em] text-[#fbbf24]">Home</p>
+            <h1 className="mb-4 text-4xl lg:text-6xl font-black tracking-tight text-white">
+              Welcome to Robinhood{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
             </h1>
-            <p className="text-sm text-[#7dd3fc]">Your AI engagement system is ready</p>
+            <p className="max-w-3xl text-lg lg:text-xl leading-relaxed text-[#a5c9e8]">
+              You post ready-made comments on viral videos. When someone buys through your links, you get paid. You
+              only need to do three things &mdash; each one takes just a few minutes.
+            </p>
           </div>
 
           {/* VIDEO CARD - FIRST THING THEY SEE */}
           <FeaturedVideoCard />
 
+          {/* How it works - 3 simple steps */}
+          <HowItWorks />
+
           {/* Quick Actions */}
           <div>
-            <h2 className="text-lg font-bold text-white mb-4 tracking-tight">Quick Actions</h2>
+            <h2 className="text-3xl font-black text-white mb-4 tracking-tight">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <QuickActionCard
                 title="Gold Rush"

@@ -1,48 +1,51 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
-import { Smartphone, DollarSign, TrendingUp } from "lucide-react"
+import { X } from "lucide-react"
 
 export function EarningsBanner() {
-  return (
-    <div className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg p-4 md:p-5 mb-4">
-      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-        <div className="flex-shrink-0">
-          <div className="relative w-24 md:w-32 h-24 md:h-32 flex items-center justify-center">
-            {/* Phone icon with dollar signs */}
-            <div className="relative">
-              <Smartphone className="w-16 h-16 md:w-20 md:h-20 text-white/90" strokeWidth={1.5} />
-              <DollarSign
-                className="absolute -top-1 -right-1 w-8 h-8 md:w-10 md:h-10 text-amber-400 animate-pulse"
-                strokeWidth={2.5}
-              />
-              <TrendingUp
-                className="absolute -bottom-1 -left-1 w-7 h-7 md:w-8 md:h-8 text-emerald-200"
-                strokeWidth={2}
-              />
-            </div>
-          </div>
-        </div>
+  const [dismissed, setDismissed] = useState(false)
 
-        {/* Content */}
-        <div className="flex-1 text-center md:text-left">
-          <h2 className="text-lg md:text-xl font-bold text-white mb-2 leading-tight">
-            Wanna Wake Up With An Additional $1,000-$5,000 In Your Bank Account Tomorrow?
-          </h2>
-          <p className="text-sm text-white/95 mb-3 leading-relaxed">
-            Robinhood is amazing, but if you want to know how to scale to $1,000 - $5,000 every single day... without doing any extra work...
-            <br />
-            <br />
-            Then you have to watch this FREE training now (Will be taken down soon)
-          </p>
-          <Link
-            href="https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-semibold text-sm px-4 py-2 rounded-md transition-colors duration-200"
-          >
-            Click Here To Watch Free Training &gt;&gt;
-          </Link>
-        </div>
-      </div>
+  if (dismissed) return null
+
+  return (
+    <div className="relative w-full rounded-2xl border-2 border-[#fbbf24]/50 bg-gradient-to-b from-[#101726] to-[#0b0f18] px-6 py-10 md:px-12 md:py-12 mb-4 text-center">
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        aria-label="Close banner"
+        className="absolute right-3 top-3 rounded-lg p-1.5 text-[#7dd3fc]/60 transition-colors hover:bg-white/10 hover:text-white"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      <span className="mb-5 inline-block rounded-md bg-[#ef4444] px-4 py-1.5 text-sm md:text-base font-black uppercase tracking-widest text-white">
+        Free Training
+      </span>
+
+      <h2 className="mx-auto mb-4 max-w-4xl text-3xl md:text-5xl font-black uppercase leading-tight text-white">
+        Wake Up With An Extra{" "}
+        <span className="text-[#fbbf24]">$1,000&ndash;$5,000</span>{" "}
+        In Your Bank Account Tomorrow
+      </h2>
+
+      <p className="mx-auto mb-8 max-w-3xl text-lg md:text-2xl font-bold leading-snug text-[#d8e9fb]">
+        Discover how to scale to $1,000&ndash;$5,000 every single day &mdash; without doing any extra work.
+      </p>
+
+      <Link
+        href="https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block rounded-xl bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] px-10 py-5 text-xl md:text-2xl font-black uppercase text-[#1a1305] shadow-xl shadow-[#fbbf24]/40 transition-all duration-200 hover:scale-[1.04] hover:shadow-[#fbbf24]/60"
+      >
+        Watch The Free Training &gt;&gt;
+      </Link>
+
+      <p className="mt-4 text-sm md:text-base font-black uppercase tracking-wide text-[#ef4444]">
+        Warning: This will be taken down soon
+      </p>
     </div>
   )
 }

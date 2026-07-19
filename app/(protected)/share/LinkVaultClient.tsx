@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
+import { EarningsBanner } from "@/components/earnings-banner"
 import { Plus, ExternalLink, Edit2, Trash2, Copy, Flame, DollarSign, TrendingUp } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -211,8 +212,9 @@ export default function LinkVaultClient() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {links.map((link) => (
-            <Card key={link.id} className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#fbbf24]/50 transition-all">
+          {links.map((link, index) => (
+            <Fragment key={link.id}>
+            <Card className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#fbbf24]/50 transition-all">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between gap-6">
                   <div className="flex-1 space-y-4">
@@ -253,6 +255,8 @@ export default function LinkVaultClient() {
                 </div>
               </CardContent>
             </Card>
+            {(index + 1) % 2 === 0 && <EarningsBanner />}
+            </Fragment>
           ))}
         </div>
       )}
