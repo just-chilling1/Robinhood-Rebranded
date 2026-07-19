@@ -2092,7 +2092,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 <div className="absolute inset-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/thumbnails/thumb-07-social-payouts-training.png"
+                    src="/thumbnails/thumb-06-social-payouts-training.png"
                     alt="Social Payouts Training thumbnail"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
