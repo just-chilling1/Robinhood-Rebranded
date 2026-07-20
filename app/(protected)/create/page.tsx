@@ -13,6 +13,7 @@ import { fetchVideoOpportunities, type VideoOpportunity } from "@/app/actions/fe
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 import { GenerationProgress } from "@/components/generation-progress"
 import { EarningsBanner } from "@/components/earnings-banner"
+import { PageHeader } from "@/components/page-header"
 
 export default function GoldRushPage() {
   // Step 1: Product Info
@@ -115,15 +116,11 @@ export default function GoldRushPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
-          💰 Gold Rush Generator
-        </h1>
-        <p className="text-lg sm:text-xl lg:text-2xl text-[#7dd3fc] font-bold">
-          Find viral videos, generate money-making comments, explode your traffic
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Gold Rush"
+        title="💰 Gold Rush Generator"
+        subtitle="Find viral videos, generate money-making comments, explode your traffic"
+      />
 
       {error && (
         <Alert variant="destructive" className="glass-strong border-2 border-[#ef4444]/50 text-[#fca5a5]">

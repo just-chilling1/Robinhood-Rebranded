@@ -15,9 +15,12 @@ import {
   UserPlus,
   ExternalLink,
   Wallet,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 const menuItems = [
@@ -56,39 +59,62 @@ const exclusiveOffers = [
   },
 ]
 
+const COLLAPSE_KEY = "rh_sidebar_collapsed"
+
 function SidebarBody({
   pathname,
+  collapsed,
+  onToggle,
   onNavigate,
   onSignOut,
 }: {
   pathname: string
+  collapsed: boolean
+  onToggle: () => void
   onNavigate?: () => void
   onSignOut: () => void
 }) {
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#020617]">
-      {/* Header - Brain Logo */}
-      <div className="p-4 border-b border-[#0ea5e9]/20">
-        <Link
-          href="/dashboard"
-          onClick={onNavigate}
-          className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group"
-        >
-          <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center shadow-[0_0_40px_rgba(14,165,233,0.5)] group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)] transition-shadow duration-300">
-            <div className="w-8 h-8 rounded-md bg-[#020617] flex items-center justify-center">
-              <Brain className="w-5 h-5 text-[#0ea5e9]" />
+    <div className="flex h-full flex-col bg-gradient-to-b from-[#0a1224] via-[#0f172a] to-[#0a1224]">
+      <div className={`border-b border-[#0ea5e9]/20 ${collapsed ? "px-3 py-4" : "p-4"}`}>
+        <div className={`flex items-center ${collapsed ? "flex-col gap-3" : "justify-between gap-2"}`}>
+          <Link
+            href="/dashboard"
+            onClick={onNavigate}
+            className={`flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-90 group ${
+              collapsed ? "justify-center" : ""
+            }`}
+            title="Robinhood"
+          >
+            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] shadow-[0_0_40px_rgba(14,165,233,0.5)] transition-shadow duration-300 group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#020617]">
+                <Brain className="h-5 w-5 text-[#0ea5e9]" />
+              </div>
             </div>
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Robinhood</h2>
-            <p className="text-[13px] text-[#7dd3fc] font-medium">Your comment helper</p>
-          </div>
-        </Link>
+            {!collapsed && (
+              <div className="min-w-0">
+                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-white">Robinhood</h2>
+                <p className="whitespace-nowrap text-[13px] font-medium text-[#7dd3fc]">Your comment helper</p>
+              </div>
+            )}
+          </Link>
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-[#0ea5e9]/20 text-[#7dd3fc] transition-colors hover:bg-[#0ea5e9]/10 hover:text-white"
+          >
+            {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
-      {/* Menu */}
-      <div className="flex-1 py-4 overflow-y-auto">
-        <p className="text-[13px] font-semibold text-[#0ea5e9]/60 px-4 mb-2 uppercase tracking-widest">Main Functions</p>
+      <div className="flex-1 overflow-y-auto py-4">
+        {!collapsed && (
+          <p className="mb-2 px-4 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]/60">
+            Main Functions
+          </p>
+        )}
         <nav className="space-y-0.5 px-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.url
@@ -98,32 +124,38 @@ function SidebarBody({
                 key={item.title}
                 href={item.url}
                 onClick={onNavigate}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 ${
+                title={item.title}
+                className={`flex items-center rounded-lg text-base font-semibold transition-all duration-200 ${
+                  collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
+                } ${
                   isActive
-                    ? "bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white border border-[#0ea5e9]/40 shadow-md shadow-[#0ea5e9]/20"
-                    : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border border-transparent"
+                    ? "border border-[#0ea5e9]/40 bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white shadow-md shadow-[#0ea5e9]/20"
+                    : "border border-transparent text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white"
                 }`}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="flex flex-col leading-tight">
-                  <span>{item.title}</span>
-                  {item.subtitle && (
-                    <span className="text-xs font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
-                  )}
-                </span>
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                {!collapsed && (
+                  <span className="flex flex-col leading-tight">
+                    <span>{item.title}</span>
+                    {item.subtitle && (
+                      <span className="text-xs font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
+                    )}
+                  </span>
+                )}
               </Link>
             )
           })}
         </nav>
 
-        {/* Premium Features */}
         <div className="mt-6">
-          <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border border-[#fbbf24]/30">
-            <p className="text-[13px] font-semibold text-[#fbbf24] uppercase tracking-widest flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              Premium Tier
-            </p>
-          </div>
+          {!collapsed && (
+            <div className="mx-4 mb-3 rounded-lg border border-[#fbbf24]/30 bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 p-2">
+              <p className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-widest text-[#fbbf24]">
+                <Sparkles className="h-3.5 w-3.5" />
+                Premium Tier
+              </p>
+            </div>
+          )}
           <nav className="space-y-0.5 px-2">
             {premiumItems.map((item) => {
               const isActive = pathname === item.url
@@ -133,75 +165,85 @@ function SidebarBody({
                   key={item.title}
                   href={item.url}
                   onClick={onNavigate}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 border ${
+                  title={item.title}
+                  className={`flex items-center rounded-lg border text-base font-semibold transition-all duration-200 ${
+                    collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
+                  } ${
                     isActive
-                      ? "bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 border-[#fbbf24]/60 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
+                      ? "border-[#fbbf24]/60 bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
                       : "border-[#fbbf24]/25 text-[#fbbf24]/80 hover:border-[#fbbf24]/50 hover:bg-[#fbbf24]/10 hover:text-[#fbbf24]"
                   }`}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span>{item.title}</span>
+                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  {!collapsed && <span>{item.title}</span>}
                 </Link>
               )
             })}
           </nav>
         </div>
 
-        {/* Exclusive Offers */}
-        <div className="mt-6">
-          <div className="mx-4 mb-3 p-2 rounded-lg bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 border border-emerald-500/30">
-            <p className="text-[13px] font-semibold text-emerald-400 uppercase tracking-widest">
-              Exclusive Offers
-            </p>
-          </div>
-          <nav className="space-y-2 px-2">
-            {exclusiveOffers.map((offer) => {
-              const Icon = offer.icon
-              return (
-                <a
-                  key={offer.href}
-                  href={offer.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2.5 transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-500/10"
-                >
-                  <div className="flex items-start gap-2">
-                    <Icon className="mt-0.5 w-5 h-5 flex-shrink-0 text-emerald-400" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold leading-snug text-slate-200">{offer.title}</p>
-                      <span className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-emerald-400">
-                        {offer.cta}
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </span>
+        {!collapsed && (
+          <div className="mt-6">
+            <div className="mx-4 mb-3 rounded-lg border border-emerald-500/30 bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 p-2">
+              <p className="text-[13px] font-semibold uppercase tracking-widest text-emerald-400">
+                Exclusive Offers
+              </p>
+            </div>
+            <nav className="space-y-2 px-2">
+              {exclusiveOffers.map((offer) => {
+                const Icon = offer.icon
+                return (
+                  <a
+                    key={offer.href}
+                    href={offer.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2.5 transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-500/10"
+                  >
+                    <div className="flex items-start gap-2">
+                      <Icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-400" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold leading-snug text-slate-200">{offer.title}</p>
+                        <span className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-emerald-400">
+                          {offer.cta}
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </a>
-              )
-            })}
-          </nav>
-        </div>
+                  </a>
+                )
+              })}
+            </nav>
+          </div>
+        )}
       </div>
 
-      {/* Footer */}
-      <div className="p-3 border-t border-[#0ea5e9]/20 space-y-1">
+      <div className="space-y-1 border-t border-[#0ea5e9]/20 p-3">
         <Link
           href="/support"
           onClick={onNavigate}
-          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 border ${
+          title="Support"
+          className={`flex items-center rounded-lg border text-base font-semibold transition-all duration-200 ${
+            collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
+          } ${
             pathname === "/support"
-              ? "bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white border-[#06b6d4]/40 shadow-md shadow-[#06b6d4]/20"
-              : "text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white border-transparent"
+              ? "border-[#06b6d4]/40 bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white shadow-md shadow-[#06b6d4]/20"
+              : "border-transparent text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white"
           }`}
         >
-          <Headphones className="w-5 h-5 flex-shrink-0" />
-          <span>Support</span>
+          <Headphones className="h-5 w-5 flex-shrink-0" />
+          {!collapsed && <span>Support</span>}
         </Link>
         <button
+          type="button"
           onClick={onSignOut}
-          className="w-full h-10 text-base font-semibold text-[#7dd3fc] bg-transparent border border-[#0ea5e9]/20 rounded-lg hover:border-[#0ea5e9]/50 hover:text-white hover:bg-[#0ea5e9]/5 transition-all duration-200 flex items-center justify-center gap-2"
+          title="Exit Platform"
+          className={`flex h-10 w-full items-center justify-center rounded-lg border border-[#0ea5e9]/20 bg-transparent text-base font-semibold text-[#7dd3fc] transition-all duration-200 hover:border-[#0ea5e9]/50 hover:bg-[#0ea5e9]/5 hover:text-white ${
+            collapsed ? "px-0" : "gap-2"
+          }`}
         >
-          <LogOut className="w-5 h-5" />
-          Exit Platform
+          <LogOut className="h-5 w-5" />
+          {!collapsed && <span>Exit Platform</span>}
         </button>
       </div>
     </div>
@@ -211,6 +253,22 @@ function SidebarBody({
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const [collapsed, setCollapsed] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem(COLLAPSE_KEY) === "1"
+    setCollapsed(saved)
+    document.documentElement.dataset.sidebar = saved ? "collapsed" : "expanded"
+  }, [])
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const next = !prev
+      localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0")
+      document.documentElement.dataset.sidebar = next ? "collapsed" : "expanded"
+      return next
+    })
+  }
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -220,23 +278,29 @@ export function AppSidebar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-60 border-r border-[#0ea5e9]/20 flex-col z-50">
-        <SidebarBody pathname={pathname} onSignOut={handleSignOut} />
+      <aside
+        className="fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-[#0ea5e9]/20 transition-[width] duration-300 lg:flex"
+        style={{ width: "var(--sidebar-w)" }}
+      >
+        <SidebarBody
+          pathname={pathname}
+          collapsed={collapsed}
+          onToggle={toggleCollapsed}
+          onSignOut={handleSignOut}
+        />
       </aside>
 
-      {/* Slim mobile top bar — navigation lives in the bottom tab bar */}
       <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center gap-2 h-12 px-4 border-b border-[#0ea5e9]/20 bg-[#020617]/95 backdrop-blur"
+        className="fixed left-0 right-0 top-0 z-50 flex h-12 items-center gap-2 border-b border-[#0ea5e9]/20 bg-[#0a1224]/95 px-4 backdrop-blur lg:hidden"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] flex items-center justify-center">
-            <div className="w-6 h-6 rounded-md bg-[#020617] flex items-center justify-center">
-              <Brain className="w-4 h-4 text-[#0ea5e9]" />
+        <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
+          <div className="relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4]">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#020617]">
+              <Brain className="h-4 w-4 text-[#0ea5e9]" />
             </div>
           </div>
-          <span className="text-base font-bold text-white tracking-tight">Robinhood</span>
+          <span className="whitespace-nowrap text-base font-bold tracking-tight text-white">Robinhood</span>
         </Link>
       </div>
     </>

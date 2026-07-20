@@ -10,13 +10,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { InfoHint } from "@/components/ui/info-hint"
 import { createClient } from "@/lib/supabase/client"
+import { PageHeader } from "@/components/page-header"
 
 interface AffiliateLink {
   id: string
-  niche: string
-  offer_name: string
+  niche?: string
+  offer_name?: string
+  title?: string
   affiliate_link: string
   notes?: string
+  content?: string
   created_at: string
 }
 
@@ -102,21 +105,19 @@ export default function LinkVaultClient() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="space-y-4">
-        <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 border-2 border-[#fbbf24]/40">
-          <DollarSign className="w-5 h-5 text-[#fbbf24]" />
-          <span className="text-sm font-black text-white uppercase tracking-wider">Money Link Storage</span>
-          <InfoHint
-            label="A 'Money Link' is your affiliate link — the personal web link you share. When someone buys through it, you earn a commission."
-            side="bottom"
-          />
-        </div>
-        <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tight">Link Vault</h1>
-        <p className="text-2xl text-[#7dd3fc] font-bold">
-          Store your DigiStore, ClickBank, and affiliate links here. Use them in your comment campaigns 💰
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Money Link Storage"
+        title="Link Vault"
+        subtitle={
+          <>
+            Store your DigiStore, ClickBank, and affiliate links here. Use them in your comment campaigns 💰{" "}
+            <InfoHint
+              label="A 'Money Link' is your affiliate link — the personal web link you share. When someone buys through it, you earn a commission."
+              side="bottom"
+            />
+          </>
+        }
+      />
 
       {/* Add New Link Button */}
       <Button

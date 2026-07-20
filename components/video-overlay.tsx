@@ -17,7 +17,6 @@ export function toEmbedUrl(url: string): string | null {
         if (!id) return null
         u = new URL(`https://player.vimeo.com/video/${id}`)
       }
-      // Same player params the in-page embeds use, otherwise Vimeo can refuse to play.
       const defaults: Record<string, string> = { badge: "0", autopause: "0", player_id: "0", app_id: "58479" }
       for (const [key, value] of Object.entries(defaults)) {
         if (!u.searchParams.has(key)) u.searchParams.set(key, value)
@@ -53,6 +52,11 @@ interface VideoOverlayProps {
   onClose: () => void
 }
 
+/**
+ * Full-screen video player with Account Verified / Withdraw ad under the player.
+ * Flex column: header + ad are shrink-0; video absorbs leftover height so the
+ * ad is always fully visible without scrolling.
+ */
 export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
   const embedUrl = toEmbedUrl(videoUrl)
 
@@ -68,28 +72,26 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
     }
   }, [onClose])
 
-  // Portal to <body> so ancestor styles (transform / backdrop-filter on cards)
-  // can't trap the fixed overlay inside their own box.
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-4"
+      className="fixed inset-0 z-[120] flex items-end justify-center p-0 sm:items-center sm:p-3 md:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Video player"}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} />
 
-      {/* Panel */}
       <div
-        className="relative w-full max-w-5xl max-h-[92dvh] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/10"
+        className="relative flex h-[100dvh] w-full max-w-5xl flex-col overflow-hidden rounded-none border-0 border-white/10 sm:h-[min(92dvh,56rem)] sm:rounded-2xl sm:border"
         style={{
           backgroundColor: "rgba(5, 10, 8, 0.92)",
           boxShadow: "0 0 0 1px rgba(0,163,108,0.10) inset, 0 24px 80px rgba(0,0,0,0.7)",
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between gap-4 px-5 py-3.5 border-b border-white/10">
+        <div
+          className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-white/10 px-5 py-3"
+          style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
+        >
           <p className="flex-1 truncate text-sm font-bold text-white">{title || "Now Playing"}</p>
           <button
             type="button"
@@ -101,8 +103,7 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
           </button>
         </div>
 
-        {/* Video */}
-        <div className="relative aspect-video w-full bg-black">
+        <div className="relative min-h-0 w-full flex-1 bg-black">
           {embedUrl ? (
             <iframe
               src={embedUrl}
@@ -125,15 +126,16 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
           )}
         </div>
 
-        {/* Withdraw ad — follows the overlay's dark/emerald layout */}
-        <div className="relative overflow-hidden border-t border-emerald-400/15 px-5 py-5 sm:px-6">
-          {/* Animated background */}
+        <div
+          className="relative flex-shrink-0 overflow-hidden border-t border-emerald-400/15 px-5 py-4 sm:px-6"
+          style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+        >
           <div className="banner-blob-left pointer-events-none absolute -left-16 -top-20 h-48 w-48 rounded-full bg-[#00a36c]/30 blur-3xl" />
           <div className="banner-blob-right pointer-events-none absolute -right-14 -bottom-24 h-52 w-52 rounded-full bg-[#22d38b]/25 blur-3xl" />
           <div className="ad-emerald-pulse pointer-events-none absolute inset-0 bg-gradient-to-r from-[#00a36c]/[0.12] via-transparent to-[#22d38b]/[0.12]" />
           <div className="ad-sheen pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-          <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:gap-6">
+          <div className="relative flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
             <div className="flex flex-1 items-center gap-4">
               <div
                 className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"

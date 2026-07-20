@@ -26,14 +26,16 @@ export function FeaturedVideoCard() {
             <div className="absolute inset-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/thumbnails/thumb-01-welcome-getting-started.png"
+                src="/thumbnails/thumb-01-welcome-getting-started.webp"
                 alt="Welcome & Getting Started thumbnail"
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
               />
             </div>
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute inset-0 thumb-scrim" />
 
             {/* Large play button */}
             <Button

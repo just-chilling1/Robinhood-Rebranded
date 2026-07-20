@@ -40,7 +40,7 @@ export function TrainingVideo({ videoId, title }: TrainingVideoProps) {
             />
           )}
         </div>
-        <div className={`absolute inset-0 ${thumbnail ? "bg-black/10" : "bg-black/40"}`} />
+        <div className={`absolute inset-0 ${thumbnail ? "thumb-scrim" : "bg-black/40"}`} />
         <div className="absolute inset-0 flex items-center justify-center">
           <Button
             size="lg"

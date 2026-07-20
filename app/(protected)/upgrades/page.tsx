@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Check, Crown, Zap, Rocket, ShieldCheck } from "lucide-react"
 import Link from "next/link"
+import { PageHeader } from "@/components/page-header"
 
 const upgrades = [
   {
@@ -85,12 +86,11 @@ export default async function UpgradesPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white">Your Premium Content</h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Access your exclusive training materials, templates, and tools
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Premium"
+        title="Your Premium Content"
+        subtitle="Access your exclusive training materials, templates, and tools"
+      />
 
       {profile?.upgrade_level !== "free" && (
         <Card className="glass-strong glow-jade border-border/50">

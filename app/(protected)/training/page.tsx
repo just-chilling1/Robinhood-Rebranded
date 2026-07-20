@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Play, Gem, Sparkles } from "lucide-react"
 import { TrainingVideo } from "@/components/training-video"
+import { PageHeader } from "@/components/page-header"
 
 export default async function TrainingPage() {
   const supabase = await createClient()
@@ -55,12 +56,11 @@ export default async function TrainingPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      <div>
-        <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white mb-2">Robinhood Training Center</h1>
-        <p className="text-xl text-[#a5c9e8]">
-          Follow these 5 simple steps to comment safely and build engagement over time
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Training"
+        title="Robinhood Training Center"
+        subtitle="Follow these 5 simple steps to comment safely and build engagement over time"
+      />
 
       <div className="glass-strong border-border/50 rounded-2xl p-6">
         <div className="flex items-center gap-4">

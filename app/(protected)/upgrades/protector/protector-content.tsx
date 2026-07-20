@@ -17,6 +17,7 @@ import {
   FileText,
 } from "lucide-react"
 import type { ProtectorViewModel } from "@/lib/protector/build-protector-data"
+import { PageHeader } from "@/components/page-header"
 
 interface ProtectorContentProps {
   data: ProtectorViewModel
@@ -74,26 +75,24 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#1a1f2e] border border-[#22c55e]/30 flex items-center justify-center flex-shrink-0">
-            <ShieldCheck className="w-7 h-7 text-[#22c55e]" />
+      <PageHeader
+        eyebrow="Security"
+        title="Protector"
+        subtitle={
+          <>
+            Your Robinhood account security overview. Live status for{" "}
+            {account.fullName ? account.fullName : account.email}.
+          </>
+        }
+        actions={
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/40">
+            <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+            <span className="text-[#22c55e] text-xs font-bold uppercase tracking-wider">
+              All Systems Secure
+            </span>
           </div>
-          <div>
-            <h1 className="text-4xl lg:text-5xl font-black text-white mb-2">Protector</h1>
-            <p className="text-[#94a3b8] text-base max-w-xl">
-              Your Robinhood account security overview. Live status for{" "}
-              {account.fullName ? account.fullName : account.email}.
-            </p>
-          </div>
-        </div>
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/40 self-start">
-          <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-          <span className="text-[#22c55e] text-xs font-bold uppercase tracking-wider">
-            All Systems Secure
-          </span>
-        </div>
-      </div>
+        }
+      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[

@@ -7,6 +7,7 @@ import Link from "next/link"
 import { PageActions } from "@/components/page-actions"
 import { InfoHint } from "@/components/ui/info-hint"
 import { EarningsBanner } from "@/components/earnings-banner"
+import { PageHeader } from "@/components/page-header"
 import { Fragment } from "react"
 
 export default async function MyVaultPage() {
@@ -33,18 +34,19 @@ export default async function MyVaultPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tight">Your Comment Vault</h1>
-          <p className="text-xl text-[#7dd3fc] font-bold">All your AI-generated comment packs in one place 🔥</p>
-        </div>
-        <Button asChild className="h-14 sm:h-16 w-full sm:w-auto px-8 text-lg font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white rounded-2xl shadow-lg" size="lg">
-          <Link href="/create">
-            <Flame className="w-5 h-5 mr-2" />
-            Generate New Pack
-          </Link>
-        </Button>
-      </div>
+      <PageHeader
+        eyebrow="My Vault"
+        title="Your Comment Vault"
+        subtitle="All your AI-generated comment packs in one place 🔥"
+        actions={
+          <Button asChild className="h-14 sm:h-16 w-full sm:w-auto px-8 text-lg font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white rounded-2xl shadow-lg" size="lg">
+            <Link href="/create">
+              <Flame className="w-5 h-5 mr-2" />
+              Generate New Pack
+            </Link>
+          </Button>
+        }
+      />
 
       {!pages || pages.length === 0 ? (
         <Card className="glass-strong border-2 border-[#0ea5e9]/40">

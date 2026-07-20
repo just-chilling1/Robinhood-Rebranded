@@ -1,8 +1,9 @@
 import { Metadata } from "next"
-import { Headphones, Mail, ExternalLink, MessageCircle } from "lucide-react"
+import { Mail, ExternalLink, MessageCircle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PORTAL_URL } from "@/lib/support"
+import { PageHeader } from "@/components/page-header"
 
 export const metadata: Metadata = {
   title: "Support | Robinhood",
@@ -11,21 +12,14 @@ export const metadata: Metadata = {
 
 export default function SupportPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
-      <div className="glass-strong rounded-2xl border-2 border-[#0ea5e9]/30 p-6 sm:p-8">
-        <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#06b6d4] to-[#0ea5e9] shadow-lg">
-            <Headphones className="h-7 w-7 text-white" />
-          </div>
-          <div>
-            <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-white">Support</h1>
-            <p className="mt-2 text-base text-[#7dd3fc]">
-              Priority help for your Robinhood account. We&apos;re here when you need us.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl space-y-8">
+      <PageHeader
+        eyebrow="Support"
+        title="Support"
+        subtitle="Priority help for your Robinhood account. We're here when you need us."
+      />
 
+      <div className="mx-auto max-w-3xl">
       <Card className="glass-strong border-2 border-[#06b6d4]/40 glow-cyan">
         <CardContent className="space-y-6 p-6 sm:p-8">
           <div className="flex items-start gap-4 rounded-2xl border border-[#0ea5e9]/20 bg-[#0f172a]/50 p-5">
@@ -69,6 +63,7 @@ export default function SupportPage() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

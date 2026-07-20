@@ -24,8 +24,9 @@ import {
 } from "lucide-react"
 import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 import { GenerationProgress } from "@/components/generation-progress"
-import { EarningsBanner } from "@/components/earnings-banner"
+import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
+import { PageHeader } from "@/components/page-header"
 
 interface UserProduct {
   name: string
@@ -175,18 +176,11 @@ export default function DFYVaultClient() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
-          💎 Accelerator
-        </h1>
-        <p className="text-xl lg:text-2xl text-[#7dd3fc] font-bold">
-          {videos.length} Pre-Loaded Viral Videos + 5 Comments Each
-        </p>
-        <p className="text-lg text-[#7dd3fc]">
-          Select your product once, copy & paste comments on any video
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Accelerator"
+        title="💎 Accelerator"
+        subtitle={`${videos.length} Pre-Loaded Viral Videos + 5 Comments Each. Select your product once, copy & paste comments on any video`}
+      />
 
       {/* Training Video */}
       <Card className="glass-strong border-2 border-[#ec4899]/40 overflow-hidden">
@@ -207,12 +201,14 @@ export default function DFYVaultClient() {
             <div className="absolute inset-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/thumbnails/thumb-04-accelerator-training.png"
+                src="/thumbnails/thumb-04-accelerator-training.webp"
                 alt="Accelerator Training thumbnail"
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
-            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute inset-0 thumb-scrim" />
             <Button
               size="lg"
               onClick={() => setIsVideoPlaying(true)}
@@ -277,7 +273,9 @@ export default function DFYVaultClient() {
               </Alert>
             )}
 
-            {unlocking && <GenerationProgress label="Unlocking your Accelerator library..." />}
+            {unlocking && (
+              <GenerationProgress offer="welcome" label="Unlocking your Accelerator library..." />
+            )}
 
             <Button
               onClick={handleSelectProduct}
@@ -291,7 +289,7 @@ export default function DFYVaultClient() {
       ) : (
         <>
           {/* Ad stays visible after unlocking */}
-          <EarningsBanner />
+          <WelcomeOfferBanner />
 
           {/* Selected Product Bar */}
           <Card className="glass-strong border-2 border-[#10b981]/40 p-6">
@@ -351,9 +349,12 @@ export default function DFYVaultClient() {
 
           {/* While searching live: loading bar + offer banner (banner stays after the search) */}
           {liveSearching ? (
-            <GenerationProgress label={`AI finding fresh viral videos for "${searchQuery.trim()}"...`} />
+            <GenerationProgress
+              offer="welcome"
+              label={`AI finding fresh viral videos for "${searchQuery.trim()}"...`}
+            />
           ) : searchQuery.trim() ? (
-            <EarningsBanner />
+            <WelcomeOfferBanner />
           ) : null}
 
           {/* Empty state after a live search found nothing */}

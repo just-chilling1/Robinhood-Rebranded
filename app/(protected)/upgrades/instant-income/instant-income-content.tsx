@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft, Copy, CheckCircle2, Facebook, Play, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { GenerationProgress } from "@/components/generation-progress"
-import { EarningsBanner } from "@/components/earnings-banner"
+import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
+import { PageHeader } from "@/components/page-header"
 
 interface FacebookPost {
   id: string
@@ -431,14 +432,11 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mx-auto shadow-lg shadow-violet-500/50">
             <Facebook className="w-12 h-12 text-white" />
           </div>
-          <div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">Recurring Streams: Facebook Posts</h1>
-            <p className="text-2xl text-violet-300 font-bold mb-4">200+ Ready-to-Post Messages for Facebook Groups</p>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-semibold">
-              Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills
-              needed!
-            </p>
-          </div>
+          <PageHeader
+            eyebrow="Recurring Streams"
+            title="Recurring Streams: Facebook Posts"
+            subtitle="200+ Ready-to-Post Messages for Facebook Groups. Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills needed!"
+          />
         </div>
 
         <Card className="glass-strong border-violet-500/30 glow-violet overflow-hidden shadow-2xl">
@@ -450,12 +448,14 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                   <div className="absolute inset-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/thumbnails/thumb-05-recurring-streams-training.png"
+                      src="/thumbnails/thumb-05-recurring-streams-training.webp"
                       alt="Recurring Streams Training thumbnail"
                       className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
-                  <div className="absolute inset-0 bg-black/10" />
+                  <div className="absolute inset-0 thumb-scrim" />
                   <Button
                     size="lg"
                     onClick={() => setIsVideoPlaying(true)}
@@ -750,9 +750,12 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
             {/* While generating: loading bar + offer banner above the CTA (banner stays after) */}
             {generating ? (
-              <GenerationProgress label={`Personalizing ${filteredPosts.length} posts with your affiliate link...`} />
+              <GenerationProgress
+                offer="welcome"
+                label={`Personalizing ${filteredPosts.length} posts with your affiliate link...`}
+              />
             ) : showPosts ? (
-              <EarningsBanner />
+              <WelcomeOfferBanner />
             ) : null}
 
             <Button

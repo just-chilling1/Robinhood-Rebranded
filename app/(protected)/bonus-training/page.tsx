@@ -1,21 +1,22 @@
 import Link from "next/link"
+import { PageHeader } from "@/components/page-header"
 
 export default function BonusTrainingPage() {
   return (
     <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Headline Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Bonus training:{" "}
-            <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-transparent bg-clip-text font-black">
-              grow with Robinhood
-            </span>
-          </h1>
-          <p className="text-xl text-[#7dd3fc] font-bold mb-8">
-            Watch this exclusive session to get more from the platform
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto space-y-8">
+        <PageHeader
+          eyebrow="Bonus"
+          title={
+            <>
+              Bonus training:{" "}
+              <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-transparent bg-clip-text font-black">
+                grow with Robinhood
+              </span>
+            </>
+          }
+          subtitle="Watch this exclusive session to get more from the platform"
+        />
 
         {/* CTA Button */}
         <div className="w-full">

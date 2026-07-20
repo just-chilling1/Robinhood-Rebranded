@@ -9,8 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { ArrowLeft, TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Play, Sparkles, Copy, Check } from "lucide-react"
 import Link from "next/link"
 import { GenerationProgress } from "@/components/generation-progress"
-import { EarningsBanner } from "@/components/earnings-banner"
+import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
+import { PageHeader } from "@/components/page-header"
 
 interface TrafficSource {
   id: string
@@ -2071,16 +2072,11 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/50">
           <TrendingUp className="w-12 h-12 text-white" />
         </div>
-        <div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4">Social Payouts — Hands-Free Traffic</h1>
-          <p className="text-2xl text-emerald-300 font-bold mb-4">
-            100+ Free Traffic Sources - Submit Once, Get Traffic Forever
-          </p>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-semibold">
-            Stop chasing traffic every day. Submit your link to these 100+ sites ONCE and get ongoing traffic
-            automatically. Our members have generated over 2.8 million visitors using these sources.
-          </p>
-        </div>
+        <PageHeader
+          eyebrow="Social Payouts"
+          title="Social Payouts — Hands-Free Traffic"
+          subtitle="100+ Free Traffic Sources - Submit Once, Get Traffic Forever. Stop chasing traffic every day. Submit your link to these 100+ sites ONCE and get ongoing traffic automatically. Our members have generated over 2.8 million visitors using these sources."
+        />
       </div>
 
       <Card className="glass-strong border-emerald-500/30 glow-jade overflow-hidden shadow-2xl">
@@ -2092,12 +2088,14 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 <div className="absolute inset-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/thumbnails/thumb-06-social-payouts-training.png"
+                    src="/thumbnails/thumb-06-social-payouts-training.webp"
                     alt="Social Payouts Training thumbnail"
                     className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
-                <div className="absolute inset-0 bg-black/10" />
+                <div className="absolute inset-0 thumb-scrim" />
                 <Button
                   size="lg"
                   onClick={() => setIsVideoPlaying(true)}
@@ -2227,13 +2225,16 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
 
           {savingLink && (
             <div className="mt-6">
-              <GenerationProgress label="Inserting your link into 100+ submission descriptions..." />
+              <GenerationProgress
+                offer="welcome"
+                label="Inserting your link into 100+ submission descriptions..."
+              />
             </div>
           )}
 
           {!savingLink && linkSaved && (
             <div className="mt-6">
-              <EarningsBanner />
+              <WelcomeOfferBanner />
             </div>
           )}
 
@@ -2269,10 +2270,11 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       {/* While generating the niche's sources: loading bar + offer banner (banner stays after) */}
       {generating ? (
         <GenerationProgress
+          offer="welcome"
           label={`Finding the best ${selectedNiche === "All" ? "" : `${selectedNiche} `}traffic sources for you...`}
         />
       ) : hasGenerated ? (
-        <EarningsBanner />
+        <WelcomeOfferBanner />
       ) : null}
 
       {!generating && (
