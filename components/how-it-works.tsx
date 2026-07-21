@@ -72,17 +72,6 @@ export function HowItWorks() {
           </div>
         ))}
       </div>
-
-      <div className="glass rounded-2xl border border-white/10 p-6">
-        <p className="text-base lg:text-lg leading-relaxed text-[#a5c9e8]">
-          That&apos;s it. After that, your comments work for you. Come back anytime to check your Opens and Copies in
-          the vault — and if you ever get stuck, click{" "}
-          <Link href="/support" className="font-bold text-[#7dd3fc] hover:underline">
-            Support
-          </Link>{" "}
-          and a real person will help you.
-        </p>
-      </div>
     </div>
   )
 }
