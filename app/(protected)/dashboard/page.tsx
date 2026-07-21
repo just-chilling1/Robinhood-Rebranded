@@ -7,6 +7,7 @@ import { HowItWorks } from "@/components/how-it-works"
 import { PageHeader } from "@/components/page-header"
 import { ContactSupportWidget } from "@/components/contact-support-widget"
 import { DashboardTipsWidget } from "@/components/dashboard-tips-widget"
+import { PremiumUpgradesWidget } from "@/components/premium-upgrades-widget"
 import { Brain, Play, Gem, Headphones } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -117,6 +118,8 @@ export default async function DashboardPage() {
               <DashboardTipsWidget />
             </CardContent>
           </Card>
+
+          <PremiumUpgradesWidget />
         </aside>
       </div>
     )

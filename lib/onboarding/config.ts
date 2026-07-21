@@ -1,91 +1,30 @@
 /**
- * Robinhood onboarding — edit copy and URLs here when porting or updating.
+ * Robinhood onboarding — edit copy here only.
+ * Plain language, no product/page names, no ads.
  */
-
-export const ONBOARDING_FINAL_CTA_URL =
-  "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
 
 export const onboardingConfig = {
   productName: "Robinhood",
-  productTagline: "Neural Engagement System",
+  productTagline: "Your comment helper",
   dashboardRoute: "/dashboard",
-
-  preparing: {
-    title: "Preparing Your Command Center",
-    subtitle: "Setting up your AI engagement system…",
-    tip: "Start with Gold Rush first — it walks you from trending Shorts to ready-to-post comment packs.",
-    rows: [
-      { label: "Loading your Gold Rush engine" },
-      { label: "Connecting your comment pack workflow" },
-      { label: "Unlocking Premium Tier tools & Academy" },
-    ],
-    continueLabel: "Continue",
-  },
-
-  congratulations: {
-    badge: "🎉 CONGRATULATIONS!",
-    headline: "You've Been Randomly Selected",
-    continueLabel: "Continue",
-  },
-
-  betaOffer: {
-    headline:
-      "Out of thousands of new members today, your account was flagged for our private Beta Tester program.",
-    subcopy: (name: string) =>
-      `This is a separate, optional opportunity — not part of ${name}. But we highly recommend checking it out.`,
-    infoCard:
-      "Don't panic! This is a good thing. You've been chosen to test a brand-new system — and testers get paid.",
-    payLabel: "Beta Tester Pay:",
-    payAmount: "$500/day",
-    ctaLabel: "See If You Qualify >",
-    continueLabel: "Continue",
-  },
-
-  qualification: {
-    badge: "✅ QUALIFICATION CHECK",
-    headline: "Do You Meet These Requirements?",
-    requirements: ["A phone or a computer", "Speaks English", "No tech skills required"],
-    footer: "If you checked all three — you qualify!",
-    claimCta: "🚀 Claim My Beta Tester Spot >",
-    continueLabel: "Continue Setup",
-    finePrint: (name: string) =>
-      `This is an optional partner offer, separate from your ${name} membership. Spots are limited.`,
-  },
-
-  loading66: {
-    progressLabel: "66%",
-    footerTagline: "Neural Engagement System",
-  },
 
   activation: {
     headline: "Let's Activate Your System",
-    subheadline: "First, tell us your name so we can personalize your earning system.",
+    subheadline: "First, tell us your name so we can personalize things for you.",
     inputPlaceholder: "Enter your first name",
     infoTitle: "What happens next:",
     infoSteps: [
-      "We'll locate the fastest datacenter near New York",
-      "Your personal supercomputer node gets activated",
-      "Earning zones light up across the map",
-      "You unlock global coverage with one tap",
+      "We'll save your name so everything feels personal",
+      "Your home screen shows you exactly what to do first",
+      "Getting started takes just a few minutes",
+      "Help is always one click away if you get stuck",
     ],
-    note: "You're getting set up 🔥 — Your links will work overnight while you relax",
+    note: "You're almost there 🔥 — everything stays saved so you can pick up anytime",
     ctaLabel: "Activate My System >",
-    skipCtaLabel: "No thanks, take me to the dashboard",
     sidebarStatus: [
-      { label: "Neural link", status: "Online" },
-      { label: "Gold Rush", status: "Ready" },
-      { label: "Premium Tier", status: "Unlocked" },
+      { label: "Your account", status: "Ready" },
+      { label: "Daily tools", status: "Set up" },
+      { label: "Help & tips", status: "Available" },
     ],
   },
 } as const
-
-export const ONBOARDING_STEPS = [
-  "preparing",
-  "congratulations",
-  "beta-offer",
-  "qualification",
-  "loading-66",
-  "activation",
-] as const
-
-export type OnboardingStepId = (typeof ONBOARDING_STEPS)[number]

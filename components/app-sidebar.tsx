@@ -7,10 +7,7 @@ import {
   Upload,
   Play,
   LogOut,
-  Gem,
   Sparkles,
-  Zap,
-  ShieldCheck,
   Headphones,
   UserPlus,
   ExternalLink,
@@ -22,6 +19,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { PREMIUM_FEATURES } from "@/lib/premium-features"
 
 const menuItems = [
   { title: "Dashboard", subtitle: "Home", url: "/dashboard", icon: LayoutDashboard },
@@ -29,13 +27,6 @@ const menuItems = [
   { title: "My Vault", subtitle: "Your saved comments", url: "/pages", icon: FolderOpen },
   { title: "Your links", subtitle: "Saved affiliate links", url: "/share", icon: Upload },
   { title: "Academy", subtitle: "Training videos", url: "/training", icon: Play },
-]
-
-const premiumItems = [
-  { title: "Accelerator", url: "/upgrades/dfy-vault", icon: Gem },
-  { title: "Recurring Streams", url: "/upgrades/instant-income", icon: Sparkles },
-  { title: "Social Payouts", url: "/upgrades/automated-income", icon: Zap },
-  { title: "Protector", url: "/upgrades/protector", icon: ShieldCheck },
 ]
 
 const exclusiveOffers = [
@@ -147,39 +138,44 @@ function SidebarBody({
           })}
         </nav>
 
-        <div className="mt-6">
-          {!collapsed && (
-            <div className="mx-4 mb-3 rounded-lg border border-[#fbbf24]/30 bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 p-2">
-              <p className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-widest text-[#fbbf24]">
-                <Sparkles className="h-3.5 w-3.5" />
+        <div className={`mt-6 ${collapsed ? "px-1.5" : "px-2"}`}>
+          <div className={`premium-nav-section ${collapsed ? "p-1" : "p-2"}`}>
+            {!collapsed && (
+              <p className="flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]">
+                <Sparkles className="premium-sparkle h-3.5 w-3.5" fill="currentColor" />
                 Premium Tier
               </p>
-            </div>
-          )}
-          <nav className="space-y-0.5 px-2">
-            {premiumItems.map((item) => {
-              const isActive = pathname === item.url
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.title}
-                  href={item.url}
-                  onClick={onNavigate}
-                  title={item.title}
-                  className={`flex items-center rounded-lg border text-base font-semibold transition-all duration-200 ${
-                    collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
-                  } ${
-                    isActive
-                      ? "border-[#fbbf24]/60 bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 text-[#fbbf24] shadow-md shadow-[#fbbf24]/30"
-                      : "border-[#fbbf24]/25 text-[#fbbf24]/80 hover:border-[#fbbf24]/50 hover:bg-[#fbbf24]/10 hover:text-[#fbbf24]"
-                  }`}
-                >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  {!collapsed && <span>{item.title}</span>}
-                </Link>
-              )
-            })}
-          </nav>
+            )}
+            <nav className="space-y-1">
+              {PREMIUM_FEATURES.map((item, index) => {
+                const isActive = pathname === item.href
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onNavigate}
+                    title={item.label}
+                    style={{ animationDelay: `${0.15 + index * 0.06}s` }}
+                    className={`premium-stagger-item premium-sidebar-item flex items-center rounded-lg text-base font-semibold ${
+                      collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
+                    } ${isActive ? "is-active" : "text-[#7dd3fc]"}`}
+                  >
+                    <Icon
+                      className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-[#0ea5e9]" : "text-[#0ea5e9]/80"}`}
+                    />
+                    {!collapsed && <span>{item.label}</span>}
+                    {!collapsed && isActive && (
+                      <span
+                        className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#0ea5e9]"
+                        style={{ boxShadow: "0 0 10px rgba(14, 165, 233, 0.7)" }}
+                      />
+                    )}
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
         </div>
 
         {!collapsed && (

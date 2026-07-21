@@ -6,10 +6,7 @@ import {
   FolderOpen,
   Play,
   Menu,
-  Gem,
   Sparkles,
-  Zap,
-  ShieldCheck,
   Upload,
   Headphones,
   LogOut,
@@ -22,19 +19,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { PREMIUM_FEATURES } from "@/lib/premium-features"
 
 const tabs = [
   { title: "Home", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gold Rush", url: "/create", icon: Brain },
   { title: "Vault", url: "/pages", icon: FolderOpen },
   { title: "Academy", url: "/training", icon: Play },
-]
-
-const premiumItems = [
-  { title: "Accelerator", url: "/upgrades/dfy-vault", icon: Gem },
-  { title: "Recurring Streams", url: "/upgrades/instant-income", icon: Sparkles },
-  { title: "Social Payouts", url: "/upgrades/automated-income", icon: Zap },
-  { title: "Protector", url: "/upgrades/protector", icon: ShieldCheck },
 ]
 
 const exclusiveOffers = [
@@ -139,28 +130,27 @@ export function BottomNav() {
               </div>
 
               {/* Premium */}
-              <div>
-                <p className="mb-2 px-1 text-[12px] font-semibold uppercase tracking-widest text-[#fbbf24] flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5" />
+              <div className="premium-nav-section p-2">
+                <p className="flex items-center gap-1.5 px-2 pb-2 pt-1 text-[12px] font-semibold uppercase tracking-widest text-[#0ea5e9]">
+                  <Sparkles className="premium-sparkle h-3.5 w-3.5" fill="currentColor" />
                   Premium Tier
                 </p>
                 <div className="space-y-1.5">
-                  {premiumItems.map((item) => {
+                  {PREMIUM_FEATURES.map((item, index) => {
                     const Icon = item.icon
-                    const isActive = pathname === item.url
+                    const isActive = pathname === item.href
                     return (
                       <Link
-                        key={item.url}
-                        href={item.url}
+                        key={item.href}
+                        href={item.href}
                         onClick={() => setMoreOpen(false)}
-                        className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-base font-semibold transition-colors ${
-                          isActive
-                            ? "border-[#fbbf24]/60 bg-gradient-to-r from-[#fbbf24]/30 to-[#f97316]/30 text-[#fbbf24]"
-                            : "border-[#fbbf24]/25 text-[#fbbf24]/80 active:bg-[#fbbf24]/10"
+                        style={{ animationDelay: `${0.1 + index * 0.06}s` }}
+                        className={`premium-stagger-item premium-sidebar-item flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-semibold ${
+                          isActive ? "is-active" : "text-[#7dd3fc]"
                         }`}
                       >
-                        <Icon className="h-5 w-5" />
-                        {item.title}
+                        <Icon className={`h-5 w-5 ${isActive ? "text-[#0ea5e9]" : "text-[#0ea5e9]/80"}`} />
+                        {item.label}
                       </Link>
                     )
                   })}
