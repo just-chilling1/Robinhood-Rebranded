@@ -100,7 +100,7 @@ function SidebarBody({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-4">
+      <div className="sidebar-scroll flex-1 overflow-y-auto py-4">
         {!collapsed && (
           <p className="mb-2 px-4 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]/60">
             Main Functions
