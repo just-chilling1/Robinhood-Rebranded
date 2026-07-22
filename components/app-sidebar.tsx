@@ -275,7 +275,7 @@ export function AppSidebar() {
   return (
     <>
       <aside
-        className="fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-[#0ea5e9]/20 transition-[width] duration-300 lg:flex"
+        className="app-sidebar fixed z-50 hidden flex-col transition-[width] duration-300 lg:flex"
         style={{ width: "var(--sidebar-w)" }}
       >
         <SidebarBody
