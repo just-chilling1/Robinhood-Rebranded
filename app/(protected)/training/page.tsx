@@ -168,18 +168,14 @@ export default async function TrainingPage() {
           </div>
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">Need More Help?</h3>
-            <p className="text-lg font-semibold text-[#c7e8ff]">
-              Questions about the training? Visit our{" "}
-              <a
-                href={SUPPORT_PORTAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-[#06b6d4] underline underline-offset-4 decoration-2 hover:text-[#0ea5e9]"
-              >
-                support portal
-              </a>{" "}
-              anytime for help
-            </p>
+            <a
+              href={SUPPORT_PORTAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-lg font-semibold text-[#06b6d4] underline underline-offset-4 decoration-2 decoration-[#06b6d4] hover:text-[#0ea5e9] hover:decoration-[#0ea5e9]"
+            >
+              Questions about the training? Visit our support portal anytime for help
+            </a>
           </div>
         </CardContent>
       </Card>
