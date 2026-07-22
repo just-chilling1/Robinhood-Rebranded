@@ -10,7 +10,6 @@ import Link from "next/link"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
-import { PageHeader } from "@/components/page-header"
 
 interface FacebookPost {
   id: string
@@ -428,20 +427,23 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
       </Button>
 
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="text-center space-y-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-2xl p-12 border border-violet-500/20">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mx-auto shadow-lg shadow-violet-500/50">
+        <div className="flex flex-col items-center gap-6 text-center bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-2xl p-12 border border-violet-500/20">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shadow-lg shadow-violet-500/50">
             <Facebook className="w-12 h-12 text-white" />
           </div>
-          <PageHeader
-            eyebrow="Recurring Streams"
-            title="Recurring Streams: Facebook Posts"
-            subtitle="200+ Ready-to-Post Messages for Facebook Groups. Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills needed!"
-          />
+          <div className="max-w-3xl space-y-2">
+            <p className="page-eyebrow">Recurring Streams</p>
+            <h1 className="ds-h1">Recurring Streams: Facebook Posts</h1>
+            <p className="ds-subtitle mt-2">
+              200+ Ready-to-Post Messages for Facebook Groups. Copy these proven posts, paste them in Facebook
+              groups, and start making money TODAY. No tech skills needed!
+            </p>
+          </div>
         </div>
 
         <Card className="glass-strong border-violet-500/30 glow-violet overflow-hidden shadow-2xl">
           <CardContent className="p-0">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="flex flex-col">
               {/* Video Player */}
               <div className="relative aspect-video bg-black">
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
