@@ -100,7 +100,7 @@ function SidebarBody({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-4">
+      <div className="sidebar-scroll flex-1 overflow-y-auto py-4">
         {!collapsed && (
           <p className="mb-2 px-4 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]/60">
             Main Functions
@@ -275,7 +275,7 @@ export function AppSidebar() {
   return (
     <>
       <aside
-        className="fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-[#0ea5e9]/20 transition-[width] duration-300 lg:flex"
+        className="app-sidebar fixed z-50 hidden flex-col transition-[width] duration-300 lg:flex"
         style={{ width: "var(--sidebar-w)" }}
       >
         <SidebarBody
