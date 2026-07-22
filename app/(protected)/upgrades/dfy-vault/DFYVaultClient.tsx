@@ -191,7 +191,7 @@ export default function DFYVaultClient() {
             </div>
             <div>
               <h2 className="text-3xl font-black text-white">Accelerator Training</h2>
-              <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the 200+ Accelerator videos</p>
+              <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the Accelerator video</p>
             </div>
           </div>
         </div>
