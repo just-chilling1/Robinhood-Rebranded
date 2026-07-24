@@ -15,7 +15,6 @@ import { Brain } from "lucide-react"
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [fullName, setFullName] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -32,9 +31,6 @@ export default function SignUpPage() {
         password,
         options: {
           emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
-          data: {
-            full_name: fullName,
-          },
           emailConfirm: false, // Disable email verification
         },
       })
@@ -66,20 +62,6 @@ export default function SignUpPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-sm font-medium text-white">
-                  Full Name
-                </Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="John Doe"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="h-10 glass border border-[#d946ef]/30 focus:border-[#d946ef] rounded-lg"
-                />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium text-white">
                   Email Address
