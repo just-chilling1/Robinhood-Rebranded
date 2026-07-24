@@ -10,6 +10,7 @@ import Link from "next/link"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
+import { useScrollToResults } from "@/lib/use-scroll-to-results"
 
 interface FacebookPost {
   id: string
@@ -395,6 +396,8 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
+  const postsResultsRef = useScrollToResults(showPosts && !!affiliateLink.trim())
+
   const niches = ["all", ...Array.from(new Set(facebookPosts.map((p) => p.niche)))]
 
   const filteredPosts = selectedNiche === "all" ? facebookPosts : facebookPosts.filter((p) => p.niche === selectedNiche)
@@ -773,7 +776,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
         </Card>
 
         {showPosts && affiliateLink && (
-          <div className="space-y-6">
+          <div ref={postsResultsRef} className="space-y-6">
             <div className="text-center bg-gradient-to-br from-emerald-500/10 to-green-500/10 rounded-2xl p-8 border border-emerald-500/20">
               <h2 className="text-4xl font-black text-white mb-3">🎉 Your {filteredPosts.length} Posts Are Ready!</h2>
               <p className="text-xl text-emerald-300 font-bold">

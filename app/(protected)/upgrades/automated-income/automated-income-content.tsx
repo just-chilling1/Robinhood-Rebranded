@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
 import { PageHeader } from "@/components/page-header"
+import { useScrollToResults } from "@/lib/use-scroll-to-results"
 
 interface TrafficSource {
   id: string
@@ -2000,6 +2001,21 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
   const [linkSaved, setLinkSaved] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
   const [copiedSourceId, setCopiedSourceId] = useState<string | null>(null)
+  const prevGenerating = useRef(false)
+  const prevSavingLink = useRef(false)
+
+  const sourcesResultsRef = useScrollToResults(
+    (prevGenerating.current && !generating && hasGenerated) ||
+      (prevSavingLink.current && !savingLink && linkSaved)
+  )
+
+  useEffect(() => {
+    prevGenerating.current = generating
+  }, [generating])
+
+  useEffect(() => {
+    prevSavingLink.current = savingLink
+  }, [savingLink])
 
   const niches = [
     "All",
@@ -2280,6 +2296,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       {!generating && (
       <>
       {/* Progress Tracker */}
+      <div ref={sourcesResultsRef}>
       <Card className="bg-gradient-to-br from-emerald-900/30 to-green-900/30 border-emerald-500/30">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
@@ -2380,6 +2397,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             </Card>
           )
         })}
+      </div>
       </div>
       </>
       )}

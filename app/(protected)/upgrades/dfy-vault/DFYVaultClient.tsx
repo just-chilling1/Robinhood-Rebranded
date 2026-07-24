@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -27,6 +27,7 @@ import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { VideoOverlay } from "@/components/video-overlay"
 import { PageHeader } from "@/components/page-header"
+import { useScrollToResults } from "@/lib/use-scroll-to-results"
 
 interface UserProduct {
   name: string
@@ -48,6 +49,24 @@ export default function DFYVaultClient() {
   const [productSelected, setProductSelected] = useState(false)
   const [productError, setProductError] = useState<string | null>(null)
   const [unlocking, setUnlocking] = useState(false)
+  const prevUnlocking = useRef(false)
+  const prevLiveSearching = useRef(false)
+
+  const libraryResultsRef = useScrollToResults(prevUnlocking.current && !unlocking && productSelected)
+  const searchResultsRef = useScrollToResults(
+    prevLiveSearching.current &&
+      !liveSearching &&
+      searchQuery.trim().length > 0 &&
+      (liveResults?.length ?? 0) > 0
+  )
+
+  useEffect(() => {
+    prevUnlocking.current = unlocking
+  }, [unlocking])
+
+  useEffect(() => {
+    prevLiveSearching.current = liveSearching
+  }, [liveSearching])
   
   // Copy tracking
   const [copiedComment, setCopiedComment] = useState<string | null>(null)
@@ -291,7 +310,7 @@ export default function DFYVaultClient() {
           {/* Ad stays visible after unlocking */}
           <WelcomeOfferBanner />
 
-          {/* Selected Product Bar */}
+          <div ref={libraryResultsRef} className="space-y-6">
           <Card className="glass-strong border-2 border-[#10b981]/40 p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -369,7 +388,7 @@ export default function DFYVaultClient() {
           )}
 
           {/* Video Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div ref={searchResultsRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {displayedVideos.map((video) => (
               <Card key={video.videoId} className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#10b981]/50 transition-all p-6">
                 <div className="space-y-4">
@@ -449,6 +468,7 @@ export default function DFYVaultClient() {
                 </div>
               </Card>
             ))}
+          </div>
           </div>
         </>
       )}

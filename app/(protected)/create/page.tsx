@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,7 @@ import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 import { GenerationProgress } from "@/components/generation-progress"
 import { EarningsBanner } from "@/components/earnings-banner"
 import { PageHeader } from "@/components/page-header"
+import { useScrollToResults, useScrollToId } from "@/lib/use-scroll-to-results"
 
 export default function GoldRushPage() {
   // Step 1: Product Info
@@ -36,6 +37,22 @@ export default function GoldRushPage() {
   // Step 3: Generated Comments (per video)
   const [generatedCommentsMap, setGeneratedCommentsMap] = useState<Record<string, string[]>>({})
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
+  const [scrollToCommentsFor, setScrollToCommentsFor] = useState<string | null>(null)
+  const prevLoadingVideos = useRef(false)
+
+  const videoResultsRef = useScrollToResults(
+    prevLoadingVideos.current && !loadingVideos && videos.length > 0
+  )
+
+  useEffect(() => {
+    prevLoadingVideos.current = loadingVideos
+  }, [loadingVideos])
+
+  const clearScrollToComments = useCallback(() => setScrollToCommentsFor(null), [])
+  useScrollToId(
+    scrollToCommentsFor ? `comments-${scrollToCommentsFor}` : null,
+    clearScrollToComments
+  )
 
   const handleProductSubmit = () => {
     if (!productName.trim() || !productDescription.trim() || !affiliateLink.trim()) {
@@ -91,6 +108,7 @@ export default function GoldRushPage() {
           ...prev,
           [video.videoId]: result.comments
         }))
+        setScrollToCommentsFor(video.videoId)
       } else {
         setError(result.error || "We couldn't create comments for this video. Please try again.")
       }
@@ -292,7 +310,7 @@ export default function GoldRushPage() {
 
           {/* Video Results */}
           {videos.length > 0 && (
-            <div className="space-y-4">
+            <div ref={videoResultsRef} className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h3 className="text-2xl sm:text-3xl font-black text-white">
                 💎 {videos.length} Videos to comment on
@@ -398,7 +416,7 @@ export default function GoldRushPage() {
 
                       {/* Generated Comments (shown in card) */}
                       {hasComments && (
-                        <div className="pt-6 border-t-2 border-[#10b981]/20 space-y-4">
+                        <div id={`comments-${video.videoId}`} className="pt-6 border-t-2 border-[#10b981]/20 space-y-4">
                           <div className="flex items-center justify-between">
                             <h3 className="text-2xl font-black text-[#10b981]">Your generated comments</h3>
                             <Button
