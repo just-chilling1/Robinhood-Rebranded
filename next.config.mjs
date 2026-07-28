@@ -19,6 +19,17 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Auth pages must not be cached with a stale JS bundle (stale NEXT_PUBLIC_* keys).
+  async headers() {
+    return [
+      {
+        source: "/auth/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store, max-age=0, must-revalidate" },
+        ],
+      },
+    ]
+  },
 }
 
 export default nextConfig

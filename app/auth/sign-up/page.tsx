@@ -30,14 +30,19 @@ export default function SignUpPage() {
         email,
         password,
         options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
-          emailConfirm: false, // Disable email verification
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
         },
       })
       if (error) throw error
       router.push("/onboarding")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      const message =
+        error && typeof error === "object" && "message" in error
+          ? String((error as { message: unknown }).message)
+          : error instanceof Error
+            ? error.message
+            : "An error occurred"
+      setError(message)
     } finally {
       setIsLoading(false)
     }
