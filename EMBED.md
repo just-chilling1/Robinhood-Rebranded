@@ -6,6 +6,17 @@ The popup is available as an iframe at:
 https://rhmemberarea.com/embed/specialist-popup
 ```
 
+**Why a direct visit looks blank:** the embed is intentionally empty unless the
+visitor is US/Canada **and** it's Mon–Fri 08:30–17:30 Pacific. Outside that
+gate the page stays transparent/white (correct).
+
+**Force-preview (QA only):** set `NEXT_PUBLIC_SPECIALIST_POPUP_PREVIEW_SECRET`
+on the host, redeploy, then open:
+
+```
+https://rhmemberarea.com/embed/specialist-popup?preview=YOUR_SECRET
+```
+
 Everything works exactly like in the app:
 
 - **Criteria enforced server-side** — shows only to US/Canada IPs, Monday–Friday

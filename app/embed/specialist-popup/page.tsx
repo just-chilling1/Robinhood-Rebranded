@@ -18,9 +18,12 @@ import { SpecialistWelcomePopup } from "@/components/ui/specialist-welcome-popup
 
 function EmbedInner() {
   const searchParams = useSearchParams()
-  // Dev-only visual preview; ignored in production builds.
+  const previewParam = searchParams.get("preview")
+  // Local: ?preview=1 — Production: ?preview=<NEXT_PUBLIC_SPECIALIST_POPUP_PREVIEW_SECRET>
+  const previewSecret = process.env.NEXT_PUBLIC_SPECIALIST_POPUP_PREVIEW_SECRET
   const preview =
-    process.env.NODE_ENV === "development" && searchParams.get("preview") === "1"
+    (process.env.NODE_ENV === "development" && previewParam === "1") ||
+    (!!previewSecret && previewParam === previewSecret)
 
   useEffect(() => {
     // Keep the iframe transparent so only the popup is visible on the host page.
