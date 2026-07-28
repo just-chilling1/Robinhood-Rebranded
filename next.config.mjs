@@ -13,6 +13,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Keep the MaxMind country DB on disk (not bundled into a broken webpack chunk).
+  serverExternalPackages: ["geoip-country"],
   // Prevent Turbopack from inferring the wrong workspace root and trying to scan /Users/.../Desktop.
   turbopack: {
     root: __dirname,

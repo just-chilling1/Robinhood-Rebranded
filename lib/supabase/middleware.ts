@@ -40,11 +40,43 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse
   }
 
+  const pathname = request.nextUrl.pathname
+
+  // Never expose /dev/* force-open previews in production.
+  if (
+    process.env.NODE_ENV !== "development" &&
+    (pathname === "/dev" || pathname.startsWith("/dev/"))
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
+
+  // Public embed + specialist popup APIs (EverAffiliate iframe + in-app gate).
+  // /dev/* previews are open in development only.
+  const isSpecialistPublic =
+    pathname === "/embed" ||
+    pathname.startsWith("/embed/") ||
+    pathname.startsWith("/api/eligibility/specialist-popup") ||
+    pathname.startsWith("/api/track/specialist-popup")
+  const isDevPreview =
+    process.env.NODE_ENV === "development" &&
+    (pathname === "/dev" || pathname.startsWith("/dev/"))
+
+  if (isSpecialistPublic || isDevPreview) {
+    return supabaseResponse
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user && !request.nextUrl.pathname.startsWith("/auth") && !request.nextUrl.pathname.startsWith("/article") && request.nextUrl.pathname !== "/") {
+  if (
+    !user &&
+    !pathname.startsWith("/auth") &&
+    !pathname.startsWith("/article") &&
+    pathname !== "/"
+  ) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
     return NextResponse.redirect(url)
