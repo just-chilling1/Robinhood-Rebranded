@@ -8,7 +8,7 @@ import { SpecialistWelcomePopup } from "@/components/ui/specialist-welcome-popup
  * Public iframe embed for the Start-Up Specialist popup.
  *
  * Usage on any external website:
- *   <iframe src="https://rhappaccess.com/embed/specialist-popup" ...>
+ *   <iframe src="https://rhmemberarea.com/embed/specialist-popup" ...>
  *
  * Runs the exact production gate (US/CA IP + Mon–Fri 08:30–17:30 PT via the
  * eligibility API), the 10-minute countdown, and CTA click tracking. Posts

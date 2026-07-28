@@ -1,6 +1,7 @@
 /** RH support & training links — update here when they change. */
 
-export const SUPPORT_EMAIL = "RH@neoai.freshdesk.com"
+// Freshdesk inbox address (do not rename — mailbox is fixed on Freshdesk).
+export const SUPPORT_EMAIL = "Robinhood@neoai.freshdesk.com"
 export const SUPPORT_PORTAL_URL = "https://neoaifreshdesk.freshdesk.com/"
 export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`
 

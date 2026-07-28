@@ -2,7 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support"
 
-const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "rh"
+// Freshdesk subdomain for the ticket API (mailbox/domain are fixed; override via env if needed).
+const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "robinhood"
 
 function escapeHtml(text: string): string {
   return text

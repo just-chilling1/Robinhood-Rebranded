@@ -3,7 +3,7 @@
 The popup is available as an iframe at:
 
 ```
-https://rhappaccess.com/embed/specialist-popup
+https://rhmemberarea.com/embed/specialist-popup
 ```
 
 Everything works exactly like in the app:
@@ -23,7 +23,7 @@ Put this right before `</body>` on your website:
 ```html
 <iframe
   id="rh-specialist-popup"
-  src="https://rhappaccess.com/embed/specialist-popup"
+  src="https://rhmemberarea.com/embed/specialist-popup"
   title="RH Start-Up Specialist"
   style="position:fixed;inset:0;width:100%;height:100%;border:0;z-index:999999;display:none;background:transparent"
   allowtransparency="true"
