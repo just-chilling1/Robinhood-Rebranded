@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Clock3, FastForward, Phone, TrendingUp, Vault, Wallet, X } from "lucide-react";
 
-const SESSION_DISMISS_KEY = "robinhood_specialist_popup_dismissed";
+const SESSION_DISMISS_KEY = "rh_specialist_popup_dismissed";
 const COUNTDOWN_MS = 10 * 60 * 1000;
 const PHONE_DISPLAY = "425-458-1656";
 const PHONE_TEL = "tel:+14254581656";
@@ -301,7 +301,7 @@ export function SpecialistWelcomePopup({
                                         id={titleId}
                                         className="brand-font mt-1 text-center text-[1.9rem] font-black uppercase leading-none tracking-tight text-gray-900 sm:text-left sm:text-[2.6rem]"
                                     >
-                                        <span className="text-emerald-600">Robinhood</span>
+                                        <span className="text-emerald-600">RH</span>
                                     </h2>
 
                                     <div className="mx-auto mt-3 max-w-[22rem] space-y-0.5 text-center text-[14px] leading-[1.5] text-gray-700 sm:mx-0 sm:mt-4 sm:max-w-none sm:space-y-1 sm:text-left sm:text-[15.5px] sm:leading-[1.6]">

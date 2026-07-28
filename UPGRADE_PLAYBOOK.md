@@ -1,6 +1,6 @@
 # Software Upgrade Playbook
 
-A repeatable, end-to-end guide for applying the same overhaul we did on Profit Loop (modeled on Robinhood) to **any** of the member-area apps. Follow the phases in order. Every phase ends with a verification step so functionality and revenue links are never broken.
+A repeatable, end-to-end guide for applying the same overhaul we did on Profit Loop (modeled on RH) to **any** of the member-area apps. Follow the phases in order. Every phase ends with a verification step so functionality and revenue links are never broken.
 
 ---
 
@@ -17,7 +17,7 @@ These rules apply to every phase. Violating any of them is a rollback.
 3. **Never touch API routes' logic.** Design work stays in components, pages, CSS, and assets. If a page component calls `fetch('/api/...')`, the call signature stays identical.
 4. **Typecheck after every phase:** `npx tsc --noEmit`. Zero new errors.
 5. **One commit per phase** with a clear message, so any phase can be reverted alone.
-6. **Copy patterns, not constants.** When porting from a reference app (e.g. Robinhood), take the structure/JSX/CSS pattern but swap in this app's brand colors, product name, links, and video IDs. Grep for the reference app's affiliate IDs afterward to prove none leaked in.
+6. **Copy patterns, not constants.** When porting from a reference app (e.g. RH), take the structure/JSX/CSS pattern but swap in this app's brand colors, product name, links, and video IDs. Grep for the reference app's affiliate IDs afterward to prove none leaked in.
 
 ### 0b. Scour the whole app FIRST — never work from partial knowledge
 
@@ -50,7 +50,7 @@ Before writing a single line, build a complete picture. Half the pushback in pas
 
 **Problem:** The old promo banner is global (every page) or styled off-brand.
 
-**Target design** (the Robinhood `EarningsBanner` look):
+**Target design** (the RH `EarningsBanner` look):
 - Dark navy card `bg-gradient-to-b from-[#101726] to-[#0b0f18]`, `border-2 border-[#fbbf24]/50`, `rounded-2xl`, centered text
 - Red pill badge "FREE TRAINING"
 - Big black-weight uppercase headline with the dollar range in amber `#fbbf24`
@@ -107,7 +107,7 @@ Disable the triggering control while loading. Pages with no generation CTA (e.g.
 
 **Problem:** an "Account Verified — You're Eligible To Withdraw $416.34 — Withdraw Now" popup mounts globally on every page.
 
-**Fix (the Robinhood `VideoOverlay` pattern):**
+**Fix (the RH `VideoOverlay` pattern):**
 1. **Remove** the popup from the layout (and delete the dead component file once nothing imports it).
 2. Create a `VideoOverlay` component:
    - Portal to `document.body`, `z-[120]`, backdrop `bg-black/60`, Esc + backdrop-click close, body scroll lock
@@ -124,7 +124,7 @@ Disable the triggering control while loading. Pages with no generation CTA (e.g.
 
 ## Phase 5 — Dashboard / home redesign
 
-Structure (top to bottom), adapted from Robinhood:
+Structure (top to bottom), adapted from RH:
 
 1. **Welcome block:** accent eyebrow ("HOME"), `Welcome to {Product}, {FirstName}` (first name from the `users`/profile table, omit gracefully if missing), 2–3 sentence plain-English explanation of the money loop.
 2. **Featured getting-started video** — first thing they see. Thumbnail + play → `VideoOverlay`. Full-width "Open Training Academy" CTA under it.
@@ -330,7 +330,7 @@ This is the "don't make me tell you again" list. Verify every item before report
 
 | File | Purpose |
 |---|---|
-| `components/ui/promo-banner.tsx` | Free Training banner (Robinhood design, app's own link) |
+| `components/ui/promo-banner.tsx` | Free Training banner (RH design, app's own link) |
 | `components/ui/generation-progress.tsx` | Loading bar + banner combo for generation CTAs |
 | `components/ui/video-overlay.tsx` | Full-screen player + withdraw ad bar + `toEmbedUrl` |
 | `components/ui/how-it-works.tsx` | 3-step onboarding block for the dashboard |

@@ -12,7 +12,7 @@ import { SpecialistWelcomePopup } from "@/components/ui/specialist-welcome-popup
  *
  * Runs the exact production gate (US/CA IP + Mon–Fri 08:30–17:30 PT via the
  * eligibility API), the 10-minute countdown, and CTA click tracking. Posts
- * `{ type: "robinhood-specialist-popup", open: boolean }` to the parent window
+ * `{ type: "rh-specialist-popup", open: boolean }` to the parent window
  * so the host page can show/hide the iframe. See EMBED.md for the snippet.
  */
 
@@ -30,7 +30,7 @@ function EmbedInner() {
 
   const notifyParent = useCallback((open: boolean) => {
     try {
-      window.parent?.postMessage({ type: "robinhood-specialist-popup", open }, "*")
+      window.parent?.postMessage({ type: "rh-specialist-popup", open }, "*")
     } catch {
       // host page may block messaging; popup still works standalone
     }

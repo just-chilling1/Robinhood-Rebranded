@@ -116,7 +116,7 @@ export default function AdminDashboardPage() {
               <Shield className="h-6 w-6 text-red-500" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Robinhood Admin Panel</h1>
+              <h1 className="text-2xl font-bold text-white">RH Admin Panel</h1>
               <p className="text-sm text-slate-400">User Management System</p>
             </div>
           </div>

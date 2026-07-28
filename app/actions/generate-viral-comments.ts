@@ -20,7 +20,7 @@ async function generateViralCommentsWithAI(input: GenerateViralCommentsInput): P
   const rapidApiHost = process.env.RAPIDAPI_HOST || "chatgpt-42.p.rapidapi.com"
 
   if (!rapidApiKey) {
-    console.error("[robinhood] Missing RAPIDAPI_KEY — using template fallback")
+    console.error("[rh] Missing RAPIDAPI_KEY — using template fallback")
     return generateTemplateViralComments(input)
   }
   
@@ -55,7 +55,7 @@ Good: "My first month trading I lost $2k because I had no clue what I was doing.
 
 Now write 3 unique comments. Each should feel different. Mix up the storytelling. Just output the 3 comments, one per line, no numbers or formatting.`
 
-  console.log("[robinhood] Calling ChatGPT API...")
+  console.log("[rh] Calling ChatGPT API...")
 
   try {
     const response = await fetch(`https://${rapidApiHost}/gpt4o`, {
@@ -76,11 +76,11 @@ Now write 3 unique comments. Each should feel different. Mix up the storytelling
       })
     })
 
-    console.log("[robinhood] API Response Status:", response.status)
+    console.log("[rh] API Response Status:", response.status)
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("[robinhood] API Error Response:", errorText)
+      console.error("[rh] API Error Response:", errorText)
       throw new Error(`RapidAPI error: ${response.status}`)
     }
 
@@ -98,7 +98,7 @@ Now write 3 unique comments. Each should feel different. Mix up the storytelling
       aiResponse = data
     }
 
-    console.log("[robinhood] AI Response length:", aiResponse.length)
+    console.log("[rh] AI Response length:", aiResponse.length)
     
     if (!aiResponse) {
       throw new Error("No content in API response")
@@ -115,7 +115,7 @@ Now write 3 unique comments. Each should feel different. Mix up the storytelling
       })
       .slice(0, 3)
 
-    console.log("[robinhood] Parsed", comments.length, "comments")
+    console.log("[rh] Parsed", comments.length, "comments")
 
     if (comments.length === 0) {
       throw new Error("No valid comments parsed from response")
@@ -123,8 +123,8 @@ Now write 3 unique comments. Each should feel different. Mix up the storytelling
 
     return comments
   } catch (error) {
-    console.error("[robinhood] AI comment generation failed:", error)
-    console.log("[robinhood] Using template fallback")
+    console.error("[rh] AI comment generation failed:", error)
+    console.log("[rh] Using template fallback")
     return generateTemplateViralComments(input)
   }
 }
@@ -149,13 +149,13 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
       return { success: false, error: "Not authenticated" }
     }
 
-    console.log("[robinhood] Generating comments for:", input.videoTitle.substring(0, 60) + "...")
-    console.log("[robinhood] Product:", input.productDescription.substring(0, 60) + "...")
+    console.log("[rh] Generating comments for:", input.videoTitle.substring(0, 60) + "...")
+    console.log("[rh] Product:", input.productDescription.substring(0, 60) + "...")
 
     const comments = await generateViralCommentsWithAI(input)
 
-    console.log("[robinhood] Successfully generated", comments.length, "comments")
-    console.log("[robinhood] Comments preview:", comments[0]?.substring(0, 50) + "...")
+    console.log("[rh] Successfully generated", comments.length, "comments")
+    console.log("[rh] Comments preview:", comments[0]?.substring(0, 50) + "...")
 
     // Only skip saving when there's no real session (anonymous dev-bypass testing).
     // A logged-in user should always get their pack saved to the vault, even in dev.
@@ -214,7 +214,7 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
       .single()
 
     if (pageError) {
-      console.error("[robinhood] Error saving pack:", pageError)
+      console.error("[rh] Error saving pack:", pageError)
       return { success: false, error: "Failed to save comment pack" }
     }
 
@@ -225,7 +225,7 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
       videoUrl: `https://youtube.com/watch?v=${input.videoId}`
     }
   } catch (error) {
-    console.error("[robinhood] Error in generateViralCommentsAction:", error)
+    console.error("[rh] Error in generateViralCommentsAction:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "An unexpected error occurred",

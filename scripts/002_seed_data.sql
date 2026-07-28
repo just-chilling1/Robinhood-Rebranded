@@ -1,4 +1,4 @@
--- Seed initial data for Robinhood
+-- Seed initial data for RH
 
 -- Insert niches
 INSERT INTO public.niches (name, description, icon) VALUES
@@ -43,7 +43,7 @@ ON CONFLICT DO NOTHING;
 
 -- Insert training videos
 INSERT INTO public.videos (title, description, duration, thumbnail_url, video_url, category, upgrade_required) VALUES
-  ('Getting Started with Robinhood', 'Learn how to generate your first comment pack in under 5 minutes', '4:32', '/placeholder.svg?height=180&width=320', '#', 'Getting Started', 'free'),
+  ('Getting Started with RH', 'Learn how to generate your first comment pack in under 5 minutes', '4:32', '/placeholder.svg?height=180&width=320', '#', 'Getting Started', 'free'),
   ('Choosing Profitable Niches', 'Discover which niches convert best for beginners', '8:15', '/placeholder.svg?height=180&width=320', '#', 'Strategy', 'free'),
   ('Traffic Generation Basics', 'Free traffic methods that work in 2025', '12:45', '/placeholder.svg?height=180&width=320', '#', 'Traffic', 'free'),
   ('Advanced SEO Tactics', 'Rank your pages on Google in 30 days', '15:20', '/placeholder.svg?height=180&width=320', '#', 'Advanced', 'dfy_vault'),

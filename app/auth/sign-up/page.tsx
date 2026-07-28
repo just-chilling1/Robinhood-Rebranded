@@ -55,7 +55,7 @@ export default function SignUpPage() {
                 </div>
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Join Robinhood</CardTitle>
+            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Join RH</CardTitle>
             <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
               Activate your AI engagement agent in seconds
             </CardDescription>

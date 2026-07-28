@@ -59,7 +59,7 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Access Robinhood</CardTitle>
+            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Access RH</CardTitle>
             <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
               Neural Engagement Platform
             </CardDescription>

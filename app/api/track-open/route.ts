@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[robinhood] Track open error:", error)
+    console.error("[rh] Track open error:", error)
     return NextResponse.json({ success: false }, { status: 500 })
   }
 }

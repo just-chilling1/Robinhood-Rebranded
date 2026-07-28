@@ -49,7 +49,7 @@ export function FeaturedVideoCard() {
             {/* Click to play text */}
             <div className="absolute bottom-4 left-0 right-0 text-center">
               <p className="text-white text-lg md:text-xl font-bold drop-shadow-lg">
-                ▶ This 5-minute video shows you exactly how to use Robinhood
+                ▶ This 5-minute video shows you exactly how to use RH
               </p>
             </div>
           </div>

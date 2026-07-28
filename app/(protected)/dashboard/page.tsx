@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       const { data: profileData } = await supabase.from("users").select("*").eq("id", user.id).single()
       profile = profileData
     } catch (error) {
-      console.error("[robinhood] Error fetching profile:", error)
+      console.error("[rh] Error fetching profile:", error)
     }
 
     const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : ""
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
         <div className="space-y-8 xl:col-span-3">
           <PageHeader
             eyebrow="Home"
-            title={<>Welcome to Robinhood{firstName ? `, ${firstName}` : ""}</>}
+            title={<>Welcome to RH{firstName ? `, ${firstName}` : ""}</>}
             subtitle="You post ready-made comments on viral videos. When someone buys through your links, you get paid. You only need to do three things — each one takes just a few minutes."
           />
 
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
       </div>
     )
   } catch (error) {
-    console.error("[robinhood] Dashboard error:", error)
+    console.error("[rh] Dashboard error:", error)
     redirect("/auth/login")
   }
 }

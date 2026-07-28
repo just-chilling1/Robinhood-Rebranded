@@ -7,7 +7,7 @@ export default function SetupPage() {
       <div className="w-full max-w-2xl space-y-6">
         <Card className="glass-strong border-border/50">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-foreground">Robinhood Setup</CardTitle>
+            <CardTitle className="text-3xl font-bold text-foreground">RH Setup</CardTitle>
             <p className="text-muted-foreground">
               Your Supabase environment variables aren’t set yet, so the app can’t connect to your new database.
             </p>

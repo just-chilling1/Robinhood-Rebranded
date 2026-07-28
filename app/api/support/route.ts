@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support"
 
-const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "robinhood"
+const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "rh"
 
 function escapeHtml(text: string): string {
   return text
@@ -36,7 +36,7 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
 
   if (!res.ok) {
     const detail = await res.text()
-    console.error("[robinhood] Resend email error:", res.status, detail)
+    console.error("[rh] Resend email error:", res.status, detail)
     return false
   }
 
@@ -66,7 +66,7 @@ async function sendViaFreshdesk(email: string, message: string, userId: string):
 
   if (!res.ok) {
     const detail = await res.text()
-    console.error("[robinhood] Freshdesk ticket error:", res.status, detail)
+    console.error("[rh] Freshdesk ticket error:", res.status, detail)
     return false
   }
 
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[robinhood] Support request error:", error)
+    console.error("[rh] Support request error:", error)
     return NextResponse.json(
       {
         error: "Could not send automatically — opening your email app instead.",

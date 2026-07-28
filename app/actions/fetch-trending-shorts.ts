@@ -145,7 +145,7 @@ export default async function fetchTrendingShorts(categoryName: string): Promise
 
     return { success: true, shorts: filtered }
   } catch (err) {
-    console.error("[robinhood] fetchTrendingShorts failed:", err)
+    console.error("[rh] fetchTrendingShorts failed:", err)
     return { success: false, error: "Could not fetch trending Shorts. Showing sample results.", shorts: fallback }
   }
 }

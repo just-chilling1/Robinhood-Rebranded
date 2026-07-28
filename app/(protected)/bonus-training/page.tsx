@@ -11,7 +11,7 @@ export default function BonusTrainingPage() {
             <>
               Bonus training:{" "}
               <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-transparent bg-clip-text font-black">
-                grow with Robinhood
+                grow with RH
               </span>
             </>
           }

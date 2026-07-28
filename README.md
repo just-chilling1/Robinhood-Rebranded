@@ -1,4 +1,4 @@
-# Robinhood
+# RH
 
 *Advanced AI-Powered YouTube Engagement Platform*
 
@@ -7,7 +7,7 @@
 
 ## Overview
 
-Robinhood is a neural engagement system that helps creators discover trending YouTube Shorts and generate authentic, high-quality comment packs using advanced AI. Built for creators who want to maximize engagement while maintaining authenticity.
+RH is a neural engagement system that helps creators discover trending YouTube Shorts and generate authentic, high-quality comment packs using advanced AI. Built for creators who want to maximize engagement while maintaining authenticity.
 
 ## Features
 
@@ -72,7 +72,7 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Design System
 
-Robinhood uses a futuristic neumorphic design with:
+RH uses a futuristic neumorphic design with:
 
 - **Primary**: Purple (#a855f7) - Main UI elements
 - **Secondary**: Magenta (#d946ef) - Accents and highlights

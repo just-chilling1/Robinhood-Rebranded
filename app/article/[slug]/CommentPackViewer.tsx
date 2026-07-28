@@ -78,7 +78,7 @@ export function CommentPackViewer({
     <div className="min-h-screen bg-[#0A0E12] px-4 py-10">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center space-y-3">
-          <p className="text-sm text-muted-foreground">Robinhood Comment Pack</p>
+          <p className="text-sm text-muted-foreground">RH Comment Pack</p>
           <h1 className="text-3xl md:text-5xl font-black text-foreground text-balance">{pack.videoTitle}</h1>
           <p className="text-base text-muted-foreground">
             {pack.channelTitle ? `Channel: ${pack.channelTitle}` : "Pick a comment, tweak 1–2 words, and post early."}

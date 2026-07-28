@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import LinkVaultClient from "./LinkVaultClient"
 
 export const metadata: Metadata = {
-  title: "Link Vault | Robinhood",
+  title: "Link Vault | RH",
   description: "Store and manage your affiliate links for maximum conversions.",
 }
 

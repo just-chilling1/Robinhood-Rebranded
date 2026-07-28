@@ -68,7 +68,7 @@ export default function DisclaimerPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">Affiliate Disclosure</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Robinhood is designed to help you find trending Shorts and generate comment packs. You are responsible
+                RH is designed to help you find trending Shorts and generate comment packs. You are responsible
                 for complying with platform rules and applicable laws. Do not post spam, misleading claims, or links.
               </p>
             </section>
@@ -76,7 +76,7 @@ export default function DisclaimerPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">Typical Results</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                The typical user of Robinhood may not achieve any specific results. Success depends on consistency,
+                The typical user of RH may not achieve any specific results. Success depends on consistency,
                 comment quality, timing, and many factors outside our control. Any examples are illustrative and not a
                 promise of outcomes.
               </p>

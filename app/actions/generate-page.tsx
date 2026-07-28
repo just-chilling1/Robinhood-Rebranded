@@ -2,7 +2,7 @@
 
 /**
  * Deprecated: the original app used this action to generate affiliate pages.
- * Robinhood repurposes the product to generate YouTube comment packs instead.
+ * RH repurposes the product to generate YouTube comment packs instead.
  *
  * This stub remains only to avoid accidental imports breaking builds.
  */

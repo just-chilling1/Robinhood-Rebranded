@@ -94,7 +94,7 @@ Return ONLY the 10 comments, one per line.`
 
     return comments
   } catch (error) {
-    console.error("[robinhood] RapidAPI error:", error)
+    console.error("[rh] RapidAPI error:", error)
     // Fallback to template comments
     return generateTemplateComments(videoTitle, channelTitle, offerName)
   }
@@ -145,7 +145,7 @@ export default async function generateCommentPackAction(input: GenerateCommentPa
 
     const nicheName = niche?.name || "General"
 
-    console.log("[robinhood] Generating comments with RapidAPI...")
+    console.log("[rh] Generating comments with RapidAPI...")
 
     // Generate comments using RapidAPI
     const comments = await generateAIComments(
@@ -155,7 +155,7 @@ export default async function generateCommentPackAction(input: GenerateCommentPa
       input.offerName
     )
 
-    console.log("[robinhood] Generated", comments.length, "comments")
+    console.log("[rh] Generated", comments.length, "comments")
 
     // Create page/pack in database
     const packTitle = input.offerName 
@@ -202,7 +202,7 @@ export default async function generateCommentPackAction(input: GenerateCommentPa
       .single()
 
     if (pageError) {
-      console.error("[robinhood] Error saving pack:", pageError)
+      console.error("[rh] Error saving pack:", pageError)
       return { success: false, error: "Failed to save comment pack" }
     }
 
@@ -212,7 +212,7 @@ export default async function generateCommentPackAction(input: GenerateCommentPa
       previewComments: comments.slice(0, 5), // Return first 5 for preview
     }
   } catch (error) {
-    console.error("[robinhood] Error in generateCommentPackAction:", error)
+    console.error("[rh] Error in generateCommentPackAction:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "An unexpected error occurred",

@@ -6,8 +6,8 @@ import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PORTAL_URL } from "@/lib/support
 import { PageHeader } from "@/components/page-header"
 
 export const metadata: Metadata = {
-  title: "Support | Robinhood",
-  description: "Contact Robinhood support or visit the help portal",
+  title: "Support | RH",
+  description: "Contact RH support or visit the help portal",
 }
 
 export default function SupportPage() {
@@ -16,7 +16,7 @@ export default function SupportPage() {
       <PageHeader
         eyebrow="Support"
         title="Support"
-        subtitle="Priority help for your Robinhood account. We're here when you need us."
+        subtitle="Priority help for your RH account. We're here when you need us."
       />
 
       <div className="mx-auto max-w-3xl">

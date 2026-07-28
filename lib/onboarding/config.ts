@@ -1,10 +1,10 @@
 /**
- * Robinhood onboarding — edit copy here only.
+ * RH onboarding — edit copy here only.
  * Plain language, no product/page names, no ads.
  */
 
 export const onboardingConfig = {
-  productName: "Robinhood",
+  productName: "RH",
   productTagline: "Your comment helper",
   dashboardRoute: "/dashboard",
 

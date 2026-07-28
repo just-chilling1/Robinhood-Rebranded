@@ -62,7 +62,7 @@ export function buildProtectorViewModel(
   if (lastSignIn) {
     activities.push({
       id: "login",
-      label: "Successful login to Robinhood",
+      label: "Successful login to RH",
       time: formatRelativeTime(lastSignIn),
       sortAt: new Date(lastSignIn).getTime(),
     })
@@ -78,7 +78,7 @@ export function buildProtectorViewModel(
   if (onboardingCompletedAt) {
     activities.push({
       id: "onboarding",
-      label: "Robinhood system activation completed",
+      label: "RH system activation completed",
       time: formatRelativeTime(onboardingCompletedAt),
       sortAt: new Date(onboardingCompletedAt).getTime(),
     })
@@ -96,7 +96,7 @@ export function buildProtectorViewModel(
   if (createdAt) {
     activities.push({
       id: "created",
-      label: "Robinhood account created",
+      label: "RH account created",
       time: formatProtectorDate(createdAt),
       sortAt: new Date(createdAt).getTime(),
     })

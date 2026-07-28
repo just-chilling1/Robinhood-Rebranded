@@ -75,7 +75,7 @@ function SidebarBody({
             className={`flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-90 group ${
               collapsed ? "justify-center" : ""
             }`}
-            title="Robinhood"
+            title="RH"
           >
             <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] shadow-[0_0_40px_rgba(14,165,233,0.5)] transition-shadow duration-300 group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)]">
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#020617]">
@@ -84,7 +84,7 @@ function SidebarBody({
             </div>
             {!collapsed && (
               <div className="min-w-0">
-                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-white">Robinhood</h2>
+                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-white">RH</h2>
                 <p className="whitespace-nowrap text-[13px] font-medium text-[#7dd3fc]">Your comment helper</p>
               </div>
             )}
@@ -296,7 +296,7 @@ export function AppSidebar() {
               <Brain className="h-4 w-4 text-[#0ea5e9]" />
             </div>
           </div>
-          <span className="whitespace-nowrap text-base font-bold tracking-tight text-white">Robinhood</span>
+          <span className="whitespace-nowrap text-base font-bold tracking-tight text-white">RH</span>
         </Link>
       </div>
     </>

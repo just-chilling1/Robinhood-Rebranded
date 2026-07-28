@@ -19,13 +19,13 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Robinhood - AI-Powered YouTube Engagement Tool",
+  title: "RH - AI-Powered YouTube Engagement Tool",
   description: "Advanced AI system that finds trending YouTube Shorts and generates high-quality engagement comments for maximum reach.",
   generator: "v0.app",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Robinhood",
+    title: "RH",
   },
   robots: {
     index: false,

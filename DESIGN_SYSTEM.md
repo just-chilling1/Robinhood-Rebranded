@@ -1,6 +1,6 @@
-# Robinhood Design System
+# RH Design System
 
-Single source of truth for the Robinhood member area. Tokens live in `app/globals.css`. Keep cyan/pink brand colors — do not import another app's palette or affiliate links.
+Single source of truth for the RH member area. Tokens live in `app/globals.css`. Keep cyan/pink brand colors — do not import another app's palette or affiliate links.
 
 ---
 

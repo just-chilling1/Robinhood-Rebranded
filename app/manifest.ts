@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Robinhood",
-    short_name: "Robinhood",
+    name: "RH",
+    short_name: "RH",
     description: "AI-powered YouTube engagement tool",
     start_url: "/dashboard",
     display: "standalone",

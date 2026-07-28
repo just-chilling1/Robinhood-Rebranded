@@ -1,4 +1,4 @@
-# Robinhood Mobile Guide
+# RH Mobile Guide
 
 Foundations (done):
 

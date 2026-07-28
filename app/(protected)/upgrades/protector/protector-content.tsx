@@ -30,13 +30,13 @@ function getSecurityChecks(data: ProtectorViewModel) {
       icon: ShieldCheck,
       title: "Account Verified",
       description: data.isEmailVerified
-        ? `${name} is verified on Robinhood with validated sign-in credentials`
-        : "Complete email verification to fully secure your Robinhood account",
+        ? `${name} is verified on RH with validated sign-in credentials`
+        : "Complete email verification to fully secure your RH account",
     },
     {
       icon: Lock,
       title: "Secure Connection",
-      description: "Your Robinhood session uses a private, encrypted connection",
+      description: "Your RH session uses a private, encrypted connection",
     },
     {
       icon: Key,
@@ -51,7 +51,7 @@ function getSecurityChecks(data: ProtectorViewModel) {
     {
       icon: Server,
       title: "Platform Status",
-      description: "Robinhood Command Center, Gold Rush, and Premium Tier are operational",
+      description: "RH Command Center, Gold Rush, and Premium Tier are operational",
     },
     {
       icon: Globe,
@@ -80,7 +80,7 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
         title="Protector"
         subtitle={
           <>
-            Your Robinhood account security overview. Live status for{" "}
+            Your RH account security overview. Live status for{" "}
             {account.fullName ? account.fullName : account.email}.
           </>
         }

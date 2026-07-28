@@ -1,0 +1,28 @@
+# DigitalOcean App Platform — RH / NeoAI
+# Create/update via: doctl apps create --spec .do/app.yaml
+# Or paste these values in the Apps UI Settings.
+name: neoai
+region: nyc
+services:
+  - name: web
+    github:
+      repo: neoai2020/robinhood
+      branch: main
+      deploy_on_push: true
+    environment_slug: node-js
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    http_port: 3000
+    build_command: npm ci && npm run build
+    run_command: npm start
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      # Set these as SECRET in the DO UI (do not commit real values):
+      # NEXT_PUBLIC_SUPABASE_URL
+      # NEXT_PUBLIC_SUPABASE_ANON_KEY
+      # NEXT_PUBLIC_SITE_URL  (new clean domain — not rhappaccess / robinhoodaccess)
+      # SUPABASE_SERVICE_ROLE_KEY (if used)
+      # RAPIDAPI_KEY / RESEND / FRESHDESK as needed

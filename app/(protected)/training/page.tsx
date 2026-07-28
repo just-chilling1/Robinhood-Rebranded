@@ -58,7 +58,7 @@ export default async function TrainingPage() {
     <div className="space-y-8 max-w-7xl mx-auto">
       <PageHeader
         eyebrow="Training"
-        title="Robinhood Training Center"
+        title="RH Training Center"
         subtitle="Follow these 5 simple steps to comment safely and build engagement over time"
       />
 

@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server"
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
 import { onboardingConfig } from "@/lib/onboarding/config"
 
+// Auth + cookies — never statically prerender (needs Supabase env at runtime).
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: `Welcome | ${onboardingConfig.productName}`,
 }

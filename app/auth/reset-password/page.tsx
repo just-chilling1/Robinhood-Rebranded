@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
               Choose New Password
             </CardTitle>
             <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
-              Enter a new password for your Robinhood account
+              Enter a new password for your RH account
             </CardDescription>
           </CardHeader>
           <CardContent>
