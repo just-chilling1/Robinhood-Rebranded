@@ -2,7 +2,38 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 
+function isSpecialistPublicPath(pathname: string) {
+  return (
+    pathname === "/embed" ||
+    pathname.startsWith("/embed/") ||
+    pathname.startsWith("/api/eligibility/") ||
+    pathname === "/api/track/specialist-popup" ||
+    pathname.startsWith("/api/track/specialist-popup/")
+  )
+}
+
 export async function updateSession(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  // Never expose /dev/* force-open previews in production.
+  if (
+    process.env.NODE_ENV !== "development" &&
+    (pathname === "/dev" || pathname.startsWith("/dev/"))
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
+
+  // Public embed + specialist APIs — must run before auth redirects.
+  if (
+    isSpecialistPublicPath(pathname) ||
+    (process.env.NODE_ENV === "development" &&
+      (pathname === "/dev" || pathname.startsWith("/dev/")))
+  ) {
+    return NextResponse.next({ request })
+  }
+
   if (isDevAuthBypassEnabled(request.nextUrl.hostname)) {
     return NextResponse.next({ request })
   }
@@ -36,34 +67,7 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  if (request.nextUrl.pathname.startsWith("/secret-p55-admin-panel-2029")) {
-    return supabaseResponse
-  }
-
-  const pathname = request.nextUrl.pathname
-
-  // Never expose /dev/* force-open previews in production.
-  if (
-    process.env.NODE_ENV !== "development" &&
-    (pathname === "/dev" || pathname.startsWith("/dev/"))
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
-    return NextResponse.redirect(url)
-  }
-
-  // Public embed + specialist popup APIs (EverAffiliate iframe + in-app gate).
-  // /dev/* previews are open in development only.
-  const isSpecialistPublic =
-    pathname === "/embed" ||
-    pathname.startsWith("/embed/") ||
-    pathname.startsWith("/api/eligibility/specialist-popup") ||
-    pathname.startsWith("/api/track/specialist-popup")
-  const isDevPreview =
-    process.env.NODE_ENV === "development" &&
-    (pathname === "/dev" || pathname.startsWith("/dev/"))
-
-  if (isSpecialistPublic || isDevPreview) {
+  if (pathname.startsWith("/secret-p55-admin-panel-2029")) {
     return supabaseResponse
   }
 

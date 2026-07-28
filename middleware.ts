@@ -9,6 +9,19 @@ function withRobotsTag(response: NextResponse) {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Fast-path public specialist embed + APIs (also allowlisted inside updateSession).
+  if (
+    pathname === "/embed" ||
+    pathname.startsWith("/embed/") ||
+    pathname.startsWith("/api/eligibility/") ||
+    pathname === "/api/track/specialist-popup" ||
+    pathname.startsWith("/api/track/specialist-popup/")
+  ) {
+    return withRobotsTag(NextResponse.next({ request }))
+  }
+
   return withRobotsTag(await updateSession(request))
 }
 
