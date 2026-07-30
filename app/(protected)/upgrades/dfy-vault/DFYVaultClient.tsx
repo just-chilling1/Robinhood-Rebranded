@@ -220,7 +220,7 @@ export default function DFYVaultClient() {
             <div className="absolute inset-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/thumbnails/thumb-04-accelerator-training.webp"
+                src="/thumbnails/thumb-06-accelerator.webp?v=20260730a"
                 alt="Accelerator Training thumbnail"
                 className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
@@ -244,7 +244,7 @@ export default function DFYVaultClient() {
 
       {isVideoPlaying && (
         <VideoOverlay
-          videoUrl="https://player.vimeo.com/video/1151044893"
+          videoUrl="https://player.vimeo.com/video/1214134021"
           title="Accelerator Training"
           onClose={() => setIsVideoPlaying(false)}
         />

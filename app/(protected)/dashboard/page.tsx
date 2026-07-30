@@ -1,16 +1,16 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
-import { QuickActionCard } from "@/components/quick-action-card"
-import { FeaturedVideoCard } from "@/components/featured-video-card"
-import { HowItWorks } from "@/components/how-it-works"
 import { PageHeader } from "@/components/page-header"
 import { ContactSupportWidget } from "@/components/contact-support-widget"
 import { DashboardTipsWidget } from "@/components/dashboard-tips-widget"
 import { PremiumUpgradesWidget } from "@/components/premium-upgrades-widget"
-import { Brain, Play, Gem, Headphones } from "lucide-react"
+import { DashboardVideoCard } from "@/components/dashboard-video-card"
+import { BonusTrainingCard } from "@/components/bonus-training-card"
+import { BookOpen, Brain, Headphones, Play } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { DASHBOARD_TRAINING_VIDEOS } from "@/lib/dashboard-training-videos"
 
 /** Never serve a cached dashboard shell (avoids stale UI after deploys). */
 export const dynamic = "force-dynamic"
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       const { data: profileData } = await supabase.from("users").select("*").eq("id", user.id).single()
       profile = profileData
     } catch (error) {
-      console.error("[rh] Error fetching profile:", error)
+      console.error("[robinhood] Error fetching profile:", error)
     }
 
     const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : ""
@@ -43,42 +43,41 @@ export default async function DashboardPage() {
         <div className="space-y-8 xl:col-span-3">
           <PageHeader
             eyebrow="Home"
-            title={<>Welcome to RH{firstName ? `, ${firstName}` : ""}</>}
-            subtitle="You post ready-made comments on viral videos. When someone buys through your links, you get paid. You only need to do three things — each one takes just a few minutes."
+            title={<>Welcome to Robinhood{firstName ? `, ${firstName}` : ""}</>}
+            subtitle="Watch the three videos below in order — then jump into Gold Rush and start earning. The Academy is there whenever you want a deeper walkthrough."
           />
 
-          <FeaturedVideoCard />
-
-          <HowItWorks />
-
-          <div>
-            <h2 className="ds-h2 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <QuickActionCard
-                title="Gold Rush"
-                description="Find trending Shorts and generate comment packs instantly"
-                icon={Brain}
-                href="/create"
-                buttonText="Launch Now"
-                glowColor="blue"
-              />
-              <QuickActionCard
-                title="Training Academy"
-                description="Learn how to maximize engagement safely"
-                icon={Play}
-                href="/training"
-                buttonText="Access Now"
-                glowColor="pink"
-              />
-              <QuickActionCard
-                title="Premium Systems"
-                description="Unlock advanced AI models and workflows"
-                icon={Gem}
-                href="/upgrades"
-                buttonText="Explore Premium"
-                glowColor="cyan"
-              />
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Play className="h-7 w-7 text-[#fbbf24]" />
+              <h2 className="ds-h2">Start Here</h2>
             </div>
+            <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[0]} />
+          </div>
+
+          <BonusTrainingCard />
+
+          <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[1]} />
+
+          <BonusTrainingCard />
+
+          <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[2]} />
+
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/create"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#a855f7] to-[#d946ef] px-8 text-sm font-bold text-white shadow-lg shadow-[#a855f7]/25 transition-all hover:from-[#d946ef] hover:to-[#a855f7]"
+            >
+              <Brain className="h-5 w-5" />
+              Get Started Now with Gold Rush
+            </Link>
+            <Link
+              href="/training"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-8 text-sm font-bold text-white transition-colors hover:border-[#0ea5e9]/40 hover:bg-white/10"
+            >
+              <BookOpen className="h-5 w-5" />
+              Know More from the Academy
+            </Link>
           </div>
 
           <Card className="glass-strong glow-cyan border-2 border-[#06b6d4]/40">
@@ -124,7 +123,7 @@ export default async function DashboardPage() {
       </div>
     )
   } catch (error) {
-    console.error("[rh] Dashboard error:", error)
+    console.error("[robinhood] Dashboard error:", error)
     redirect("/auth/login")
   }
 }

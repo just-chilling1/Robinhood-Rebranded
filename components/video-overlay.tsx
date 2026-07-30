@@ -3,29 +3,22 @@
 import { useEffect } from "react"
 import { createPortal } from "react-dom"
 import { ArrowRight, Check, X } from "lucide-react"
+import { buildVimeoEmbedUrl } from "@/lib/vimeo"
 
 const WITHDRAW_URL = "https://jvz1.com/c/3547097/442055/"
 
 /** Turn a YouTube or Vimeo link into an embeddable, autoplaying URL. */
 export function toEmbedUrl(url: string): string | null {
   try {
-    let u = new URL(url)
+    const u = new URL(url)
 
     if (u.hostname === "player.vimeo.com" || /(^|\.)vimeo\.com$/.test(u.hostname)) {
-      if (u.hostname !== "player.vimeo.com") {
-        const id = u.pathname.split("/").filter(Boolean)[0]
-        if (!id) return null
-        u = new URL(`https://player.vimeo.com/video/${id}`)
-      }
-      const defaults: Record<string, string> = { badge: "0", autopause: "0", player_id: "0", app_id: "58479" }
-      for (const [key, value] of Object.entries(defaults)) {
-        if (!u.searchParams.has(key)) u.searchParams.set(key, value)
-      }
-      u.searchParams.set("autoplay", "1")
-      u.searchParams.set("controls", "1")
-      u.searchParams.delete("background")
-      u.searchParams.delete("muted")
-      return u.toString()
+      const id =
+        u.hostname === "player.vimeo.com"
+          ? u.pathname.split("/").filter(Boolean).pop()
+          : u.pathname.split("/").filter(Boolean)[0]
+      if (!id) return null
+      return `${buildVimeoEmbedUrl(id)}&autoplay=1`
     }
 
     if (/(^|\.)youtube\.com$|(^|\.)youtu\.be$/.test(u.hostname)) {

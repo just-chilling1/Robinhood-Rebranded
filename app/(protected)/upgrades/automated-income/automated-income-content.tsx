@@ -2104,7 +2104,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 <div className="absolute inset-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/thumbnails/thumb-06-social-payouts-training.webp"
+                    src="/thumbnails/thumb-08-social-payouts.webp?v=20260730a"
                     alt="Social Payouts Training thumbnail"
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
@@ -2125,7 +2125,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               </div>
               {isVideoPlaying && (
                 <VideoOverlay
-                  videoUrl="https://player.vimeo.com/video/1151045210"
+                  videoUrl="https://player.vimeo.com/video/1214140189"
                   title="Social Payouts Training"
                   onClose={() => setIsVideoPlaying(false)}
                 />

@@ -5,6 +5,7 @@ import { Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { VideoOverlay } from "@/components/video-overlay"
 import { VIDEO_THUMBNAILS } from "@/lib/video-thumbnails"
+import { buildVimeoEmbedUrl } from "@/lib/vimeo"
 
 interface TrainingVideoProps {
   /** Vimeo video id */
@@ -29,15 +30,14 @@ export function TrainingVideo({ videoId, title }: TrainingVideoProps) {
             <img
               src={thumbnail}
               alt={`${title} thumbnail`}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              width={1280}
+              height={720}
             />
           ) : (
-            <iframe
-              src={`https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0&app_id=58479&background=1&muted=1`}
-              title={`${title} preview`}
-              allow="autoplay; fullscreen; picture-in-picture"
-              className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-            />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0d0a1a] to-[#1a1429]" />
           )}
         </div>
         <div className={`absolute inset-0 ${thumbnail ? "thumb-scrim" : "bg-black/40"}`} />
@@ -45,19 +45,19 @@ export function TrainingVideo({ videoId, title }: TrainingVideoProps) {
           <Button
             size="lg"
             onClick={() => setOpen(true)}
-            className="relative z-10 h-20 w-20 rounded-full bg-gradient-to-br from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+            className="relative z-10 h-20 w-20 rounded-full border-4 border-white/20 bg-gradient-to-br from-[#a855f7] to-[#d946ef] text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:from-[#d946ef] hover:to-[#a855f7]"
           >
-            <Play className="w-10 h-10 ml-1 fill-white" />
+            <Play className="ml-1 h-10 w-10 fill-white" />
           </Button>
         </div>
         <div className="absolute bottom-4 left-0 right-0 text-center">
-          <p className="text-white text-sm font-semibold drop-shadow-lg">▶ Click to Play Video</p>
+          <p className="text-sm font-semibold text-white drop-shadow-lg">▶ Click to Play Video</p>
         </div>
       </div>
 
       {open && (
         <VideoOverlay
-          videoUrl={`https://player.vimeo.com/video/${videoId}`}
+          videoUrl={buildVimeoEmbedUrl(videoId)}
           title={title}
           onClose={() => setOpen(false)}
         />

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   ShieldCheck,
   Lock,
@@ -15,9 +16,15 @@ import {
   Gem,
   Fingerprint,
   FileText,
+  Play,
+  Youtube,
 } from "lucide-react"
 import type { ProtectorViewModel } from "@/lib/protector/build-protector-data"
 import { PageHeader } from "@/components/page-header"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { VideoOverlay } from "@/components/video-overlay"
+import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 
 interface ProtectorContentProps {
   data: ProtectorViewModel
@@ -72,6 +79,8 @@ const activityIcons = {
 export function ProtectorContent({ data }: ProtectorContentProps) {
   const { account, activities, accountStatus, isEmailVerified } = data
   const securityChecks = getSecurityChecks(data)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const protectorVideoId = getPremiumTrainingVimeoId("protector")
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -93,6 +102,56 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
           </div>
         }
       />
+
+      <Card className="glass-strong border-2 border-[#22c55e]/40 overflow-hidden">
+        <div className="p-6 border-b-2 border-[#22c55e]/20">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#22c55e]/30 to-[#06b6d4]/30 flex items-center justify-center border-2 border-[#22c55e]/40">
+              <Youtube className="w-6 h-6 text-[#22c55e]" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-white">Protector Training</h2>
+              <p className="text-[#7dd3fc] font-semibold">
+                Watch this to understand how Protector keeps your account secure
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative aspect-video bg-black">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0d0a1a] to-[#1a1429]">
+            <div className="absolute inset-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/thumbnails/thumb-09-protector.webp?v=20260730a"
+                alt="Protector Training thumbnail"
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div className="absolute inset-0 thumb-scrim" />
+            <Button
+              size="lg"
+              onClick={() => setIsVideoPlaying(true)}
+              className="relative z-10 h-28 w-28 rounded-full bg-gradient-to-br from-[#22c55e] to-[#06b6d4] hover:from-[#06b6d4] hover:to-[#22c55e] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
+            >
+              <Play className="w-14 h-14 ml-1 fill-white" />
+            </Button>
+            <div className="absolute bottom-8 left-0 right-0 text-center">
+              <p className="text-white text-xl font-extrabold drop-shadow-lg">▶ Click to Play Training</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {isVideoPlaying && (
+        <VideoOverlay
+          videoUrl={`https://player.vimeo.com/video/${protectorVideoId}`}
+          title="Protector Training"
+          onClose={() => setIsVideoPlaying(false)}
+        />
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[

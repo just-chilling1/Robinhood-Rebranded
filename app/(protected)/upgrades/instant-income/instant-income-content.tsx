@@ -453,7 +453,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                   <div className="absolute inset-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/thumbnails/thumb-05-recurring-streams-training.webp"
+                      src="/thumbnails/thumb-07-recurring-streams.webp?v=20260730a"
                       alt="Recurring Streams Training thumbnail"
                       className="absolute inset-0 w-full h-full object-cover"
                       loading="lazy"
@@ -474,7 +474,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 </div>
                 {isVideoPlaying && (
                   <VideoOverlay
-                    videoUrl="https://player.vimeo.com/video/1151045100"
+                    videoUrl="https://player.vimeo.com/video/1214136849"
                     title="Recurring Streams Training"
                     onClose={() => setIsVideoPlaying(false)}
                   />
