@@ -11,6 +11,11 @@ function withRobotsTag(response: NextResponse) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // robots.txt must stay reachable so crawlers can read the disallow rules.
+  if (pathname === "/robots.txt") {
+    return withRobotsTag(NextResponse.next({ request }))
+  }
+
   // Fast-path public specialist embed + APIs (also allowlisted inside updateSession).
   if (
     pathname === "/embed" ||
