@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Copy, CheckCircle2, Facebook, Play, Sparkles } from "lucide-react"
+import { ArrowLeft, Copy, CheckCircle2, Facebook } from "lucide-react"
 import Link from "next/link"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
-import { VideoOverlay } from "@/components/video-overlay"
+import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
+import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
+import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 
 interface FacebookPost {
   id: string
@@ -394,7 +396,6 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   const [showPosts, setShowPosts] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   const postsResultsRef = useScrollToResults(showPosts && !!affiliateLink.trim())
 
@@ -422,7 +423,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
   return (
     <div className="pb-12">
-      <Button asChild variant="ghost" className="text-violet-400 hover:text-violet-300 mb-6">
+      <Button asChild variant="ghost" className="text-[#1E40AF] hover:text-[#1D4ED8] mb-6">
         <Link href="/dashboard">
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Dashboard
@@ -430,13 +431,13 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
       </Button>
 
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex flex-col items-center gap-6 text-center bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-2xl p-12 border border-violet-500/20">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shadow-lg shadow-violet-500/50">
-            <Facebook className="w-12 h-12 text-white" />
+        <div className="flex flex-col items-center gap-6 text-center bg-gradient-to-br from-[var(--card)] to-[var(--surface-nested)] rounded-2xl p-12 border border-[var(--border)]">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#2563EB] to-[#1E40AF] flex items-center justify-center shadow-lg shadow-[0_6px_20px_rgba(16,42,67,0.08)]">
+            <Facebook className="w-12 h-12 text-[#102A43]" />
           </div>
           <div className="max-w-3xl space-y-2">
-            <p className="page-eyebrow">Recurring Streams</p>
-            <h1 className="ds-h1">Recurring Streams: Facebook Posts</h1>
+            <p className="page-eyebrow">{PREMIUM_FEATURE_LABELS.instantIncome}</p>
+            <h1 className="ds-h1">{PREMIUM_FEATURE_LABELS.instantIncome}: Facebook Posts</h1>
             <p className="ds-subtitle mt-2">
               200+ Ready-to-Post Messages for Facebook Groups. Copy these proven posts, paste them in Facebook
               groups, and start making money TODAY. No tech skills needed!
@@ -444,97 +445,49 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
           </div>
         </div>
 
-        <Card className="glass-strong border-violet-500/30 glow-violet overflow-hidden shadow-2xl">
-          <CardContent className="p-0">
-            <div className="flex flex-col">
-              {/* Video Player */}
-              <div className="relative aspect-video bg-black">
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-                  <div className="absolute inset-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/thumbnails/thumb-07-recurring-streams.webp?v=20260730a"
-                      alt="Recurring Streams Training thumbnail"
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="absolute inset-0 thumb-scrim" />
-                  <Button
-                    size="lg"
-                    onClick={() => setIsVideoPlaying(true)}
-                    className="relative z-10 h-24 w-24 rounded-full bg-violet-500 hover:bg-violet-400 text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-                  >
-                    <Play className="w-12 h-12 ml-1 fill-white" />
-                  </Button>
-                  <div className="absolute bottom-8 left-0 right-0 text-center">
-                    <p className="text-white text-xl font-black drop-shadow-lg">▶ Watch Recurring Streams Tutorial</p>
-                  </div>
-                </div>
-                {isVideoPlaying && (
-                  <VideoOverlay
-                    videoUrl="https://player.vimeo.com/video/1214136849"
-                    title="Recurring Streams Training"
-                    onClose={() => setIsVideoPlaying(false)}
-                  />
-                )}
-              </div>
+        <PremiumVideoTutorial
+          vimeoId={getPremiumTrainingVimeoId("recurringStreams")}
+          title={`${PREMIUM_FEATURE_LABELS.instantIncome} Training`}
+          description="Watch this quick tutorial to learn how to copy these Facebook posts and start making money instantly. Simple and easy!"
+          iframeTitle={`${PREMIUM_FEATURE_LABELS.instantIncome} training video`}
+        />
 
-              {/* Video Info */}
-              <div className="p-8 flex flex-col justify-center space-y-4 bg-gradient-to-br from-violet-500/10 to-purple-500/10">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-violet-400" />
-                  <span className="text-violet-400 font-black text-sm uppercase tracking-wider">Watch First</span>
-                </div>
-                <div>
-                  <h2 className="text-3xl font-black text-white mb-3">How to Use Recurring Streams</h2>
-                  <p className="text-xl text-gray-300 leading-relaxed font-bold">
-                    Watch this quick tutorial to learn how to copy these Facebook posts and start making money
-                    instantly. Simple and easy!
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 border-violet-500/30 shadow-xl">
+        <Card className="bg-gradient-to-br from-[var(--card)] to-[var(--surface-nested)] border-[var(--border)] shadow-xl">
           <CardHeader>
-            <CardTitle className="text-3xl font-black text-white flex items-center gap-3">
-              <CheckCircle2 className="w-8 h-8 text-violet-400" />
+            <CardTitle className="text-3xl font-black text-[#102A43] flex items-center gap-3">
+              <CheckCircle2 className="w-8 h-8 text-[#1E40AF]" />
               How to Use This (3 Simple Steps)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-violet-500/10 rounded-xl p-6 border border-violet-500/30">
-                <div className="w-16 h-16 rounded-full bg-violet-500 flex items-center justify-center mb-4 text-2xl font-black text-white">
+              <div className="bg-[#EEF4FF] rounded-xl p-6 border border-[var(--border)]">
+                <div className="w-16 h-16 rounded-full bg-[#2563EB] flex items-center justify-center mb-4 text-2xl font-black text-white">
                   1
                 </div>
-                <h3 className="text-2xl font-black text-white mb-3">Pick Your Niche</h3>
-                <p className="text-lg text-gray-300 font-semibold leading-relaxed">
+                <h3 className="text-2xl font-black text-[#102A43] mb-3">Pick Your Niche</h3>
+                <p className="text-lg text-[#486581] font-semibold leading-relaxed">
                   Choose the niche that matches your affiliate offer. We have posts for Weight Loss, Make Money Online,
                   Health, Beauty, and more!
                 </p>
               </div>
 
-              <div className="bg-purple-500/10 rounded-xl p-6 border border-purple-500/30">
-                <div className="w-16 h-16 rounded-full bg-purple-500 flex items-center justify-center mb-4 text-2xl font-black text-white">
+              <div className="bg-surface-nested rounded-xl p-6 border border-[var(--border)]">
+                <div className="w-16 h-16 rounded-full bg-[#1E40AF] flex items-center justify-center mb-4 text-2xl font-black text-white">
                   2
                 </div>
-                <h3 className="text-2xl font-black text-white mb-3">Enter Your Link</h3>
-                <p className="text-lg text-gray-300 font-semibold leading-relaxed">
+                <h3 className="text-2xl font-black text-[#102A43] mb-3">Enter Your Link</h3>
+                <p className="text-lg text-[#486581] font-semibold leading-relaxed">
                   Paste your affiliate link below. We'll automatically add it to all the posts for you. No manual work!
                 </p>
               </div>
 
-              <div className="bg-fuchsia-500/10 rounded-xl p-6 border border-fuchsia-500/30">
-                <div className="w-16 h-16 rounded-full bg-fuchsia-500 flex items-center justify-center mb-4 text-2xl font-black text-white">
+              <div className="bg-[#EEF4FF] rounded-xl p-6 border border-[var(--border)]">
+                <div className="w-16 h-16 rounded-full bg-[#1E40AF] flex items-center justify-center mb-4 text-2xl font-black text-white">
                   3
                 </div>
-                <h3 className="text-2xl font-black text-white mb-3">Copy & Post</h3>
-                <p className="text-lg text-gray-300 font-semibold leading-relaxed">
+                <h3 className="text-2xl font-black text-[#102A43] mb-3">Copy & Post</h3>
+                <p className="text-lg text-[#486581] font-semibold leading-relaxed">
                   Click "Copy" on any post and paste it into Facebook groups. Post 3-5 times per day for best results!
                 </p>
               </div>
@@ -542,34 +495,34 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 border-blue-500/30 shadow-xl">
+        <Card className="bg-gradient-to-br from-[var(--card)] to-[var(--surface-nested)] border-[var(--border)] shadow-[var(--shadow-md)]">
           <CardHeader>
-            <CardTitle className="text-3xl font-black text-white">📘 How to Find & Post in Facebook Groups</CardTitle>
+            <CardTitle className="text-3xl font-black text-[#102A43]">📘 How to Find & Post in Facebook Groups</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
-              <div className="bg-blue-500/10 rounded-xl p-6 border border-blue-500/30">
-                <h4 className="text-2xl font-black text-white mb-4">Step 1: Find Facebook Groups</h4>
-                <ul className="space-y-3 text-lg text-gray-300 font-semibold">
+              <div className="bg-[#EEF4FF] rounded-xl p-6 border border-[var(--border)]">
+                <h4 className="text-2xl font-black text-[#102A43] mb-4">Step 1: Find Facebook Groups</h4>
+                <ul className="space-y-3 text-lg text-[#486581] font-semibold">
                   <li className="flex items-start gap-3">
-                    <span className="text-blue-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Go to Facebook and click the search bar at the top. Type keywords like "weight loss support",
                       "make money online", or "fitness motivation"
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-blue-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>Click "Groups" in the left sidebar to see only groups (not pages or people)</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-blue-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Join 10-15 groups with 5,000+ members. Bigger groups = more people seeing your posts = more money!
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-blue-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Wait for the group admin to approve you (usually takes 1-24 hours). Be patient - it's worth it!
                     </span>
@@ -577,25 +530,25 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 </ul>
               </div>
 
-              <div className="bg-indigo-500/10 rounded-xl p-6 border border-indigo-500/30">
-                <h4 className="text-2xl font-black text-white mb-4">Step 2: Read the Group Rules</h4>
-                <ul className="space-y-3 text-lg text-gray-300 font-semibold">
+              <div className="bg-surface-nested rounded-xl p-6 border border-[var(--border)]">
+                <h4 className="text-2xl font-black text-[#102A43] mb-4">Step 2: Read the Group Rules</h4>
+                <ul className="space-y-3 text-lg text-[#486581] font-semibold">
                   <li className="flex items-start gap-3">
-                    <span className="text-indigo-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Click "About" in the group to see the rules. Most groups allow personal stories but not direct
                       selling
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-indigo-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Our posts are written as personal success stories, so they're usually allowed. But always check
                       first!
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-indigo-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       If a group says "no links", you can still post the message and send the link in private messages
                       to people who ask
@@ -604,31 +557,31 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 </ul>
               </div>
 
-              <div className="bg-purple-500/10 rounded-xl p-6 border border-purple-500/30">
-                <h4 className="text-2xl font-black text-white mb-4">Step 3: Post Your Message</h4>
-                <ul className="space-y-3 text-lg text-gray-300 font-semibold">
+              <div className="bg-surface-nested rounded-xl p-6 border border-[var(--border)]">
+                <h4 className="text-2xl font-black text-[#102A43] mb-4">Step 3: Post Your Message</h4>
+                <ul className="space-y-3 text-lg text-[#486581] font-semibold">
                   <li className="flex items-start gap-3">
-                    <span className="text-purple-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Click "Write something..." in the group. Paste your copied message. Click "Post". That's it!
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-purple-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Best times to post: 7-9 AM (before work), 12-1 PM (lunch break), 7-9 PM (after work). People are
                       most active then!
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-purple-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       Post in 3-5 different groups per day. DON'T post in all groups at once or Facebook might think
                       you're spamming
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-purple-400 font-black">•</span>
+                    <span className="text-[#1E40AF] font-black">•</span>
                     <span>
                       When people comment, reply within 1 hour! Be friendly and helpful. This makes your post show up
                       more in the group
@@ -637,24 +590,24 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 </ul>
               </div>
 
-              <div className="bg-emerald-500/10 rounded-xl p-6 border border-emerald-500/30">
-                <h4 className="text-2xl font-black text-white mb-4">What to expect</h4>
-                <p className="text-lg text-gray-300 font-semibold leading-relaxed mb-4">
+              <div className="bg-[#DDF7EC] rounded-xl p-6 border border-[#DDF7EC]">
+                <h4 className="text-2xl font-black text-[#102A43] mb-4">What to expect</h4>
+                <p className="text-lg text-[#486581] font-semibold leading-relaxed mb-4">
                   Outcomes depend on your niche, your offer, group rules, and how consistently you show up. Treat these
                   posts as starting drafts—edit them so they sound like you and comply with each community&apos;s
                   guidelines.
                 </p>
-                <ul className="space-y-3 text-lg text-gray-300 font-semibold">
+                <ul className="space-y-3 text-lg text-[#486581] font-semibold">
                   <li className="flex items-start gap-3">
-                    <span className="text-emerald-400 font-black">•</span>
+                    <span className="text-[#16875C] font-black">•</span>
                     <span>Post in a handful of relevant groups per day, spaced out, instead of dumping the same text everywhere at once.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-emerald-400 font-black">•</span>
+                    <span className="text-[#16875C] font-black">•</span>
                     <span>Reply to comments quickly and helpfully so your thread stays visible without sounding salesy.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-emerald-400 font-black">•</span>
+                    <span className="text-[#16875C] font-black">•</span>
                     <span>Track what you tried (hook, CTA, time of day) so you can improve the message—not just the volume.</span>
                   </li>
                 </ul>
@@ -663,13 +616,13 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 border-violet-500/30 shadow-xl">
+        <Card className="bg-gradient-to-br from-[var(--card)] to-[var(--surface-nested)] border-[var(--border)] shadow-xl">
           <CardHeader>
-            <CardTitle className="text-3xl font-black text-white">Get Your Posts Now</CardTitle>
+            <CardTitle className="text-3xl font-black text-[#102A43]">Get Your Posts Now</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
-              <Label className="text-xl font-black text-white">Step 1: Choose Your Niche</Label>
+              <Label className="text-xl font-black text-[#102A43]">Step 1: Choose Your Niche</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {niches.map((niche) => (
                   <Button
@@ -678,8 +631,8 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     variant={selectedNiche === niche ? "default" : "outline"}
                     className={
                       selectedNiche === niche
-                        ? "bg-violet-500 hover:bg-violet-600 text-white font-bold text-lg py-6"
-                        : "border-violet-500/30 text-violet-300 hover:bg-violet-500/20 font-bold text-lg py-6"
+                        ? "bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-lg py-6"
+                        : "border-[var(--border)] text-[#1E40AF] hover:bg-[#EEF4FF] font-bold text-lg py-6"
                     }
                   >
                     {niche === "all" ? "All Niches" : niche}
@@ -688,27 +641,27 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               </div>
             </div>
 
-            <div className="bg-blue-500/10 rounded-xl p-6 border-2 border-blue-500/30 space-y-4">
-              <h3 className="text-xl font-bold text-blue-300 flex items-center gap-2">
+            <div className="bg-[#EEF4FF] rounded-xl p-6 border border-[var(--border)] space-y-4">
+              <h3 className="text-xl font-bold text-[#1E40AF] flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6" />
                 Where to Get Your Affiliate Link
               </h3>
-              <p className="text-base text-gray-200 font-semibold leading-relaxed">
-                We recommend using <strong className="text-blue-300">DigiStore24</strong> - a free affiliate marketplace
+              <p className="text-base text-[#486581] font-semibold leading-relaxed">
+                We recommend using <strong className="text-[#1E40AF]">DigiStore24</strong> - a free affiliate marketplace
                 where you can find thousands of products to promote and earn commissions.
               </p>
               <div className="glass rounded-lg p-4 space-y-3">
-                <p className="text-sm font-bold text-gray-300">How to Get Started (3 Easy Steps):</p>
-                <ol className="space-y-2 text-sm text-gray-300 font-semibold">
+                <p className="text-sm font-bold text-[#486581]">How to Get Started (3 Easy Steps):</p>
+                <ol className="space-y-2 text-sm text-[#486581] font-semibold">
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-400 font-black">1.</span>
+                    <span className="text-[#1E40AF] font-black">1.</span>
                     <span>
                       Go to{" "}
                       <a
                         href="http://digistore24.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 underline hover:text-blue-300"
+                        className="text-[#1E40AF] underline hover:text-[#1E40AF]"
                       >
                         digistore24.com
                       </a>{" "}
@@ -716,11 +669,11 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-400 font-black">2.</span>
+                    <span className="text-[#1E40AF] font-black">2.</span>
                     <span>Browse products in your chosen niche above and click "Promote" on any product</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-400 font-black">3.</span>
+                    <span className="text-[#1E40AF] font-black">3.</span>
                     <span>Copy your unique affiliate link and paste it in the box below</span>
                   </li>
                 </ol>
@@ -728,7 +681,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               <Button
                 asChild
                 variant="outline"
-                className="w-full border-blue-500/50 text-blue-300 hover:bg-blue-500/20 font-bold bg-transparent"
+                className="w-full border-[var(--border)] text-[#1E40AF] hover:bg-[#EEF4FF] font-bold bg-[var(--surface)]"
               >
                 <a href="http://digistore24.com" target="_blank" rel="noopener noreferrer">
                   Create Free DigiStore24 Account →
@@ -737,7 +690,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             </div>
 
             <div className="space-y-4">
-              <Label htmlFor="affiliate-link" className="text-xl font-black text-white">
+              <Label htmlFor="affiliate-link" className="text-xl font-black text-[#102A43]">
                 Step 2: Enter Your Affiliate Link
               </Label>
               <Input
@@ -746,9 +699,9 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 placeholder="https://your-affiliate-link.com"
                 value={affiliateLink}
                 onChange={(e) => setAffiliateLink(e.target.value)}
-                className="glass border-2 border-violet-500/30 text-white text-xl font-semibold py-6"
+                className="glass border-2 border-[var(--border)] text-[#102A43] text-xl font-semibold py-6"
               />
-              <p className="text-base text-gray-400 font-semibold">
+              <p className="text-base text-[#829AB1] font-semibold">
                 We'll automatically add your link to all the posts below
               </p>
             </div>
@@ -766,7 +719,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             <Button
               onClick={handleGeneratePosts}
               disabled={!affiliateLink.trim() || generating}
-              className="w-full bg-violet-500 hover:bg-violet-600 text-white font-black text-2xl py-8"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black text-2xl py-8"
               size="lg"
             >
               <CheckCircle2 className="w-8 h-8 mr-3" />
@@ -777,9 +730,9 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
         {showPosts && affiliateLink && (
           <div ref={postsResultsRef} className="space-y-6">
-            <div className="text-center bg-gradient-to-br from-emerald-500/10 to-green-500/10 rounded-2xl p-8 border border-emerald-500/20">
-              <h2 className="text-4xl font-black text-white mb-3">🎉 Your {filteredPosts.length} Posts Are Ready!</h2>
-              <p className="text-xl text-emerald-300 font-bold">
+            <div className="text-center bg-[#DDF7EC] rounded-2xl p-8 border border-[#DDF7EC]">
+              <h2 className="text-4xl font-black text-[#102A43] mb-3">🎉 Your {filteredPosts.length} Posts Are Ready!</h2>
+              <p className="text-xl text-[#16875C] font-bold">
                 Click &quot;Copy Post&quot; on any message below, personalize it, then paste where it fits the group&apos;s rules.
               </p>
             </div>
@@ -788,21 +741,21 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               {filteredPosts.map((post, index) => (
                 <Card
                   key={post.id}
-                  className="glass-strong border-2 border-violet-500/20 hover:border-violet-400/50 transition-all duration-300"
+                  className="glass-strong border-2 border-[var(--border)] hover:border-[var(--border-strong)] transition-all duration-300"
                 >
                   <CardContent className="p-8">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="px-4 py-2 bg-violet-500/20 text-violet-300 text-base font-bold rounded-full">
+                          <span className="px-4 py-2 bg-[#EEF4FF] text-[#1E40AF] text-base font-bold rounded-full">
                             Post #{index + 1}
                           </span>
-                          <span className="px-4 py-2 bg-blue-500/20 text-blue-300 text-base font-bold rounded-full">
+                          <span className="px-4 py-2 bg-[#EEF4FF] text-[#1E40AF] text-base font-bold rounded-full">
                             {post.niche}
                           </span>
                         </div>
-                        <div className="glass rounded-xl p-6 mb-4 border border-violet-500/20">
-                          <p className="text-xl text-gray-200 font-semibold leading-relaxed whitespace-pre-wrap">
+                        <div className="glass rounded-xl p-6 mb-4 border border-[var(--border)]">
+                          <p className="text-xl text-[#486581] font-semibold leading-relaxed whitespace-pre-wrap">
                             {post.post.replace("[LINK]", affiliateLink)}
                           </p>
                         </div>
@@ -810,7 +763,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     </div>
                     <Button
                       onClick={() => handleCopy(post)}
-                      className="w-full bg-violet-500 hover:bg-violet-600 text-white font-black text-xl py-6"
+                      className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black text-xl py-6"
                       size="lg"
                     >
                       {copiedId === post.id ? (

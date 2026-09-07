@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { PREMIUM_FEATURES } from "@/lib/premium-features"
+import { onboardingConfig } from "@/lib/onboarding/config"
 
 const menuItems = [
   { title: "Dashboard", subtitle: "Home", url: "/dashboard", icon: LayoutDashboard },
@@ -43,7 +44,7 @@ const exclusiveOffers = [
     icon: Play,
   },
   {
-    title: "Create you Cashapp Account",
+    title: "Create your Cashapp Account",
     cta: "CashTap AI",
     href: "https://jvz1.com/c/3547097/443257/",
     icon: Wallet,
@@ -66,8 +67,8 @@ function SidebarBody({
   onSignOut: () => void
 }) {
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-[#0a1224] via-[#0f172a] to-[#0a1224]">
-      <div className={`border-b border-[#0ea5e9]/20 ${collapsed ? "px-3 py-4" : "p-4"}`}>
+    <div className="flex h-full flex-col overflow-hidden rounded-[inherit] bg-card">
+      <div className={`border-b border-[var(--ds-line)] ${collapsed ? "px-3 py-4" : "p-4"}`}>
         <div className={`flex items-center ${collapsed ? "flex-col gap-3" : "justify-between gap-2"}`}>
           <Link
             href="/dashboard"
@@ -75,17 +76,17 @@ function SidebarBody({
             className={`flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-90 group ${
               collapsed ? "justify-center" : ""
             }`}
-            title="RH"
+            title={onboardingConfig.productName}
           >
-            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4] shadow-[0_0_40px_rgba(14,165,233,0.5)] transition-shadow duration-300 group-hover:shadow-[0_0_60px_rgba(14,165,233,0.7)]">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#020617]">
-                <Brain className="h-5 w-5 text-[#0ea5e9]" />
-              </div>
+            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--ds-r-md)] bg-grad-sapphire shadow-sapphire">
+              <Brain className="h-5 w-5 text-white" />
             </div>
             {!collapsed && (
               <div className="min-w-0">
-                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-white">RH</h2>
-                <p className="whitespace-nowrap text-[13px] font-medium text-[#7dd3fc]">Your comment helper</p>
+                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-ink">
+                  {onboardingConfig.productName}
+                </h2>
+                <p className="whitespace-nowrap text-[13px] font-medium text-ink-4">Your comment helper</p>
               </div>
             )}
           </Link>
@@ -93,7 +94,7 @@ function SidebarBody({
             type="button"
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-[#0ea5e9]/20 text-[#7dd3fc] transition-colors hover:bg-[#0ea5e9]/10 hover:text-white"
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[var(--ds-r-md)] border border-[var(--ds-line-strong)] text-ink-3 transition-colors hover:bg-sapphire-200 hover:text-ink"
           >
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
           </button>
@@ -101,11 +102,7 @@ function SidebarBody({
       </div>
 
       <div className="sidebar-scroll flex-1 overflow-y-auto py-4">
-        {!collapsed && (
-          <p className="mb-2 px-4 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]/60">
-            Main Functions
-          </p>
-        )}
+        {!collapsed && <p className="sidebar-section-label">Main Functions</p>}
         <nav className="space-y-0.5 px-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.url
@@ -116,20 +113,18 @@ function SidebarBody({
                 href={item.url}
                 onClick={onNavigate}
                 title={item.title}
-                className={`flex items-center rounded-lg text-base font-semibold transition-all duration-200 ${
+                className={`sidebar-nav-item flex items-center text-[15px] font-medium ${
                   collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
-                } ${
-                  isActive
-                    ? "border border-[#0ea5e9]/40 bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white shadow-md shadow-[#0ea5e9]/20"
-                    : "border border-transparent text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white"
-                }`}
+                } ${isActive ? "is-active" : "text-ink-2"}`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
                 {!collapsed && (
-                  <span className="flex flex-col leading-tight">
+                  <span className="sidebar-nav-label flex flex-col leading-tight">
                     <span>{item.title}</span>
                     {item.subtitle && (
-                      <span className="text-xs font-medium text-[#7dd3fc]/70">{item.subtitle}</span>
+                      <span className={`text-xs font-medium ${isActive ? "text-sapphire-300" : "text-ink-4"}`}>
+                        {item.subtitle}
+                      </span>
                     )}
                   </span>
                 )}
@@ -140,13 +135,14 @@ function SidebarBody({
 
         <div className={`mt-6 ${collapsed ? "px-1.5" : "px-2"}`}>
           <div className={`premium-nav-section ${collapsed ? "p-1" : "p-2"}`}>
+            <div className="premium-nav-section-shimmer" aria-hidden />
             {!collapsed && (
-              <p className="flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[13px] font-semibold uppercase tracking-widest text-[#0ea5e9]">
+              <p className="premium-nav-section-label relative z-[1] flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[13px] uppercase tracking-wider">
                 <Sparkles className="premium-sparkle h-3.5 w-3.5" fill="currentColor" />
                 Premium Tier
               </p>
             )}
-            <nav className="space-y-1">
+            <nav className="relative z-[1] space-y-1">
               {PREMIUM_FEATURES.map((item, index) => {
                 const isActive = pathname === item.href
                 const Icon = item.icon
@@ -157,20 +153,14 @@ function SidebarBody({
                     onClick={onNavigate}
                     title={item.label}
                     style={{ animationDelay: `${0.15 + index * 0.06}s` }}
-                    className={`premium-stagger-item premium-sidebar-item flex items-center rounded-lg text-base font-semibold ${
+                    className={`premium-stagger-item premium-sidebar-item flex items-center text-[15px] font-medium ${
                       collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
-                    } ${isActive ? "is-active" : "text-[#7dd3fc]"}`}
+                    } ${isActive ? "is-active" : ""}`}
                   >
-                    <Icon
-                      className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-[#0ea5e9]" : "text-[#0ea5e9]/80"}`}
-                    />
+                    <span className="premium-sidebar-icon-chip">
+                      <Icon className="h-4 w-4" />
+                    </span>
                     {!collapsed && <span>{item.label}</span>}
-                    {!collapsed && isActive && (
-                      <span
-                        className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#0ea5e9]"
-                        style={{ boxShadow: "0 0 10px rgba(14, 165, 233, 0.7)" }}
-                      />
-                    )}
                   </Link>
                 )
               })}
@@ -179,13 +169,9 @@ function SidebarBody({
         </div>
 
         {!collapsed && (
-          <div className="mt-6">
-            <div className="mx-4 mb-3 rounded-lg border border-emerald-500/30 bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 p-2">
-              <p className="text-[13px] font-semibold uppercase tracking-widest text-emerald-400">
-                Exclusive Offers
-              </p>
-            </div>
-            <nav className="space-y-2 px-2">
+          <div className="exclusive-offers-nav-section mx-2 mt-6 p-2.5">
+            <p className="exclusive-offers-nav-section-label">Exclusive Offers</p>
+            <nav className="space-y-2">
               {exclusiveOffers.map((offer) => {
                 const Icon = offer.icon
                 return (
@@ -194,17 +180,17 @@ function SidebarBody({
                     href={offer.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2.5 transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-500/10"
+                    className="exclusive-offers-nav-item px-3 py-2.5"
                   >
-                    <div className="flex items-start gap-2">
-                      <Icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-400" />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold leading-snug text-slate-200">{offer.title}</p>
-                        <span className="mt-1.5 inline-flex items-center gap-1 text-sm font-bold text-emerald-400">
-                          {offer.cta}
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </span>
-                      </div>
+                    <span className="exclusive-offers-nav-play">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold leading-snug text-ink">{offer.title}</p>
+                      <span className="mt-1.5 inline-flex items-center gap-1 text-sm font-semibold text-[var(--success)]">
+                        {offer.cta}
+                        <ExternalLink className="exclusive-offers-nav-external h-3.5 w-3.5" />
+                      </span>
                     </div>
                   </a>
                 )
@@ -214,29 +200,23 @@ function SidebarBody({
         )}
       </div>
 
-      <div className="space-y-1 border-t border-[#0ea5e9]/20 p-3">
+      <div className={`sidebar-footer space-y-2 p-4 ${collapsed ? "px-3" : ""}`}>
         <Link
           href="/support"
           onClick={onNavigate}
           title="Support"
-          className={`flex items-center rounded-lg border text-base font-semibold transition-all duration-200 ${
+          className={`sidebar-nav-item flex items-center text-[15px] font-medium ${
             collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
-          } ${
-            pathname === "/support"
-              ? "border-[#06b6d4]/40 bg-gradient-to-r from-[#06b6d4]/25 to-[#0ea5e9]/25 text-white shadow-md shadow-[#06b6d4]/20"
-              : "border-transparent text-[#7dd3fc] hover:bg-[#0ea5e9]/10 hover:text-white"
-          }`}
+          } ${pathname === "/support" ? "is-active" : "text-ink-2"}`}
         >
           <Headphones className="h-5 w-5 flex-shrink-0" />
-          {!collapsed && <span>Support</span>}
+          {!collapsed && <span className="sidebar-nav-label">Support</span>}
         </Link>
         <button
           type="button"
           onClick={onSignOut}
           title="Exit Platform"
-          className={`flex h-10 w-full items-center justify-center rounded-lg border border-[#0ea5e9]/20 bg-transparent text-base font-semibold text-[#7dd3fc] transition-all duration-200 hover:border-[#0ea5e9]/50 hover:bg-[#0ea5e9]/5 hover:text-white ${
-            collapsed ? "px-0" : "gap-2"
-          }`}
+          className={`sidebar-sign-out ${collapsed ? "px-0" : "gap-2"}`}
         >
           <LogOut className="h-5 w-5" />
           {!collapsed && <span>Exit Platform</span>}
@@ -287,16 +267,16 @@ export function AppSidebar() {
       </aside>
 
       <div
-        className="fixed left-0 right-0 top-0 z-50 flex h-12 items-center gap-2 border-b border-[#0ea5e9]/20 bg-[#0a1224]/95 px-4 backdrop-blur lg:hidden"
+        className="mobile-header-glass fixed left-0 right-0 top-0 z-50 flex h-12 items-center gap-2 px-4 lg:hidden"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-          <div className="relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0ea5e9] via-[#ec4899] to-[#06b6d4]">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#020617]">
-              <Brain className="h-4 w-4 text-[#0ea5e9]" />
-            </div>
+          <div className="relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[var(--ds-r-md)] bg-grad-sapphire">
+            <Brain className="h-4 w-4 text-white" />
           </div>
-          <span className="whitespace-nowrap text-base font-bold tracking-tight text-white">RH</span>
+          <span className="whitespace-nowrap text-base font-bold tracking-tight text-ink">
+            {onboardingConfig.productName}
+          </span>
         </Link>
       </div>
     </>

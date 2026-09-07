@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, AlertTriangle } from "lucide-react"
 import Link from "next/link"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function DisclaimerPage() {
   return (
@@ -16,7 +17,7 @@ export default function DisclaimerPage() {
           </Button>
         </div>
 
-        <Card className="glass-strong border-border/50">
+        <Card className="glass-strong border-border">
           <CardHeader>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center">
@@ -68,7 +69,7 @@ export default function DisclaimerPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">Affiliate Disclosure</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                RH is designed to help you find trending Shorts and generate comment packs. You are responsible
+                {PRODUCT_NAME} is designed to help you find trending Shorts and generate comment packs. You are responsible
                 for complying with platform rules and applicable laws. Do not post spam, misleading claims, or links.
               </p>
             </section>
@@ -76,7 +77,7 @@ export default function DisclaimerPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">Typical Results</h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                The typical user of RH may not achieve any specific results. Success depends on consistency,
+                The typical user of {PRODUCT_NAME} may not achieve any specific results. Success depends on consistency,
                 comment quality, timing, and many factors outside our control. Any examples are illustrative and not a
                 promise of outcomes.
               </p>

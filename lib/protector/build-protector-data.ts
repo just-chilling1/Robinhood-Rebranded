@@ -6,6 +6,7 @@ import {
   getUpgradeLabel,
   shortenUserId,
 } from "./account"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export interface ProtectorAccountInfo {
   email: string
@@ -62,7 +63,7 @@ export function buildProtectorViewModel(
   if (lastSignIn) {
     activities.push({
       id: "login",
-      label: "Successful login to RH",
+      label: `Successful login to ${PRODUCT_NAME}`,
       time: formatRelativeTime(lastSignIn),
       sortAt: new Date(lastSignIn).getTime(),
     })
@@ -78,7 +79,7 @@ export function buildProtectorViewModel(
   if (onboardingCompletedAt) {
     activities.push({
       id: "onboarding",
-      label: "RH system activation completed",
+      label: `${PRODUCT_NAME} system activation completed`,
       time: formatRelativeTime(onboardingCompletedAt),
       sortAt: new Date(onboardingCompletedAt).getTime(),
     })
@@ -96,7 +97,7 @@ export function buildProtectorViewModel(
   if (createdAt) {
     activities.push({
       id: "created",
-      label: "RH account created",
+      label: `${PRODUCT_NAME} account created`,
       time: formatProtectorDate(createdAt),
       sortAt: new Date(createdAt).getTime(),
     })

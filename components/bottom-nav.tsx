@@ -40,7 +40,7 @@ const exclusiveOffers = [
     icon: Play,
   },
   {
-    title: "Create you Cashapp Account",
+    title: "Create your Cashapp Account",
     href: "https://jvz1.com/c/3547097/443257/",
     icon: Wallet,
   },
@@ -58,12 +58,11 @@ export function BottomNav() {
     router.push("/auth/login")
   }
 
-  // "More" is active when the current page isn't one of the 4 main tabs
   const moreActive = !tabs.some((t) => t.url === pathname)
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-[#0ea5e9]/20 bg-[#020617]/95 backdrop-blur"
+      className="app-bottom-nav lg:hidden fixed bottom-0 left-0 right-0 z-50"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex h-16">
@@ -75,11 +74,11 @@ export function BottomNav() {
               key={tab.url}
               href={tab.url}
               className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
-                isActive ? "text-[#0ea5e9]" : "text-[#7dd3fc]/60 active:text-white"
+                isActive ? "text-sapphire-700" : "text-ink-3 active:text-ink"
               }`}
             >
               {isActive && (
-                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-gradient-to-r from-[#0ea5e9] to-[#ec4899]" />
+                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
               )}
               <Icon className="h-6 w-6" />
               <span className="text-[11px] font-semibold leading-none">{tab.title}</span>
@@ -92,11 +91,11 @@ export function BottomNav() {
             <button
               type="button"
               className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
-                moreActive ? "text-[#0ea5e9]" : "text-[#7dd3fc]/60 active:text-white"
+                moreActive ? "text-sapphire-700" : "text-ink-3 active:text-ink"
               }`}
             >
               {moreActive && (
-                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-gradient-to-r from-[#0ea5e9] to-[#ec4899]" />
+                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
               )}
               <Menu className="h-6 w-6" />
               <span className="text-[11px] font-semibold leading-none">More</span>
@@ -104,24 +103,19 @@ export function BottomNav() {
           </SheetTrigger>
           <SheetContent
             side="bottom"
-            className="max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-[#0ea5e9]/20 bg-[#020617] p-0"
+            className="max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-[var(--ds-line)] bg-card p-0"
           >
             <SheetTitle className="sr-only">More</SheetTitle>
-            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-white/15" />
+            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-sapphire-300" />
 
-            <div className="p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] space-y-6">
-              {/* Your links */}
+            <div className="space-y-6 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
               <div>
-                <p className="mb-2 px-1 text-[12px] font-semibold uppercase tracking-widest text-[#0ea5e9]/60">
-                  Main Functions
-                </p>
+                <p className="sidebar-section-label !px-1 !pt-0">Main Functions</p>
                 <Link
                   href="/share"
                   onClick={() => setMoreOpen(false)}
-                  className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-base font-semibold transition-colors ${
-                    pathname === "/share"
-                      ? "border-[#0ea5e9]/40 bg-gradient-to-r from-[#0ea5e9]/25 to-[#ec4899]/25 text-white"
-                      : "border-transparent text-[#7dd3fc] active:bg-[#0ea5e9]/10"
+                  className={`sidebar-nav-item flex items-center gap-3 px-4 py-3.5 text-[15px] font-medium ${
+                    pathname === "/share" ? "is-active" : "text-ink-2"
                   }`}
                 >
                   <Upload className="h-5 w-5" />
@@ -129,13 +123,13 @@ export function BottomNav() {
                 </Link>
               </div>
 
-              {/* Premium */}
               <div className="premium-nav-section p-2">
-                <p className="flex items-center gap-1.5 px-2 pb-2 pt-1 text-[12px] font-semibold uppercase tracking-widest text-[#0ea5e9]">
+                <div className="premium-nav-section-shimmer" aria-hidden />
+                <p className="premium-nav-section-label relative z-[1] flex items-center gap-1.5 px-2 pb-2 pt-1 text-[13px] uppercase tracking-wider">
                   <Sparkles className="premium-sparkle h-3.5 w-3.5" fill="currentColor" />
                   Premium Tier
                 </p>
-                <div className="space-y-1.5">
+                <div className="relative z-[1] space-y-1.5">
                   {PREMIUM_FEATURES.map((item, index) => {
                     const Icon = item.icon
                     const isActive = pathname === item.href
@@ -145,11 +139,13 @@ export function BottomNav() {
                         href={item.href}
                         onClick={() => setMoreOpen(false)}
                         style={{ animationDelay: `${0.1 + index * 0.06}s` }}
-                        className={`premium-stagger-item premium-sidebar-item flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-semibold ${
-                          isActive ? "is-active" : "text-[#7dd3fc]"
+                        className={`premium-stagger-item premium-sidebar-item flex items-center gap-3 px-4 py-3.5 text-[15px] font-medium ${
+                          isActive ? "is-active" : ""
                         }`}
                       >
-                        <Icon className={`h-5 w-5 ${isActive ? "text-[#0ea5e9]" : "text-[#0ea5e9]/80"}`} />
+                        <span className="premium-sidebar-icon-chip">
+                          <Icon className="h-4 w-4" />
+                        </span>
                         {item.label}
                       </Link>
                     )
@@ -157,12 +153,9 @@ export function BottomNav() {
                 </div>
               </div>
 
-              {/* Exclusive offers */}
-              <div>
-                <p className="mb-2 px-1 text-[12px] font-semibold uppercase tracking-widest text-emerald-400">
-                  Exclusive Offers
-                </p>
-                <div className="space-y-1.5">
+              <div className="exclusive-offers-nav-section p-3">
+                <p className="exclusive-offers-nav-section-label">Exclusive Offers</p>
+                <div className="space-y-2">
                   {exclusiveOffers.map((offer) => {
                     const Icon = offer.icon
                     return (
@@ -171,30 +164,32 @@ export function BottomNav() {
                         href={offer.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 rounded-xl border border-emerald-500/25 bg-emerald-500/5 px-4 py-3.5 text-base font-semibold text-slate-200 active:bg-emerald-500/10"
+                        className="exclusive-offers-nav-item px-4 py-3.5 text-[15px] font-medium"
                       >
-                        <Icon className="h-5 w-5 text-emerald-400" />
+                        <span className="exclusive-offers-nav-play">
+                          <Icon className="h-5 w-5" />
+                        </span>
                         <span className="flex-1">{offer.title}</span>
-                        <ExternalLink className="h-4 w-4 text-emerald-400" />
+                        <ExternalLink className="exclusive-offers-nav-external h-4 w-4" />
                       </a>
                     )
                   })}
                 </div>
               </div>
 
-              {/* Support + sign out */}
-              <div className="space-y-1.5 border-t border-[#0ea5e9]/20 pt-4">
+              <div className="space-y-1.5 border-t border-[var(--ds-line)] pt-4">
                 <Link
                   href="/support"
                   onClick={() => setMoreOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-semibold text-[#7dd3fc] active:bg-[#0ea5e9]/10"
+                  className="flex items-center gap-3 rounded-[var(--ds-r-md)] px-4 py-3.5 text-[15px] font-medium text-ink-2 hover:bg-[rgba(15,23,42,0.04)]"
                 >
                   <Headphones className="h-5 w-5" />
                   Support
                 </Link>
                 <button
+                  type="button"
                   onClick={handleSignOut}
-                  className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-base font-semibold text-[#7dd3fc] active:bg-[#0ea5e9]/10"
+                  className="sidebar-sign-out gap-3 px-4 py-3.5"
                 >
                   <LogOut className="h-5 w-5" />
                   Exit Platform

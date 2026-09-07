@@ -10,17 +10,18 @@ export function PremiumUpgradesWidget() {
 
   return (
     <div className="premium-nav-section p-2">
-      <div className="px-3 pb-3 pt-2.5">
-        <p className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0ea5e9]">
+      <div className="premium-nav-section-shimmer" aria-hidden />
+      <div className="relative z-[1] px-3 pb-3 pt-2.5">
+        <p className="premium-nav-section-label flex items-center gap-2 text-xs uppercase tracking-wider">
           <Sparkles className="premium-sparkle h-4 w-4" fill="currentColor" />
           Premium Upgrades
         </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-[#a5c9e8]">
+        <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
           Unlock the tools that drive the biggest results.
         </p>
       </div>
 
-      <div className="space-y-2">
+      <div className="relative z-[1] space-y-2">
         {PREMIUM_FEATURES.map((feature, index) => {
           const isActive = pathname === feature.href
           const Icon = feature.icon
@@ -36,33 +37,27 @@ export function PremiumUpgradesWidget() {
                 className={`premium-upgrade-card group ${isActive ? "is-active" : ""}`}
               >
                 <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br transition-all duration-300 ${
-                    isActive
-                      ? "from-[#0ea5e9] to-[#06b6d4] text-white shadow-[0_0_16px_rgba(14,165,233,0.45)]"
-                      : "from-[#0ea5e9]/25 to-[#06b6d4]/20 text-[#0ea5e9] group-hover:from-[#0ea5e9] group-hover:to-[#06b6d4] group-hover:text-white group-hover:shadow-[0_0_16px_rgba(14,165,233,0.45)]"
+                  className={`premium-upgrade-icon transition-all duration-[160ms] ${
+                    isActive ? "!bg-grad-sapphire !text-white shadow-sapphire" : ""
                   }`}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.5} />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <span
-                    className={`block text-sm font-bold tracking-wide ${
-                      isActive ? "text-white" : "text-slate-100 group-hover:text-white"
-                    }`}
-                  >
+                  <span className={`block text-sm font-semibold tracking-wide ${isActive ? "text-[#f8fafc]" : "text-ink"}`}>
                     {feature.label}
                   </span>
-                  <p className="mt-0.5 text-xs leading-relaxed text-[#7dd3fc]/80">
+                  <p className={`mt-0.5 text-xs leading-relaxed ${isActive ? "text-sapphire-300" : "text-ink-3"}`}>
                     {feature.description}
                   </p>
                 </div>
 
                 <span
-                  className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                  className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-[160ms] ${
                     isActive
-                      ? "bg-[#0ea5e9]/30 text-white"
-                      : "bg-white/5 text-slate-500 group-hover:translate-x-0.5 group-hover:bg-[#0ea5e9]/30 group-hover:text-white"
+                      ? "bg-white/15 text-[#f8fafc]"
+                      : "bg-sapphire-100 text-sapphire-700 group-hover:translate-x-0.5"
                   }`}
                 >
                   <ArrowRight className="h-3.5 w-3.5" />

@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
           </Button>
         </div>
 
-        <Card className="glass-strong border-border/50">
+        <Card className="glass-strong border-border">
           <CardHeader>
             <CardTitle className="text-4xl font-bold text-foreground">Privacy Policy</CardTitle>
             <p className="text-base text-muted-foreground">Last updated: January 2025</p>

@@ -2,104 +2,142 @@
 
 import { useState } from "react"
 import { X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import type { BannerSize } from "@/components/earnings-banner"
 
 /** Q-LAPS offer — same link as the old WelcomePopup (do not change). */
 const CTA_URL = "https://jvz4.com/c/3547097/442443/"
 
 /**
  * Same shell as EarningsBanner, but with the former WelcomePopup copy.
- * Used on premium feature generation CTAs (Accelerator, Recurring Streams, Social Payouts).
+ * Used on premium feature generation CTAs (Unlimited, Instant Income, Automated Profits).
  */
-import type { BannerSize } from "@/components/earnings-banner"
-
 export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
   const [dismissed, setDismissed] = useState(false)
-  const compact = size === "compact"
 
   if (dismissed) return null
 
+  const compact = size === "compact"
+  const prominent = size === "prominent"
+
   return (
     <div
-      className={`relative mb-4 w-full border-2 border-[#fbbf24]/50 bg-gradient-to-b from-[#101726] to-[#0b0f18] text-center ${
-        compact
-          ? "rounded-xl px-4 py-4 md:px-5 md:py-5"
-          : "rounded-2xl px-6 py-10 md:px-12 md:py-12"
-      }`}
+      className={cn(
+        "earnings-banner-card relative w-full overflow-hidden border-[3px] border-[#b7791f] bg-gold-surface before:hidden",
+        prominent ? "mb-0" : "mb-4",
+        compact ? "rounded-xl" : "rounded-2xl",
+      )}
     >
-      <button
-        type="button"
-        onClick={() => setDismissed(true)}
-        aria-label="Close banner"
-        className="absolute right-2 top-2 rounded-lg p-1 text-[#7dd3fc]/60 transition-colors hover:bg-white/10 hover:text-white"
-      >
-        <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
-      </button>
-
-      <span
-        className={`inline-block rounded-md bg-[#ef4444] font-black uppercase tracking-widest text-white ${
+      <div
+        className={cn(
+          "earnings-banner-card__body relative z-[1] flex flex-col items-center text-center",
           compact
-            ? "mb-2 px-2.5 py-0.5 text-[10px] md:text-xs"
-            : "mb-5 px-4 py-1.5 text-sm md:text-base"
-        }`}
+            ? "px-4 py-4 md:px-5 md:py-5"
+            : prominent
+              ? "px-5 py-5 pr-10 md:px-8 md:py-6"
+              : "px-6 py-8 pr-10 md:px-12 md:py-10",
+        )}
       >
-        You&apos;ve Been Selected
-      </span>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Close banner"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-[#486581] transition-colors hover:bg-white/50 hover:text-[#102A43]"
+        >
+          <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
+        </button>
 
-      <h2
-        className={`mx-auto font-black uppercase leading-tight text-white ${
-          compact
-            ? "mb-2 max-w-2xl text-sm md:text-base"
-            : "mb-4 max-w-4xl text-3xl md:text-5xl"
-        }`}
-      >
-        Limited Free Training — Learn How To Make{" "}
-        <span className="text-[#fbbf24]">$1,000&ndash;$5,000</span> Per Day
-      </h2>
+        <span
+          className={cn(
+            "earnings-banner-badge inline-flex items-center rounded-md bg-gold-grad font-black uppercase tracking-[0.16em] text-white",
+            compact
+              ? "mb-2 px-2.5 py-0.5 text-[10px] md:text-xs"
+              : prominent
+                ? "mb-3 px-3.5 py-1 text-xs md:text-sm"
+                : "mb-4 px-4 py-1.5 text-sm md:text-base",
+          )}
+        >
+          You&apos;ve Been Selected
+        </span>
 
-      {!compact && (
-        <>
-          <p className="mx-auto mb-6 max-w-3xl text-lg font-bold leading-snug text-[#d8e9fb] md:text-2xl">
-            With no extra work. Fully automated commission system revealed — works in just 20 minutes per day.
-          </p>
+        <h2
+          className={cn(
+            "font-heading mx-auto font-black uppercase leading-tight text-[#102A43]",
+            compact
+              ? "mb-2 max-w-2xl text-sm md:text-base"
+              : prominent
+                ? "mb-3 max-w-3xl text-xl md:text-2xl lg:text-[1.85rem]"
+                : "mb-4 max-w-4xl text-3xl md:text-5xl",
+          )}
+        >
+          Limited Free Training — Learn How To Make{" "}
+          <span className="earnings-banner-accent text-[#92600f]">$1,000&ndash;$5,000</span> Per Day
+        </h2>
 
-          <ul className="mx-auto mb-8 max-w-xl space-y-2 text-left text-base font-semibold text-[#d8e9fb] md:text-lg">
-            <li className="flex gap-2">
-              <span className="text-[#fbbf24]">★</span>
-              Fully automated commission system revealed
-            </li>
-            <li className="flex gap-2">
-              <span className="text-[#fbbf24]">★</span>
-              No tech skills or experience needed
-            </li>
-            <li className="flex gap-2">
-              <span className="text-[#fbbf24]">★</span>
-              Works in just 20 minutes per day
-            </li>
-          </ul>
-        </>
-      )}
+        {(prominent || !compact) && (
+          <>
+            <p
+              className={cn(
+                "mx-auto font-bold leading-snug text-[#486581]",
+                prominent
+                  ? "mb-4 max-w-2xl text-base md:text-lg"
+                  : "mb-6 max-w-3xl text-lg md:text-2xl",
+              )}
+            >
+              With no extra work. Fully automated commission system revealed — works in just 20 minutes per day.
+            </p>
 
-      <a
-        href={CTA_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`inline-block rounded-xl bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] font-black uppercase text-[#1a1305] shadow-xl shadow-[#fbbf24]/40 transition-all duration-200 hover:scale-[1.04] hover:shadow-[#fbbf24]/60 ${
-          compact
-            ? "px-4 py-2 text-xs md:text-sm"
-            : "px-10 py-5 text-xl md:text-2xl"
-        }`}
-      >
-        Claim My Free Spot &gt;&gt;
-      </a>
+            {!prominent && (
+              <ul className="mx-auto mb-8 max-w-xl space-y-2 text-left text-base font-semibold text-[#486581] md:text-lg">
+                <li className="flex gap-2">
+                  <span className="text-[#B7791F]">★</span>
+                  Fully automated commission system revealed
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#B7791F]">★</span>
+                  No tech skills or experience needed
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#B7791F]">★</span>
+                  Works in just 20 minutes per day
+                </li>
+              </ul>
+            )}
+          </>
+        )}
 
-      {!compact && (
-        <>
-          <p className="mt-4 text-sm font-black uppercase tracking-wide text-[#ef4444] md:text-base">
-            Warning: Only a few free spots remaining
-          </p>
-          <p className="mt-2 text-xs text-[#7dd3fc]/70">100% Free — No credit card required</p>
-        </>
-      )}
+        <a
+          href={CTA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "earnings-banner-cta inline-flex items-center justify-center rounded-xl bg-gold-grad font-black uppercase text-white no-underline shadow-[0_12px_36px_-12px_rgba(183,121,31,0.58)] transition-[background,transform,box-shadow] hover:bg-gold-grad-hover hover:-translate-y-px",
+            compact
+              ? "px-4 py-2 text-xs md:text-sm"
+              : prominent
+                ? "min-h-[3.25rem] w-full px-6 py-3.5 text-sm sm:w-auto md:min-h-[3.5rem] md:px-8 md:text-base"
+                : "px-10 py-5 text-xl md:text-2xl",
+          )}
+        >
+          Claim My Free Spot &gt;&gt;
+        </a>
+
+        {(prominent || !compact) && (
+          <>
+            <p
+              className={cn(
+                "font-black uppercase tracking-wide text-[#C53030]",
+                prominent ? "mt-4 text-xs md:text-sm" : "mt-4 text-sm md:text-base",
+              )}
+            >
+              Warning: Only a few free spots remaining
+            </p>
+            {!prominent && (
+              <p className="mt-2 text-xs text-[#486581]">100% Free — No credit card required</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }

@@ -3,9 +3,10 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { buildProtectorViewModel } from "@/lib/protector/build-protector-data"
 import { ProtectorContent } from "./protector-content"
+import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 
 export const metadata: Metadata = {
-  title: "Protector | Account Security Overview",
+  title: `${PREMIUM_FEATURE_LABELS.protector} | Account Security Overview`,
   description: "Real-time account security monitoring and status",
 }
 

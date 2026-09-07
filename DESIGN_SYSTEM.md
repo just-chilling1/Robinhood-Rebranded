@@ -1,6 +1,6 @@
-# RH Design System
+# Design System
 
-Single source of truth for the RH member area. Tokens live in `app/globals.css`. Keep cyan/pink brand colors — do not import another app's palette or affiliate links.
+Blackbox structural patterns (cards, pills, nav states, premium panels) on this app’s **sapphire / sky** palette. Tokens live in `app/globals.css`. Do not invent decorative pink/purple hexes or import another app’s affiliate links.
 
 ---
 
@@ -8,23 +8,25 @@ Single source of truth for the RH member area. Tokens live in `app/globals.css`.
 
 | Token | Value | Use |
 |---|---|---|
-| `--background` | `#020617` | App canvas |
-| `--electric-blue` / `--primary` | `#0ea5e9` | Primary accent, active nav |
-| `--hot-pink` / `--secondary` | `#ec4899` | Gradient partner |
-| `--cyan` | `#06b6d4` | Soft accent / support CTAs |
-| `--sky-light` / `--text-soft` | `#7dd3fc` | Secondary text |
-| `--text-body` | `#a5c9e8` | Long-form body |
-| `--brand-gold` | `#fbbf24` | Premium tier, warnings |
-| Semantic | emerald / red / amber | Status only |
+| `--ds-canvas` / `--background` | `#f4f6f8` | App canvas |
+| `--ds-surface` / `--card` | `#ffffff` | Raised surfaces |
+| `--ds-sapphire-500` / `--primary` | `#2563eb` | CTAs, accents |
+| `--ds-sapphire-700` | `#1d4ed8` | Readable accent text, focus |
+| `--ds-sapphire-200` | `#eef4ff` | Soft wells / chips |
+| `--ds-ink` | `#0f172a` | Primary text |
+| `--ds-ink-2` … `--ds-ink-4` | slate scale | Secondary / muted |
+| `--ds-grad-sapphire` | blue gradient | Primary buttons |
+| `--ds-grad-ink` | navy→ink gradient | Active nav / ink buttons |
+| Semantic | emerald / red / amber | Status + offer banners only |
 
-**Rules**
-- One accent family (cyan ↔ pink). Do not invent new decorative hexes.
-- Filled/gradient CTAs use **white** text (exception: amber Free Training / Welcome offer CTAs keep dark text on light gold fills).
-- `EarningsBanner`, `WelcomeOfferBanner`, and the VideoOverlay withdraw bar keep their own ad creatives.
+**Contrast**
+- Dark slate text on light canvas/white.
+- Filled sapphire CTAs use **white** labels.
+- Borders use `--ds-line` / `--ds-line-sapphire`.
 
 ## 2. Typography
 
-Plus Jakarta Sans.
+Plus Jakarta Sans (UI + headings).
 
 | Class | Use |
 |---|---|
@@ -33,24 +35,37 @@ Plus Jakarta Sans.
 | `.ds-h2` / `.ds-h3` | Section / card |
 | `.ds-subtitle` | Page subtitle |
 
-## 3. Layout
+## 3. Components (Blackbox-shaped)
+
+| Class | Use |
+|---|---|
+| `.btn-primary` / Button default | Pill sapphire gradient CTA |
+| `.btn-secondary` / Button outline | Pill outlined |
+| `.btn-ink` / Button `ink` | Dark gradient CTA |
+| `.glass-card` / `.page-section-card` | Surface + line + card shadow |
+| `.sidebar-nav-item.is-active` | Ink gradient active nav |
+| `.premium-nav-section` | Soft sapphire premium panel |
+| `.exclusive-offers-nav-*` | Green exclusive offers block |
+| `.input-base` / Input | 48px field, sapphire focus ring |
+
+## 4. Layout
 
 - Outer container: **`max-w-7xl mx-auto`** on every protected page.
 - Dashboard: `xl:grid-cols-4` with main `col-span-3` + activity rail.
 - Every page starts with `<PageHeader eyebrow title subtitle actions />`.
 
-## 4. Media
+## 5. Media
 
 - Thumbnails: WebP in `public/thumbnails/`, mapped in `lib/video-thumbnails.ts`.
 - Always use `.thumb-scrim` under play buttons.
-- Playback only in `VideoOverlay` (flex column so withdraw ad is fully visible).
+- Playback only in `VideoOverlay`.
 
-## 5. Navigation
+## 6. Navigation
 
-- Desktop sidebar: `--sidebar-w` 280px ↔ 76px collapsed (`html[data-sidebar]`, `localStorage` key `rh_sidebar_collapsed`). Brand name: `whitespace-nowrap`.
+- Desktop sidebar: `--sidebar-w` 280px ↔ 76px collapsed (`html[data-sidebar]`, `localStorage` key `rh_sidebar_collapsed`).
 - Mobile: slim top bar + 5-tab `BottomNav` + More sheet. `pb-24` clearance.
 
-## 6. Offer banners (do not mix)
+## 7. Offer banners (do not mix)
 
 | Placement | Component | Link |
 |---|---|---|
@@ -58,8 +73,9 @@ Plus Jakarta Sans.
 | Premium CTAs (Accelerator / Recurring / Social) | `WelcomeOfferBanner` | Q-LAPS JVZoo (unchanged) |
 | Under videos | VideoOverlay withdraw bar | Withdraw JVZoo (unchanged) |
 
-## 7. Do not change
+## 8. Do not change
 
 - Any affiliate/offer URLs belonging to this app
 - Vimeo IDs / API route logic
-- Cross-app link swaps (never copy links from ProfitLoop or others)
+- Cross-app link swaps
+- Brand color direction (sapphire/sky — not Blackbox cream/brass)

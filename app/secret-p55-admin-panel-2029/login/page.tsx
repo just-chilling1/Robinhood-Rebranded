@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md border-red-500/20">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
@@ -54,8 +54,8 @@ export default function AdminLoginPage() {
               </Alert>
             )}
 
-            <Alert className="bg-blue-500/10 border-blue-500/20">
-              <AlertDescription className="text-blue-300 text-sm">
+            <Alert className="bg-[#E1F2FB] border-[var(--border)]">
+              <AlertDescription className="text-[#1E40AF] text-sm">
                 ✓ Admin credentials are pre-configured. Simply click the button below to access the admin panel.
               </AlertDescription>
             </Alert>
@@ -64,8 +64,8 @@ export default function AdminLoginPage() {
               {loading ? "Authenticating..." : "🔓 Access Admin Panel"}
             </Button>
 
-            <p className="text-xs text-center text-slate-400 mt-4">
-              Logged in as: <span className="text-white font-medium">{email}</span>
+            <p className="text-xs text-center text-[#486581] mt-4">
+              Logged in as: <span className="text-[#102A43] font-medium">{email}</span>
             </p>
           </form>
         </CardContent>

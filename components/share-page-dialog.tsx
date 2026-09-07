@@ -50,7 +50,7 @@ export function SharePageDialog({ pageUrl, pageTitle }: SharePageDialogProps) {
           Share
         </Button>
       </DialogTrigger>
-      <DialogContent className="glass-strong border-border/50 max-w-md">
+      <DialogContent className="glass-strong border-border max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-foreground">Share Your Page</DialogTitle>
           <DialogDescription className="text-base text-muted-foreground">

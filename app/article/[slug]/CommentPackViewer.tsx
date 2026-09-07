@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Copy, ExternalLink, Sparkles, ShieldCheck } from "lucide-react"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 type CommentPack = {
   version: number
@@ -75,20 +76,20 @@ export function CommentPackViewer({
   const top5 = comments.slice(0, 5)
 
   return (
-    <div className="min-h-screen bg-[#0A0E12] px-4 py-10">
+    <div className="min-h-screen bg-background px-4 py-10">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center space-y-3">
-          <p className="text-sm text-muted-foreground">RH Comment Pack</p>
+          <p className="text-sm text-muted-foreground">{PRODUCT_NAME} Comment Pack</p>
           <h1 className="text-3xl md:text-5xl font-black text-foreground text-balance">{pack.videoTitle}</h1>
           <p className="text-base text-muted-foreground">
             {pack.channelTitle ? `Channel: ${pack.channelTitle}` : "Pick a comment, tweak 1–2 words, and post early."}
           </p>
         </div>
 
-        <Card className="glass-strong border-border/50">
+        <Card className="glass-strong border-border">
           <CardHeader className="space-y-3">
             <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-accent" />
+              <Sparkles className="w-6 h-6 text-[#1E40AF]" />
               Quick Start (30 seconds)
             </CardTitle>
             <div className="grid gap-3 md:grid-cols-2">
@@ -102,7 +103,7 @@ export function CommentPackViewer({
               </div>
               <div className="glass rounded-xl p-4">
                 <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-accent" />
+                  <ShieldCheck className="w-4 h-4 text-[#1E40AF]" />
                   Keep it safe
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
@@ -115,7 +116,7 @@ export function CommentPackViewer({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild className="h-12 font-bold glow-cyan flex-1">
+              <Button asChild className="h-12 font-bold glow-blue flex-1 bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white">
                 <a href={pack.videoUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-5 h-5 mr-2" />
                   Open the Short
@@ -140,7 +141,7 @@ export function CommentPackViewer({
           </CardContent>
         </Card>
 
-        <Card className="glass border-border/50">
+        <Card className="glass border-border">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-foreground">Top 5 (fastest)</CardTitle>
           </CardHeader>
@@ -157,7 +158,7 @@ export function CommentPackViewer({
           </CardContent>
         </Card>
 
-        <Card className="glass border-border/50">
+        <Card className="glass border-border">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-foreground">All comments</CardTitle>
           </CardHeader>

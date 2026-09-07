@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Check, Crown, Zap, Rocket, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { PageHeader } from "@/components/page-header"
+import { PREMIUM_FEATURE_LABELS, getUpgradeLevelLabel } from "@/lib/premium-features"
 
 const upgrades = [
   {
     id: "dfy_vault",
-    name: "Accelerator",
+    name: PREMIUM_FEATURE_LABELS.dfyVault,
     tagline: "Ready-made templates",
     icon: Crown,
     color: "cyan",
@@ -25,12 +26,12 @@ const upgrades = [
   },
   {
     id: "instant_income",
-    name: "Recurring Streams",
+    name: PREMIUM_FEATURE_LABELS.instantIncome,
     tagline: "Fast-Track Your Earnings",
     icon: Zap,
     color: "violet",
     features: [
-      "Everything in Accelerator",
+      `Everything in ${PREMIUM_FEATURE_LABELS.dfyVault}`,
       "Paid Traffic Training",
       "FB Ads Masterclass",
       "Landing Page Builder",
@@ -41,12 +42,12 @@ const upgrades = [
   },
   {
     id: "automated_income",
-    name: "Social Payouts",
+    name: PREMIUM_FEATURE_LABELS.automatedIncome,
     tagline: "Set It and Forget It",
     icon: Rocket,
     color: "jade",
     features: [
-      "Everything in Recurring Streams",
+      `Everything in ${PREMIUM_FEATURE_LABELS.instantIncome}`,
       "Email Automation System",
       "Automatic follow-up emails",
       "Traffic Automation Tools",
@@ -57,7 +58,7 @@ const upgrades = [
   },
   {
     id: "protector",
-    name: "Protector",
+    name: PREMIUM_FEATURE_LABELS.protector,
     tagline: "Account Security Overview",
     icon: ShieldCheck,
     color: "jade",
@@ -93,15 +94,11 @@ export default async function UpgradesPage() {
       />
 
       {profile?.upgrade_level !== "free" && (
-        <Card className="glass-strong glow-jade border-border/50">
+        <Card className="glass-strong glow-jade border-border">
           <CardContent className="p-6 text-center">
-            <p className="text-lg font-bold text-accent">
+            <p className="text-lg font-bold text-[#1E40AF]">
               Current Plan:{" "}
-              {profile?.upgrade_level === "dfy_vault"
-                ? "Accelerator"
-                : profile?.upgrade_level === "instant_income"
-                  ? "Recurring Streams"
-                  : "Social Payouts"}
+              {getUpgradeLevelLabel(profile?.upgrade_level)}
             </p>
           </CardContent>
         </Card>
@@ -112,13 +109,13 @@ export default async function UpgradesPage() {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
           const glowClass =
-            upgrade.color === "cyan" ? "glow-cyan" : upgrade.color === "violet" ? "glow-violet" : "glow-jade"
+            upgrade.color === "cyan" ? "glow-cyan" : upgrade.color === "violet" ? "glow-blue" : "glow-jade"
 
           return (
-            <Card key={upgrade.id} className={`glass-strong border-border/50 ${glowClass} flex flex-col`}>
+            <Card key={upgrade.id} className={`glass-strong border-border ${glowClass} flex flex-col`}>
               <CardHeader className="text-center pb-6">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4 glow-cyan">
-                  <Icon className="w-10 h-10 text-background" />
+                <div className="w-20 h-20 rounded-2xl bg-[#EEF4FF] flex items-center justify-center mx-auto mb-4">
+                  <Icon className="w-10 h-10 text-[#1E40AF]" />
                 </div>
                 <CardTitle className="text-3xl font-bold text-foreground mb-2">{upgrade.name}</CardTitle>
                 <p className="text-base text-muted-foreground">{upgrade.tagline}</p>
@@ -127,7 +124,7 @@ export default async function UpgradesPage() {
                 <div className="space-y-3 mb-8 flex-1">
                   {upgrade.features.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-[#16875C] flex-shrink-0 mt-0.5" />
                       <p className="text-base text-foreground leading-relaxed">{feature}</p>
                     </div>
                   ))}

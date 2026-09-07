@@ -1,51 +1,66 @@
 import { Check } from "lucide-react"
 
-interface StepIndicatorProps {
-  currentStep: number
+export type WizardStep = {
+  number: number
+  title: string
+  description: string
 }
 
-const steps = [
-  { number: 1, title: "Pick a Category", description: "Choose what you like" },
-  { number: 2, title: "Generate Comments", description: "Get your comment pack" },
-]
+interface StepIndicatorProps {
+  currentStep: number
+  steps: WizardStep[]
+}
 
-export function StepIndicator({ currentStep }: StepIndicatorProps) {
+export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
+  const progressPercent = steps.length > 1 ? ((currentStep - 1) / (steps.length - 1)) * 100 : 0
+
   return (
-    <div className="glass-strong border-border/50 rounded-2xl p-6 lg:p-8">
-      <div className="flex items-center justify-between">
-        {steps.map((step, index) => (
-          <div key={step.number} className="flex items-center flex-1">
-            <div className="flex flex-col items-center gap-3 flex-1">
-              <div
-                className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold transition-all duration-300 ${
-                  currentStep > step.number
-                    ? "bg-accent text-background glow-jade"
-                    : currentStep === step.number
-                      ? "bg-primary text-background glow-cyan"
-                      : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {currentStep > step.number ? <Check className="w-8 h-8" /> : step.number}
-              </div>
-              <div className="text-center">
-                <p
-                  className={`text-lg font-bold ${currentStep >= step.number ? "text-foreground" : "text-muted-foreground"}`}
-                >
-                  {step.title}
-                </p>
-                <p className="text-sm text-muted-foreground">{step.description}</p>
-              </div>
-            </div>
-            {index < steps.length - 1 && (
-              <div className="flex-1 h-1 mx-4 rounded-full bg-muted overflow-hidden">
+    <nav aria-label="Progress" className="glass-strong rounded-2xl border border-[var(--border)] px-4 py-5 sm:px-8 sm:py-6">
+      <div className="relative">
+        <div
+          className="absolute left-[16.5%] right-[16.5%] top-5 hidden h-1 overflow-hidden rounded-full bg-[#E4E7EB] sm:block"
+          aria-hidden="true"
+        >
+          <div
+            className="h-full rounded-full bg-[#16875C] transition-all duration-500"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
+        <ol className="relative grid grid-cols-3 gap-2">
+          {steps.map((step) => {
+            const status =
+              currentStep > step.number ? "complete" : currentStep === step.number ? "current" : "upcoming"
+
+            return (
+              <li key={step.number} className="flex flex-col items-center gap-2 text-center">
                 <div
-                  className={`h-full transition-all duration-500 ${currentStep > step.number ? "bg-accent w-full" : "bg-transparent w-0"}`}
-                />
-              </div>
-            )}
-          </div>
-        ))}
+                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black transition-all sm:h-11 sm:w-11 ${
+                    status === "complete"
+                      ? "bg-[#16875C] text-white"
+                      : status === "current"
+                        ? "bg-[#2563EB] text-white shadow-lg shadow-[#2563EB]/25"
+                        : "border-2 border-[var(--border)] bg-card text-[#829AB1]"
+                  }`}
+                  aria-current={status === "current" ? "step" : undefined}
+                >
+                  {status === "complete" ? <Check className="h-5 w-5" /> : step.number}
+                </div>
+                <div className="min-w-0">
+                  <p
+                    className={`text-xs font-black sm:text-sm ${
+                      status === "upcoming" ? "text-[#829AB1]" : "text-[#102A43]"
+                    }`}
+                  >
+                    {step.title}
+                  </p>
+                  <p className="hidden text-xs font-semibold text-[#486581] sm:block">{step.description}</p>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
       </div>
-    </div>
+    </nav>
   )
 }

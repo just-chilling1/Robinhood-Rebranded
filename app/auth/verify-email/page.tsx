@@ -7,8 +7,8 @@ export default function VerifyEmailPage() {
       <div className="w-full max-w-md">
         <Card className="glass-strong glow-jade">
           <CardHeader className="space-y-2 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#EEF4FF] flex items-center justify-center mb-4">
+              <svg className="w-8 h-8 text-[#1E40AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -17,7 +17,7 @@ export default function VerifyEmailPage() {
                 />
               </svg>
             </div>
-            <CardTitle className="text-3xl font-bold text-accent">Check Your Email</CardTitle>
+            <CardTitle className="text-3xl font-bold text-[#102A43]">Check Your Email</CardTitle>
             <CardDescription className="text-lg text-muted-foreground">
               We've sent you a verification link
             </CardDescription>

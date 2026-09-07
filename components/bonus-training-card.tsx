@@ -1,56 +1,79 @@
-"use client"
-
 import Link from "next/link"
-import { ArrowRight, Flame } from "lucide-react"
 import { FREE_TRAINING_URL } from "@/lib/support"
-import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+
+const BENEFITS = ["No experience needed", "Step-by-step", "24/7 automation"] as const
 
 /** Compact free-training ad between dashboard videos. */
 export function BonusTrainingCard() {
   return (
-    <Card className="glass-strong border border-white/10 overflow-hidden shadow-lg">
-      <CardContent className="p-5 md:p-6">
-        <div className="space-y-4 text-sm leading-relaxed text-[#94a3b8] md:text-[15px]">
-          <p>
-            Imagine rolling out of bed, checking your phone, and seeing an extra
-            <span className="font-semibold text-white"> $1,000, $3,000, or even $5,000 </span>
-            deposited into your account—without grinding away at a 9-to-5 job, begging for overtime,
-            or stressing over side hustles that barely pay the bills.
-          </p>
-          <p>
-            This isn&apos;t some wild fantasy—it&apos;s a real, proven system that countless everyday
-            people are using to generate consistent, life-changing income on autopilot. No experience?
-            No problem. No tech skills? Doesn&apos;t matter. This works for anyone willing to follow a
-            simple, step-by-step process.
-          </p>
-          <p>
-            The best part?{" "}
-            <span className="font-semibold text-white">It runs 24/7, even while you sleep.</span>
-          </p>
-          <p className="flex items-start gap-2 font-semibold text-white">
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-[#fbbf24]" />
-            <span>Ready to break free from financial stress and start living life on your terms?</span>
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-[#fbbf24]" />
-          </p>
-          <p>
-            Click the button below and discover how you can wake up to an extra
-            <span className="font-semibold text-white"> $1,000-$5,000 </span>
-            in your bank account every single day!
-          </p>
-        </div>
+    <div className="bonus-training-card">
+      <div className="bonus-training-card__body">
+        <div className="flex flex-col gap-5 md:flex-row md:items-stretch md:justify-between md:gap-8 lg:gap-10">
+          <div className="min-w-0 flex-1">
+            <span className="bonus-training-badge inline-flex items-center rounded-md px-2.5 py-0.5 text-[10px] font-black uppercase">
+              Free Training
+            </span>
 
-        <div className="mt-5 flex justify-center">
-          <Link
-            href={FREE_TRAINING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex w-full max-w-xl items-center justify-center gap-2 rounded-lg bg-[#fbbf24] px-6 py-3 text-center text-sm font-bold text-black shadow-lg transition-all hover:bg-[#ffd54a] sm:w-auto"
+            <h3 className="mt-2.5 text-balance text-xl font-black leading-[1.12] tracking-tight text-foreground md:text-[1.625rem]">
+              Wake up to an extra{" "}
+              <span className="bonus-training-accent">$1,000&ndash;$5,000</span>
+            </h3>
+
+            <p className="mt-2 max-w-xl text-sm font-semibold leading-snug text-foreground/85 md:text-[15px]">
+              Deposited into your account&mdash;without a 9-to-5, overtime, or side hustles.
+            </p>
+
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-secondary md:text-[15px]">
+              A proven system that helps everyday people generate consistent income on autopilot&mdash;no
+              experience or tech skills required.
+            </p>
+
+            <p
+              className="bonus-training-benefits"
+              aria-label="Benefits: No experience needed, Step-by-step, 24/7 automation"
+            >
+              <span aria-hidden className="bonus-training-accent">
+                ✦
+              </span>
+              {BENEFITS.map((label, index) => (
+                <span key={label} className="inline-flex items-center gap-2">
+                  {index > 0 && (
+                    <span aria-hidden className="text-[var(--gold-500)]">
+                      •
+                    </span>
+                  )}
+                  {label}
+                </span>
+              ))}
+            </p>
+          </div>
+
+          <div
+            className={cn(
+              "bonus-training-cta-zone flex w-full shrink-0 flex-col justify-center rounded-xl px-4 py-4",
+              "md:w-[min(100%,18rem)] md:px-5 md:py-5 lg:w-[min(100%,19.5rem)]",
+            )}
           >
-            Yes! Show Me How To Earn $1,000-$5,000 A Day
-            <ArrowRight className="h-4 w-4 shrink-0" />
-          </Link>
+            <p className="text-center text-sm font-bold text-foreground md:text-[15px]">
+              Ready to see how it works?
+            </p>
+
+            <Link
+              href={FREE_TRAINING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bonus-training-cta mt-3 inline-flex min-h-[3rem] w-full items-center justify-center rounded-xl px-5 py-3.5 text-center text-[13px] font-black leading-snug whitespace-normal sm:text-sm"
+            >
+              Yes! Show Me How To Earn $1,000&ndash;$5,000 A Day
+            </Link>
+
+            <p className="mt-2.5 text-center text-[11px] font-semibold tracking-wide text-text-secondary md:text-xs">
+              100% Free &mdash; No credit card required
+            </p>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

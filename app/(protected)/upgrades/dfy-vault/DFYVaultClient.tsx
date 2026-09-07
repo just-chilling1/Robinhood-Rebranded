@@ -1,38 +1,49 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, type FormEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { 
-  Loader2, 
-  Search, 
-  Filter, 
-  Youtube, 
-  Copy, 
-  Check, 
+import { InfoHint } from "@/components/ui/info-hint"
+import {
+  Loader2,
+  Search,
+  Youtube,
+  Copy,
+  Check,
   Eye,
   TrendingUp,
   Flame,
   Zap,
-  ExternalLink,
-  Play,
-  AlertTriangle
+  AlertTriangle,
+  ArrowRight,
+  Gem,
+  Link2,
+  MessageSquare,
+  Rocket,
+  Clock,
 } from "lucide-react"
 import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
-import { VideoOverlay } from "@/components/video-overlay"
 import { PageHeader } from "@/components/page-header"
+import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
+import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
+import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import { cn } from "@/lib/utils"
 
-interface UserProduct {
-  name: string
-  link: string
-}
+const primaryCtaClass =
+  "rounded-xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] font-black text-white shadow-lg shadow-[#2563EB]/30 transition-[transform,box-shadow,filter,background] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:from-[#1D4ED8] hover:to-[#1E40AF] hover:shadow-2xl hover:shadow-[#2563EB]/50 hover:brightness-110 active:translate-y-0 active:scale-[0.99]"
+
+const outlineCtaClass =
+  "glass rounded-xl border-2 border-[var(--border)] font-bold text-[#102A43] shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:border-[#2563EB] hover:bg-[#2563EB]/10 hover:text-[#1D4ED8] hover:shadow-xl hover:shadow-[#2563EB]/25 active:translate-y-0 active:scale-[0.99]"
+
+type FieldKey = "productName" | "productLink"
+type FieldErrors = Partial<Record<FieldKey, string>>
 
 export default function DFYVaultClient() {
   const [loading, setLoading] = useState(true)
@@ -42,11 +53,11 @@ export default function DFYVaultClient() {
   const [searchQuery, setSearchQuery] = useState("")
   const [liveSearching, setLiveSearching] = useState(false)
   const [liveResults, setLiveResults] = useState<DFYVideo[] | null>(null)
-  
-  // User's product selection
+
   const [productName, setProductName] = useState("")
   const [productLink, setProductLink] = useState("")
   const [productSelected, setProductSelected] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [productError, setProductError] = useState<string | null>(null)
   const [unlocking, setUnlocking] = useState(false)
   const prevUnlocking = useRef(false)
@@ -67,12 +78,8 @@ export default function DFYVaultClient() {
   useEffect(() => {
     prevLiveSearching.current = liveSearching
   }, [liveSearching])
-  
-  // Copy tracking
+
   const [copiedComment, setCopiedComment] = useState<string | null>(null)
-  
-  // Video player state
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   useEffect(() => {
     loadLibrary()
@@ -90,33 +97,27 @@ export default function DFYVaultClient() {
     setLoading(false)
   }
 
-  // Match any word of the query against title, channel and niche —
-  // a strict full-phrase title match almost always returned 0 results.
   const matchesQuery = (video: DFYVideo, query: string) => {
-    const words = query.toLowerCase().split(/\s+/).filter(w => w.length >= 2)
+    const words = query.toLowerCase().split(/\s+/).filter((w) => w.length >= 2)
     if (words.length === 0) return true
     const haystack = `${video.title} ${video.channelTitle} ${video.niche}`.toLowerCase()
-    return words.some(w => haystack.includes(w))
+    return words.some((w) => haystack.includes(w))
   }
 
   const filterVideos = () => {
     let filtered = videos
 
-    // Filter by niche
     if (selectedNiche !== "all") {
-      filtered = filtered.filter(v => v.niche === selectedNiche)
+      filtered = filtered.filter((v) => v.niche === selectedNiche)
     }
 
-    // Filter by search
     if (searchQuery.trim()) {
-      filtered = filtered.filter(v => matchesQuery(v, searchQuery.trim()))
+      filtered = filtered.filter((v) => matchesQuery(v, searchQuery.trim()))
     }
 
     setFilteredVideos(filtered)
   }
 
-  // When the library has nothing for this search, fetch fresh videos
-  // straight from YouTube instead of showing "0 opportunities".
   useEffect(() => {
     const query = searchQuery.trim()
     setLiveResults(null)
@@ -126,8 +127,8 @@ export default function DFYVaultClient() {
       return
     }
 
-    const localMatches = videos.filter(v =>
-      (selectedNiche === "all" || v.niche === selectedNiche) && matchesQuery(v, query)
+    const localMatches = videos.filter(
+      (v) => (selectedNiche === "all" || v.niche === selectedNiche) && matchesQuery(v, query)
     )
     if (localMatches.length > 0) {
       setLiveSearching(false)
@@ -150,13 +151,38 @@ export default function DFYVaultClient() {
     }
   }, [searchQuery, selectedNiche, videos, loading])
 
-  const handleSelectProduct = () => {
-    if (!productName.trim() || !productLink.trim()) {
-      setProductError("Please enter both your product name and your affiliate link to continue.")
+  const clearFieldError = (key: FieldKey) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
+
+  const validateProduct = (): FieldErrors => {
+    const next: FieldErrors = {}
+    if (!productName.trim()) {
+      next.productName = "Add the name of the product or offer you're promoting."
+    }
+    if (!productLink.trim()) {
+      next.productLink = "Paste your affiliate link so it can go inside the comments."
+    } else if (!isValidAffiliateUrl(productLink)) {
+      next.productLink = "Use a full link that starts with http:// or https://"
+    }
+    return next
+  }
+
+  const handleSelectProduct = (event?: FormEvent) => {
+    event?.preventDefault()
+    const nextErrors = validateProduct()
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors)
+      setProductError("Fill in the highlighted fields to continue.")
       return
     }
+    setFieldErrors({})
     setProductError(null)
-    // Short "unlocking" phase so the ad shows before the library appears.
     setUnlocking(true)
     setTimeout(() => {
       setUnlocking(false)
@@ -165,17 +191,17 @@ export default function DFYVaultClient() {
   }
 
   const handleCopyComment = async (comment: string, videoId: string, index: number) => {
-    // Replace placeholders with user's product
     const personalizedComment = comment
       .replace(/\[PRODUCT\]/g, productName)
       .replace(/\[LINK\]/g, productLink)
-    
+
     await navigator.clipboard.writeText(personalizedComment)
     setCopiedComment(`${videoId}-${index}`)
     setTimeout(() => setCopiedComment(null), 2000)
   }
 
-  const niches = ["all", ...Array.from(new Set(videos.map(v => v.niche)))]
+  const niches = ["all", ...Array.from(new Set(videos.map((v) => v.niche)))]
+  const filledCount = [productName, productLink].filter((value) => value.trim()).length
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
@@ -185,294 +211,359 @@ export default function DFYVaultClient() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-12 h-12 text-[#0ea5e9] animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-[#2563EB]" />
       </div>
     )
   }
 
   const displayedVideos = filteredVideos.length > 0 ? filteredVideos : (liveResults ?? [])
+  const libraryCountLabel =
+    videos.length > 0
+      ? `${videos.length} pre-loaded viral videos + 5 comments each.`
+      : "Pre-loaded viral videos + 5 comments each."
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="mx-auto max-w-7xl space-y-6">
       <PageHeader
-        eyebrow="Accelerator"
-        title="💎 Accelerator"
-        subtitle={`${videos.length} Pre-Loaded Viral Videos + 5 Comments Each. Select your product once, copy & paste comments on any video`}
+        eyebrow={PREMIUM_FEATURE_LABELS.dfyVault}
+        title={
+          <span className="inline-flex items-center gap-3">
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#2563EB]/20 bg-[#2563EB]/10">
+              <Gem className="h-5 w-5 text-[#2563EB]" />
+            </span>
+            {PREMIUM_FEATURE_LABELS.dfyVault}
+          </span>
+        }
+        subtitle={`${libraryCountLabel} Select your product once, then copy and paste comments on any video.`}
       />
 
-      {/* Training Video */}
-      <Card className="glass-strong border-2 border-[#ec4899]/40 overflow-hidden">
-        <div className="p-6 border-b-2 border-[#ec4899]/20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#ec4899]/30 to-[#f97316]/30 flex items-center justify-center border-2 border-[#ec4899]/40">
-              <Youtube className="w-6 h-6 text-[#ec4899]" />
-            </div>
-            <div>
-              <h2 className="text-3xl font-black text-white">Accelerator Training</h2>
-              <p className="text-[#7dd3fc] font-semibold">Watch this first to maximize your results with the Accelerator video</p>
-            </div>
-          </div>
-        </div>
+      <PremiumVideoTutorial
+        vimeoId={getPremiumTrainingVimeoId("accelerator")}
+        title={`${PREMIUM_FEATURE_LABELS.dfyVault} Training`}
+        description="Watch how to browse pre-loaded viral videos, select your product once, and copy ready-made comments — all in under two minutes."
+        iframeTitle={`${PREMIUM_FEATURE_LABELS.dfyVault} training video`}
+      />
 
-        <div className="relative aspect-video bg-black">
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0d0a1a] to-[#1a1429]">
-            <div className="absolute inset-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/thumbnails/thumb-06-accelerator.webp?v=20260730a"
-                alt="Accelerator Training thumbnail"
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div className="absolute inset-0 thumb-scrim" />
-            <Button
-              size="lg"
-              onClick={() => setIsVideoPlaying(true)}
-              className="relative z-10 h-28 w-28 rounded-full bg-gradient-to-br from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white shadow-2xl hover:scale-110 transition-all duration-300 border-4 border-white/20"
-            >
-              <Play className="w-14 h-14 ml-1 fill-white" />
-            </Button>
-            <div className="absolute bottom-8 left-0 right-0 text-center">
-              <p className="text-white text-xl font-extrabold drop-shadow-lg">▶ Click to Play Training</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {isVideoPlaying && (
-        <VideoOverlay
-          videoUrl="https://player.vimeo.com/video/1214134021"
-          title="Accelerator Training"
-          onClose={() => setIsVideoPlaying(false)}
-        />
-      )}
-
-      {/* Product Selection */}
       {!productSelected ? (
-        <Card className="glass-strong border-2 border-[#fbbf24]/40 p-8">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3 pb-4 border-b-2 border-[#fbbf24]/20">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#fbbf24]/30 to-[#f97316]/30 flex items-center justify-center border-2 border-[#fbbf24]/40">
-                <Zap className="w-7 h-7 text-[#fbbf24]" />
+        <div className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="glass-strong border border-[var(--border)] p-6">
+              <div className="mb-5 flex items-center gap-2">
+                <Clock className="h-5 w-5 text-[#2563EB]" />
+                <h3 className="text-lg font-black text-[#102A43]">How it works</h3>
               </div>
-              <div>
-                <h2 className="text-3xl font-black text-white">Select Your Product</h2>
-                <p className="text-[#7dd3fc] font-semibold">Your product will be inserted into all comments automatically</p>
+              <ol className="space-y-4">
+                {[
+                  {
+                    icon: Link2,
+                    title: "Lock in your offer",
+                    body: "Add the product name and money link once. Unlimited inserts them for you.",
+                  },
+                  {
+                    icon: Search,
+                    title: "Browse ready videos",
+                    body: "Open a vault of high-view Shorts already matched to popular niches.",
+                  },
+                  {
+                    icon: MessageSquare,
+                    title: "Copy and post",
+                    body: "Each video has 5 comments with your offer inside. Paste and go.",
+                  },
+                ].map((item) => (
+                  <li key={item.title} className="flex gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[#2563EB]/8">
+                      <item.icon className="h-5 w-5 text-[#2563EB]" />
+                    </div>
+                    <div>
+                      <p className="font-black text-[#102A43]">{item.title}</p>
+                      <p className="text-sm font-semibold leading-relaxed text-[#486581]">{item.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+
+            <Card className="border border-[#2563EB]/20 bg-gradient-to-br from-[#2563EB]/8 to-transparent p-6">
+              <div className="mb-3 flex items-center gap-2">
+                <Rocket className="h-5 w-5 text-[#2563EB]" />
+                <h3 className="text-lg font-black text-[#102A43]">What you walk away with</h3>
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-white font-bold text-lg mb-2 block">Product Name</Label>
-                <Input
-                  value={productName}
-                  onChange={(e) => setProductName(e.target.value)}
-                  placeholder="e.g., Keto Weight Loss System"
-                  className="h-14 text-lg glass border-2 border-[#0ea5e9]/30"
-                />
-              </div>
-              <div>
-                <Label className="text-white font-bold text-lg mb-2 block">Affiliate Link</Label>
-                <Input
-                  value={productLink}
-                  onChange={(e) => setProductLink(e.target.value)}
-                  placeholder="https://..."
-                  className="h-14 text-lg glass border-2 border-[#0ea5e9]/30"
-                />
-              </div>
-            </div>
-
-            {productError && (
-              <Alert variant="destructive" className="glass-strong border-2 border-[#ef4444]/50 text-[#fca5a5]">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription className="text-[#fca5a5] font-semibold">{productError}</AlertDescription>
-              </Alert>
-            )}
-
-            {unlocking && (
-              <GenerationProgress offer="welcome" label="Unlocking your Accelerator library..." />
-            )}
-
-            <Button
-              onClick={handleSelectProduct}
-              disabled={unlocking}
-              className="w-full h-16 text-xl font-black bg-gradient-to-r from-[#fbbf24] to-[#f97316] hover:from-[#f97316] hover:to-[#fbbf24] rounded-xl"
-            >
-              {unlocking ? "Unlocking..." : "Unlock Accelerator Library →"}
-            </Button>
+              <ul className="space-y-2 text-sm font-semibold text-[#486581]">
+                <li>Viral videos you can comment on immediately</li>
+                <li>Five ready comments on every video</li>
+                <li>Your product and link already filled in</li>
+              </ul>
+            </Card>
           </div>
-        </Card>
+
+          <Card className="glass-strong border-2 border-[var(--border-strong)] p-6 sm:p-8">
+            <form className="space-y-6" onSubmit={handleSelectProduct} noValidate>
+              <div className="flex items-start justify-between gap-4 border-b-2 border-[#2563EB]/45 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[var(--border-strong)] bg-gradient-to-br from-[#2563EB]/20 to-[#2563EB]/10 sm:h-14 sm:w-14">
+                    <Zap className="h-6 w-6 text-[#2563EB] sm:h-7 sm:w-7" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-[#102A43] sm:text-3xl">Select Your Product</h2>
+                    <p className="font-semibold text-[#486581]">Your product goes into every comment automatically</p>
+                  </div>
+                </div>
+                <p className="shrink-0 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/8 px-2.5 py-1 text-[11px] font-black text-[#2563EB] sm:px-3 sm:text-xs">
+                  {filledCount}/2 ready
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="unlimited-product-name" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
+                    Product Name
+                    <InfoHint label="The product or offer you're promoting. It gets dropped into every ready-made comment." />
+                  </Label>
+                  <Input
+                    id="unlimited-product-name"
+                    value={productName}
+                    onChange={(e) => {
+                      setProductName(e.target.value)
+                      clearFieldError("productName")
+                    }}
+                    placeholder="e.g., Keto Weight Loss System"
+                    aria-invalid={Boolean(fieldErrors.productName)}
+                    className="h-14 text-lg"
+                  />
+                  {fieldErrors.productName ? (
+                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productName}</p>
+                  ) : null}
+                </div>
+                <div>
+                  <Label htmlFor="unlimited-affiliate-link" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
+                    Affiliate Link
+                    <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it." />
+                  </Label>
+                  <Input
+                    id="unlimited-affiliate-link"
+                    type="url"
+                    value={productLink}
+                    onChange={(e) => {
+                      setProductLink(e.target.value)
+                      clearFieldError("productLink")
+                    }}
+                    placeholder="https://digistore24.com/..."
+                    aria-invalid={Boolean(fieldErrors.productLink)}
+                    className="h-14 text-lg"
+                  />
+                  {fieldErrors.productLink ? (
+                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productLink}</p>
+                  ) : null}
+                </div>
+              </div>
+
+              {productError && (
+                <Alert variant="destructive" className="glass-strong border-2 border-[#C53030]/50 text-[#C53030]">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription className="font-semibold text-[#C53030]">{productError}</AlertDescription>
+                </Alert>
+              )}
+
+              {unlocking && (
+                <GenerationProgress
+                  offer="welcome"
+                  label={`Unlocking your ${PREMIUM_FEATURE_LABELS.dfyVault} library...`}
+                />
+              )}
+
+              <Button type="submit" disabled={unlocking} className={cn("h-16 w-full text-xl", primaryCtaClass)}>
+                {unlocking ? (
+                  "Unlocking..."
+                ) : (
+                  <>
+                    Unlock {PREMIUM_FEATURE_LABELS.dfyVault} Library
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Card>
+        </div>
       ) : (
         <>
-          {/* Ad stays visible after unlocking */}
           <WelcomeOfferBanner />
 
           <div ref={libraryResultsRef} className="space-y-6">
-          <Card className="glass-strong border-2 border-[#10b981]/40 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#7dd3fc] font-semibold mb-1">Your Product:</p>
-                <p className="text-2xl font-black text-white">{productName}</p>
-                <p className="text-sm text-[#7dd3fc] truncate max-w-xl">{productLink}</p>
+            <Card className="glass-strong border-2 border-[#1D4ED8]/40 p-6">
+              <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                <div className="min-w-0">
+                  <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#2563EB]">Promoting</p>
+                  <p className="text-2xl font-black text-[#102A43]">{productName}</p>
+                  <p className="max-w-xl truncate text-sm font-semibold text-[#486581]">{productLink}</p>
+                </div>
+                <Button
+                  onClick={() => setProductSelected(false)}
+                  variant="outline"
+                  className={cn("shrink-0", outlineCtaClass)}
+                >
+                  Change Product
+                </Button>
               </div>
-              <Button
-                onClick={() => setProductSelected(false)}
-                variant="outline"
-                className="glass border-2 border-[#0ea5e9]/30 text-white font-bold"
-              >
-                Change Product
-              </Button>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Filters */}
-          <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7dd3fc]" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search videos..."
-                    className="h-14 pl-12 text-lg glass border-2 border-[#0ea5e9]/30"
-                  />
+            <Card className="glass-strong border-2 border-[var(--border)] p-6">
+              <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#486581]" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search videos..."
+                      className="h-14 pl-12 text-lg"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2 overflow-x-auto">
+                  {niches.map((niche) => (
+                    <Button
+                      key={niche}
+                      onClick={() => setSelectedNiche(niche)}
+                      variant={selectedNiche === niche ? "default" : "outline"}
+                      className={`whitespace-nowrap font-bold ${
+                        selectedNiche === niche
+                          ? "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white"
+                          : outlineCtaClass
+                      }`}
+                    >
+                      {niche === "all" ? "All Niches" : niche}
+                    </Button>
+                  ))}
                 </div>
               </div>
-              <div className="flex gap-2 overflow-x-auto">
-                {niches.map(niche => (
-                  <Button
-                    key={niche}
-                    onClick={() => setSelectedNiche(niche)}
-                    variant={selectedNiche === niche ? "default" : "outline"}
-                    className={`whitespace-nowrap font-bold ${
-                      selectedNiche === niche
-                        ? "bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4]"
-                        : "glass border-2 border-[#0ea5e9]/30 text-white"
-                    }`}
-                  >
-                    {niche === "all" ? "All Niches" : niche}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <p className="text-sm text-[#7dd3fc] font-semibold mt-4">
-              {liveSearching
-                ? `Searching YouTube for "${searchQuery.trim()}"...`
-                : `Showing ${displayedVideos.length} opportunities`}
-            </p>
-          </Card>
-
-          {/* While searching live: loading bar + offer banner (banner stays after the search) */}
-          {liveSearching ? (
-            <GenerationProgress
-              offer="welcome"
-              label={`AI finding fresh viral videos for "${searchQuery.trim()}"...`}
-            />
-          ) : searchQuery.trim() ? (
-            <WelcomeOfferBanner />
-          ) : null}
-
-          {/* Empty state after a live search found nothing */}
-          {!liveSearching && searchQuery.trim() && displayedVideos.length === 0 && (
-            <Card className="glass-strong border-2 border-[#0ea5e9]/30 p-10 text-center">
-              <Search className="w-10 h-10 text-[#0ea5e9] mx-auto mb-4" />
-              <h3 className="text-2xl font-black text-white mb-2">No videos found</h3>
-              <p className="text-[#7dd3fc] font-semibold">
-                Try a broader keyword like "crypto", "weight loss" or "side hustle".
+              <p className="mt-4 text-sm font-semibold text-[#486581]">
+                {liveSearching
+                  ? `Searching YouTube for "${searchQuery.trim()}"...`
+                  : `Showing ${displayedVideos.length} opportunities`}
               </p>
             </Card>
-          )}
 
-          {/* Video Grid */}
-          <div ref={searchResultsRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {displayedVideos.map((video) => (
-              <Card key={video.videoId} className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#10b981]/50 transition-all p-6">
-                <div className="space-y-4">
-                  {/* Video Info */}
-                  <div className="flex gap-4">
-                    <img
-                      src={video.thumbnailUrl}
-                      alt={video.title}
-                      className="w-32 h-18 object-cover rounded-lg border-2 border-[#0ea5e9]/40"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-lg font-black text-white line-clamp-2 mb-1">{video.title}</h3>
-                      <p className="text-xs text-[#7dd3fc] font-semibold">{video.channelTitle}</p>
-                      <p className="text-xs text-[#10b981] font-bold mt-1">💎 {video.niche}</p>
-                    </div>
-                  </div>
+            {liveSearching ? (
+              <GenerationProgress
+                offer="welcome"
+                label={`AI finding fresh viral videos for "${searchQuery.trim()}"...`}
+              />
+            ) : searchQuery.trim() ? (
+              <WelcomeOfferBanner />
+            ) : null}
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="glass rounded-lg p-2 border border-[#0ea5e9]/30 text-center">
-                      <Eye className="w-3 h-3 text-[#0ea5e9] mx-auto mb-1" />
-                      <p className="text-sm font-black text-white">{formatNumber(video.viewCount)}</p>
-                    </div>
-                    <div className="glass rounded-lg p-2 border border-[#ec4899]/30 text-center">
-                      <Flame className="w-3 h-3 text-[#ec4899] mx-auto mb-1" />
-                      <p className="text-sm font-black text-white">{video.viralScore}</p>
-                    </div>
-                    <div className="glass rounded-lg p-2 border border-[#06b6d4]/30 text-center">
-                      <TrendingUp className="w-3 h-3 text-[#06b6d4] mx-auto mb-1" />
-                      <p className="text-sm font-black text-white">{video.estimatedClicks}</p>
-                    </div>
-                  </div>
-
-                  {/* Comments */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-bold text-white">5 Ready Comments:</p>
-                    {video.commentTemplates.map((template, index) => {
-                      const preview = template
-                        .replace(/\[PRODUCT\]/g, productName)
-                        .replace(/\[LINK\]/g, productLink)
-                      
-                      return (
-                        <div key={index} className="glass rounded-lg p-3 border border-[#0ea5e9]/20 hover:border-[#10b981]/40 transition-all">
-                          <div className="flex items-start gap-3">
-                            <p className="text-xs text-white flex-1 leading-relaxed line-clamp-2">{preview}</p>
-                            <Button
-                              onClick={() => handleCopyComment(template, video.videoId, index)}
-                              size="sm"
-                              className={`h-8 px-3 font-bold rounded-lg flex-shrink-0 ${
-                                copiedComment === `${video.videoId}-${index}`
-                                  ? "bg-[#10b981]"
-                                  : "bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4]"
-                              }`}
-                            >
-                              {copiedComment === `${video.videoId}-${index}` ? (
-                                <Check className="w-3 h-3" />
-                              ) : (
-                                <Copy className="w-3 h-3" />
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Open Video */}
-                  <Button
-                    asChild
-                    className="w-full h-12 font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] rounded-xl"
-                  >
-                    <a href={`https://youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
-                      <Youtube className="w-4 h-4 mr-2" />
-                      Open Video
-                    </a>
-                  </Button>
+            {!liveSearching && searchQuery.trim() && displayedVideos.length === 0 && (
+              <Card className="glass-strong border-2 border-[var(--border)] p-10 text-center">
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-[var(--border)] bg-[#2563EB]/10">
+                  <Search className="h-8 w-8 text-[#2563EB]" />
                 </div>
+                <h3 className="mb-2 text-2xl font-black text-[#102A43]">No videos found</h3>
+                <p className="mx-auto max-w-md font-semibold text-[#486581]">
+                  Try a broader keyword like &quot;crypto&quot;, &quot;weight loss&quot; or &quot;side hustle&quot;.
+                </p>
               </Card>
-            ))}
-          </div>
+            )}
+
+            <div ref={searchResultsRef} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {displayedVideos.map((video) => (
+                <Card
+                  key={video.videoId}
+                  className="glass-strong border-2 border-[var(--border)] p-6 transition-all hover:border-[#1D4ED8]/50 hover:shadow-xl hover:shadow-[#2563EB]/10"
+                >
+                  <div className="space-y-4">
+                    <div className="flex gap-4">
+                      {video.thumbnailUrl ? (
+                        <a
+                          href={`https://youtube.com/watch?v=${video.videoId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="relative block w-28 shrink-0 overflow-hidden rounded-xl border border-[var(--border)]"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={video.thumbnailUrl}
+                            alt=""
+                            className="aspect-[4/5] h-full w-full object-cover"
+                          />
+                        </a>
+                      ) : null}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="mb-1 line-clamp-2 text-lg font-black text-[#102A43]">{video.title}</h3>
+                        <p className="text-xs font-semibold text-[#486581]">{video.channelTitle}</p>
+                        <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-[#1D4ED8]">
+                          <Gem className="h-3 w-3" />
+                          {video.niche}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
+                        <Eye className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
+                        <p className="text-sm font-black text-[#102A43]">{formatNumber(video.viewCount)}</p>
+                        <p className="text-[10px] font-bold text-[#486581]">Views</p>
+                      </div>
+                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
+                        <Flame className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
+                        <p className="text-sm font-black text-[#102A43]">{video.viralScore}</p>
+                        <p className="text-[10px] font-bold text-[#486581]">Viral</p>
+                      </div>
+                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
+                        <TrendingUp className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
+                        <p className="text-sm font-black text-[#102A43]">{video.estimatedClicks}</p>
+                        <p className="text-[10px] font-bold text-[#486581]">Est. clicks</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-sm font-bold text-[#102A43]">5 ready comments</p>
+                      {video.commentTemplates.map((template, index) => {
+                        const preview = template
+                          .replace(/\[PRODUCT\]/g, productName)
+                          .replace(/\[LINK\]/g, productLink)
+
+                        return (
+                          <div
+                            key={index}
+                            className="glass rounded-lg border border-[#2563EB]/45 p-3 transition-all hover:border-[#1D4ED8]/50"
+                          >
+                            <div className="flex items-start gap-3">
+                              <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-[#102A43]">{preview}</p>
+                              <Button
+                                onClick={() => handleCopyComment(template, video.videoId, index)}
+                                size="sm"
+                                className={`h-8 flex-shrink-0 rounded-lg px-3 font-bold transition-[transform,box-shadow,background] duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+                                  copiedComment === `${video.videoId}-${index}`
+                                    ? "bg-[#16875C] text-white"
+                                    : "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
+                                }`}
+                              >
+                                {copiedComment === `${video.videoId}-${index}` ? (
+                                  <Check className="h-3 w-3" />
+                                ) : (
+                                  <Copy className="h-3 w-3" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    <Button asChild className={cn("h-12 w-full", primaryCtaClass)}>
+                      <a href={`https://youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
+                        <Youtube className="mr-2 h-4 w-4" />
+                        Open Video
+                      </a>
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </>
       )}
     </div>
   )
 }
-

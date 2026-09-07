@@ -1,14 +1,37 @@
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Eye, Copy, Calendar, Zap, Flame, ExternalLink, Youtube, MessageCircle } from "lucide-react"
+import { Fragment } from "react"
 import Link from "next/link"
-import { PageActions } from "@/components/page-actions"
+import { Calendar, Copy, Eye, Flame, MessageCircle, Youtube, Zap } from "lucide-react"
+
+import { createClient } from "@/lib/supabase/server"
+import { Button } from "@/components/ui/button"
 import { InfoHint } from "@/components/ui/info-hint"
 import { EarningsBanner } from "@/components/earnings-banner"
 import { PageHeader } from "@/components/page-header"
-import { Fragment } from "react"
+import { PageActions } from "@/components/page-actions"
+
+const EMPTY_STEPS = [
+  { n: 1, title: "Generate", body: "Open Gold Rush and create your first AI comment pack." },
+  { n: 2, title: "Copy", body: "Pick a comment you like — one click and it’s on your clipboard." },
+  { n: 3, title: "Paste", body: "Drop it on the YouTube Short so your profile sends traffic to your link." },
+] as const
+
+const USE_STEPS = [
+  { n: 1, title: "View comments", body: "Open the pack and copy one." },
+  { n: 2, title: "Open the Short", body: "Jump to the YouTube video." },
+  { n: 3, title: "Paste & post", body: "Your profile drives the affiliate traffic." },
+] as const
+
+function parseComments(content: string | null | undefined): string[] {
+  try {
+    const pack = JSON.parse(content || '{"comments":[]}')
+    if (Array.isArray(pack.comments)) return pack.comments
+    if (Array.isArray(pack)) return pack
+    return []
+  } catch {
+    return []
+  }
+}
 
 export default async function MyVaultPage() {
   const supabase = await createClient()
@@ -20,7 +43,6 @@ export default async function MyVaultPage() {
     redirect("/auth/login")
   }
 
-  // Fetch user's pages with niche details
   const { data: pages } = await supabase
     .from("pages")
     .select(
@@ -32,134 +54,201 @@ export default async function MyVaultPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
+  const isEmpty = !pages || pages.length === 0
+
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-6">
       <PageHeader
         eyebrow="My Vault"
         title="Your Comment Vault"
         subtitle="All your AI-generated comment packs in one place 🔥"
         actions={
-          <Button asChild className="h-14 sm:h-16 w-full sm:w-auto px-8 text-lg font-black bg-gradient-to-r from-[#ec4899] to-[#f97316] hover:from-[#f97316] hover:to-[#ec4899] text-white rounded-2xl shadow-lg" size="lg">
+          <Button asChild size="lg" className="w-full sm:w-auto">
             <Link href="/create">
-              <Flame className="w-5 h-5 mr-2" />
+              <Flame className="h-5 w-5" />
               Generate New Pack
             </Link>
           </Button>
         }
       />
 
-      {!pages || pages.length === 0 ? (
-        <Card className="glass-strong border-2 border-[#0ea5e9]/40">
-          <CardContent className="p-16 text-center space-y-8">
-            <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-[#0ea5e9]/20 to-[#ec4899]/20 flex items-center justify-center mx-auto border-2 border-[#0ea5e9]/40">
-              <Zap className="w-16 h-16 text-[#0ea5e9]" />
-            </div>
-            <div>
-              <h2 className="text-4xl font-black text-white mb-4">Your Vault is Empty</h2>
-              <p className="text-xl text-[#7dd3fc] font-semibold max-w-xl mx-auto">
-                Fire up the Gold Rush Generator and create your first AI comment pack in 60 seconds
-              </p>
-            </div>
-            <Button asChild className="h-20 px-12 text-2xl font-black bg-gradient-to-r from-[#0ea5e9] to-[#ec4899] hover:from-[#ec4899] hover:to-[#0ea5e9] text-white rounded-2xl shadow-2xl" size="lg">
-              <Link href="/create">
-                <Flame className="w-6 h-6 mr-3" />
-                Start Making Packs Now
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+      {isEmpty ? (
+        <EmptyVault />
       ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {pages.map((page, index) => {
-            // Parse comment pack to get the comments themselves
-            let comments: string[] = []
-            try {
-              const pack = JSON.parse(page.content || '{"comments":[]}')
-              comments = Array.isArray(pack.comments) ? pack.comments : Array.isArray(pack) ? pack : []
-            } catch {
-              comments = []
-            }
-            const commentCount = comments.length
-
-            return (
-              <Fragment key={page.id}>
-              <Card className="glass-strong border-2 border-[#0ea5e9]/30 hover:border-[#ec4899]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#ec4899]/10">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#0ea5e9]/30 to-[#ec4899]/30 flex items-center justify-center text-3xl border-2 border-[#0ea5e9]/40">
-                          {page.niches?.icon || "💎"}
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-2xl font-black text-white mb-1">{page.offer_name || "Comment Pack"}</CardTitle>
-                          <div className="flex items-center gap-2 text-sm text-[#7dd3fc]">
-                            <Youtube className="w-4 h-4" />
-                            <span className="font-semibold truncate">{page.video_title || page.title}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* What to do card */}
-                      <div className="glass rounded-xl p-4 border-2 border-[#06b6d4]/30 bg-gradient-to-r from-[#06b6d4]/10 to-[#0ea5e9]/10">
-                        <div className="flex items-start gap-3">
-                          <MessageCircle className="w-5 h-5 text-[#06b6d4] mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">
-                            <p className="font-bold text-white mb-1">💰 How to Use This Pack:</p>
-                            <ol className="text-[#7dd3fc] space-y-1 list-decimal list-inside">
-                              <li className="font-semibold">Click <span className="text-white">"View Comments"</span> below</li>
-                              <li className="font-semibold">Copy any comment you like (one-click copy)</li>
-                              <li className="font-semibold">Click <span className="text-white">"Open Video"</span> to go to the YouTube Short</li>
-                              <li className="font-semibold">Paste the comment on the video</li>
-                              <li className="font-semibold">Your profile drives traffic to your affiliate link 🔥</li>
-                            </ol>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4 pt-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="glass rounded-xl p-3 text-center border-2 border-[#ec4899]/30 bg-gradient-to-br from-[#ec4899]/10 to-[#f97316]/10">
-                      <MessageCircle className="w-5 h-5 text-[#ec4899] mx-auto mb-1" />
-                      <p className="text-2xl font-black text-white">{commentCount}</p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5">Comments</p>
-                    </div>
-                    <div className="glass rounded-xl p-3 text-center border-2 border-[#0ea5e9]/30">
-                      <Eye className="w-5 h-5 text-[#0ea5e9] mx-auto mb-1" />
-                      <p className="text-2xl font-black text-white">{page.views || 0}</p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5 flex items-center justify-center gap-1">
-                        Opens
-                        <InfoHint label="How many times people have opened this comment pack." />
-                      </p>
-                    </div>
-                    <div className="glass rounded-xl p-3 text-center border-2 border-[#06b6d4]/30">
-                      <Copy className="w-5 h-5 text-[#06b6d4] mx-auto mb-1" />
-                      <p className="text-2xl font-black text-white">{page.clicks || 0}</p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5 flex items-center justify-center gap-1">
-                        Copies
-                        <InfoHint label="How many times a comment from this pack has been copied." />
-                      </p>
-                    </div>
-                    <div className="glass rounded-xl p-3 text-center border-2 border-[#a855f7]/30">
-                      <Calendar className="w-5 h-5 text-[#a855f7] mx-auto mb-1" />
-                      <p className="text-xs font-black text-white leading-tight">
-                        {new Date(page.created_at).toLocaleDateString()}
-                      </p>
-                      <p className="text-xs text-[#7dd3fc] font-bold mt-0.5">Created</p>
-                    </div>
-                  </div>
-
-                  <PageActions pageId={page.id} affiliateLink={page.video_url || page.affiliate_link} videoUrl={page.video_url} comments={comments} />
-                </CardContent>
-              </Card>
-              {(index + 1) % 2 === 0 && <EarningsBanner />}
-              </Fragment>
-            )
-          })}
+        <div className="space-y-6">
+          <HowToUseStrip />
+          <div className="grid grid-cols-1 gap-5">
+            {pages.map((page, index) => {
+              const comments = parseComments(page.content)
+              const niche = Array.isArray(page.niches) ? page.niches[0] : page.niches
+              return (
+                <Fragment key={page.id}>
+                  <PackCard
+                    offerName={page.offer_name || "Comment Pack"}
+                    videoTitle={page.video_title || page.title}
+                    nicheIcon={niche?.icon}
+                    commentCount={comments.length}
+                    views={page.views || 0}
+                    clicks={page.clicks || 0}
+                    createdAt={page.created_at}
+                    pageId={page.id}
+                    affiliateLink={page.video_url || page.affiliate_link || ""}
+                    videoUrl={page.video_url}
+                    comments={comments}
+                  />
+                  {(index + 1) % 2 === 0 ? <EarningsBanner size="compact" /> : null}
+                </Fragment>
+              )
+            })}
+          </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function EmptyVault() {
+  return (
+    <section className="page-section-card px-6 py-10 text-center sm:px-10 sm:py-12">
+      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-200">
+        <Zap className="h-8 w-8 text-sapphire-700" />
+      </div>
+      <h2 className="ds-h2">Your Vault is Empty</h2>
+      <p className="ds-subtitle mx-auto mt-2">
+        Fire up Gold Rush and create your first AI comment pack in about a minute.
+      </p>
+
+      <ol className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 text-left sm:grid-cols-3">
+        {EMPTY_STEPS.map((step) => (
+          <li
+            key={step.n}
+            className="rounded-2xl border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] p-4"
+          >
+            <span className="mb-2 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-sm font-bold text-sapphire-700">
+              {step.n}
+            </span>
+            <p className="text-sm font-semibold text-ink">{step.title}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-3">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <Button asChild size="lg" className="mt-8">
+        <Link href="/create">
+          <Flame className="h-5 w-5" />
+          Start Making Packs Now
+        </Link>
+      </Button>
+    </section>
+  )
+}
+
+function HowToUseStrip() {
+  return (
+    <section className="rounded-2xl border border-[var(--ds-line)] bg-[var(--ds-surface)] p-4 shadow-card sm:px-5">
+      <p className="mb-3 text-[13px] font-semibold uppercase tracking-wider text-ink-4">How to use a pack</p>
+      <ol className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {USE_STEPS.map((step) => (
+          <li key={step.n} className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-xs font-bold text-sapphire-700">
+              {step.n}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-ink">{step.title}</p>
+              <p className="text-sm text-ink-3">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function PackCard({
+  offerName,
+  videoTitle,
+  nicheIcon,
+  commentCount,
+  views,
+  clicks,
+  createdAt,
+  pageId,
+  affiliateLink,
+  videoUrl,
+  comments,
+}: {
+  offerName: string
+  videoTitle: string | null
+  nicheIcon?: string | null
+  commentCount: number
+  views: number
+  clicks: number
+  createdAt: string
+  pageId: string
+  affiliateLink: string
+  videoUrl?: string | null
+  comments: string[]
+}) {
+  return (
+    <article className="page-section-card transition-shadow hover:shadow-hover">
+      <div className="flex items-start gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-2xl">
+          {nicheIcon || "💎"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h2 className="ds-h3 truncate">{offerName}</h2>
+          {videoTitle ? (
+            <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-ink-3">
+              <Youtube className="h-4 w-4 shrink-0" />
+              <span className="truncate">{videoTitle}</span>
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <StatChip icon={MessageCircle} label="Comments" value={commentCount} />
+        <StatChip
+          icon={Eye}
+          label="Opens"
+          value={views}
+          hint="How many times people have opened this comment pack."
+        />
+        <StatChip
+          icon={Copy}
+          label="Copies"
+          value={clicks}
+          hint="How many times a comment from this pack has been copied."
+        />
+        <StatChip
+          icon={Calendar}
+          label="Created"
+          value={new Date(createdAt).toLocaleDateString()}
+        />
+      </div>
+
+      <PageActions pageId={pageId} affiliateLink={affiliateLink} videoUrl={videoUrl ?? undefined} comments={comments} />
+    </article>
+  )
+}
+
+function StatChip({
+  icon: Icon,
+  label,
+  value,
+  hint,
+}: {
+  icon: typeof Eye
+  label: string
+  value: string | number
+  hint?: string
+}) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] px-3 py-1.5">
+      <Icon className="h-3.5 w-3.5 text-sapphire-700" />
+      <span className="text-sm font-semibold tabular-nums text-ink">{value}</span>
+      <span className="text-xs font-semibold text-ink-4">{label}</span>
+      {hint ? <InfoHint label={hint} /> : null}
     </div>
   )
 }

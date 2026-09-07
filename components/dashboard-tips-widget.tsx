@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Lightbulb } from "lucide-react"
 
 const TIPS = [
   {
@@ -38,10 +39,17 @@ export function DashboardTipsWidget() {
   const tip = TIPS[tipIndex]
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-      <p className="text-sm font-semibold text-[#d8e9fb]">{tip.title}</p>
-      <p className="mt-2 text-sm leading-relaxed text-[#a5c9e8]">{tip.body}</p>
-      <p className="mt-3 text-xs text-[#7dd3fc]/70">Individual results vary.</p>
-    </div>
+    <section className="dashboard-container min-w-0">
+      <div className="flex items-center gap-3 border-b border-border-dim/60 pb-4">
+        <div className="dashboard-section-icon">
+          <Lightbulb size={18} />
+        </div>
+        <div className="min-w-0">
+          <p className="ds-h4">{tip.title}</p>
+        </div>
+      </div>
+      <p className="mt-4 text-sm leading-relaxed text-text-muted">{tip.body}</p>
+      <p className="mt-3 text-xs italic text-text-muted">Individual results vary.</p>
+    </section>
   )
 }

@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Brain } from "lucide-react"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
@@ -49,26 +50,24 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-gradient-to-br from-[#0d0a1a] via-[#1a1429] to-[#0d0a1a]">
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md">
-        <Card className="glass-strong glow-magenta border border-[#d946ef]/40">
+        <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#d946ef] via-[#a855f7] to-[#fbbf24] flex items-center justify-center shadow-[0_0_40px_rgba(217,70,239,0.5)]">
-                <div className="w-12 h-12 rounded-lg bg-[#0d0a1a] flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-[#d946ef]" />
-                </div>
+              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
+                <Brain className="w-6 h-6 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Join RH</CardTitle>
-            <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
+            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">Join {PRODUCT_NAME}</CardTitle>
+            <CardDescription className="text-sm text-[#486581] text-center font-medium">
               Activate your AI engagement agent in seconds
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-white">
+                <Label htmlFor="email" className="text-sm font-medium text-[#102A43]">
                   Email Address
                 </Label>
                 <Input
@@ -78,11 +77,11 @@ export default function SignUpPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-10 glass border border-[#d946ef]/30 focus:border-[#d946ef] rounded-lg"
+                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-white">
+                <Label htmlFor="password" className="text-sm font-medium text-[#102A43]">
                   Password
                 </Label>
                 <Input
@@ -92,7 +91,7 @@ export default function SignUpPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-10 glass border border-[#d946ef]/30 focus:border-[#d946ef] rounded-lg"
+                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                 />
               </div>
               {error && (
@@ -100,13 +99,13 @@ export default function SignUpPage() {
                   <p className="text-sm text-destructive font-medium">{error}</p>
                 </div>
               )}
-              <Button type="submit" className="w-full h-10 font-semibold glow-magenta bg-gradient-to-r from-[#d946ef] to-[#a855f7] hover:from-[#a855f7] hover:to-[#d946ef] rounded-lg transition-all duration-300" disabled={isLoading}>
+              <Button type="submit" className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300" disabled={isLoading}>
                 {isLoading ? "Initializing Agent..." : "Activate Account"}
               </Button>
               <div className="text-center pt-1">
-                <p className="text-sm text-[#c4b5fd]">
+                <p className="text-sm text-[#486581]">
                   Already registered?{" "}
-                  <Link href="/auth/login" className="text-[#fbbf24] hover:text-[#fb923c] font-semibold transition-colors">
+                  <Link href="/auth/login" className="text-[#1E40AF] hover:text-[#1D4ED8] font-semibold transition-colors">
                     Sign In
                   </Link>
                 </p>

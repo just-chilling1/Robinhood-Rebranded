@@ -64,13 +64,13 @@ export function OfferSelector({ nicheId, onSelect, onBack }: OfferSelectorProps)
         {offers.map((offer) => (
           <Card
             key={offer.id}
-            className="glass glow-violet border-border/50 cursor-pointer hover:scale-[1.02] transition-all duration-300"
+            className="glass glow-blue border-border cursor-pointer hover:scale-[1.02] transition-all duration-300"
             onClick={() => onSelect(offer.id)}
           >
             <CardContent className="p-8">
               <div className="flex items-start gap-6">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center flex-shrink-0 glow-violet">
-                  <TrendingUp className="w-10 h-10 text-background" />
+                <div className="w-20 h-20 rounded-2xl bg-[#EEF4FF] flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-10 h-10 text-[#1E40AF]" />
                 </div>
                 <div className="flex-1 space-y-3">
                   <h3 className="text-2xl font-bold text-foreground">{offer.title}</h3>
@@ -78,7 +78,7 @@ export function OfferSelector({ nicheId, onSelect, onBack }: OfferSelectorProps)
                   <div className="flex items-center gap-6 pt-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">Commission:</span>
-                      <span className="text-lg font-bold text-accent">{offer.commission_rate}</span>
+                      <span className="text-lg font-bold text-[#1E40AF]">{offer.commission_rate}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">Network:</span>

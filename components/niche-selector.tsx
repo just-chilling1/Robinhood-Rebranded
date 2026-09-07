@@ -18,14 +18,14 @@ interface NicheSelectorProps {
 
 // Completely NEW icons and names - nothing like P55
 const NICHE_THEMES = {
-  "Health & Fitness": { name: "Body Transformation Zone", icon: "🏋️", color: "from-[#ec4899] to-[#f97316]" },
-  "Finance": { name: "Wealth Builder Network", icon: "💎", color: "from-[#06b6d4] to-[#0ea5e9]" },
-  "Technology": { name: "Digital Innovation Hub", icon: "🖥️", color: "from-[#8b5cf6] to-[#ec4899]" },
-  "Lifestyle": { name: "Living Large Community", icon: "🎨", color: "from-[#10b981] to-[#06b6d4]" },
-  "Entertainment": { name: "Viral Fame Factory", icon: "🎭", color: "from-[#f59e0b] to-[#ec4899]" },
-  "Education": { name: "Smart Skills Academy", icon: "🧠", color: "from-[#0ea5e9] to-[#8b5cf6]" },
-  "Business": { name: "Empire Builder's Club", icon: "🏢", color: "from-[#ef4444] to-[#f97316]" },
-  "Food": { name: "Flavor Fanatics Network", icon: "🍔", color: "from-[#fbbf24] to-[#f97316]" },
+  "Health & Fitness": { name: "Body Transformation Zone", icon: "🏋️" },
+  "Finance": { name: "Wealth Builder Network", icon: "💎" },
+  "Technology": { name: "Digital Innovation Hub", icon: "🖥️" },
+  "Lifestyle": { name: "Living Large Community", icon: "🎨" },
+  "Entertainment": { name: "Viral Fame Factory", icon: "🎭" },
+  "Education": { name: "Smart Skills Academy", icon: "🧠" },
+  "Business": { name: "Empire Builder's Club", icon: "🏢" },
+  "Food": { name: "Flavor Fanatics Network", icon: "🍔" },
 }
 
 export function NicheSelector({ onSelect }: NicheSelectorProps) {
@@ -46,7 +46,7 @@ export function NicheSelector({ onSelect }: NicheSelectorProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-12 h-12 animate-spin text-[#0ea5e9]" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#2563EB]" />
       </div>
     )
   }
@@ -56,8 +56,7 @@ export function NicheSelector({ onSelect }: NicheSelectorProps) {
       {niches.map((niche) => {
         const theme = NICHE_THEMES[niche.name as keyof typeof NICHE_THEMES] || { 
           name: niche.name, 
-          icon: "⚡", 
-          color: "from-[#0ea5e9] to-[#ec4899]" 
+          icon: "⚡",
         }
         const isSelected = selectedId === niche.id
 
@@ -75,35 +74,33 @@ export function NicheSelector({ onSelect }: NicheSelectorProps) {
             }`}
             variant="ghost"
           >
-            <div className={`w-full flex items-center gap-6 p-6 rounded-2xl border-2 transition-all ${
+            <div className={`w-full flex items-center gap-6 p-6 rounded-2xl border transition-all ${
               isSelected
-                ? "border-white/40 bg-gradient-to-r " + theme.color
-                : "border-[#0ea5e9]/30 bg-gradient-to-r from-[#0f172a]/90 to-[#1e293b]/90 hover:border-[#0ea5e9]/50"
+                ? "border-[var(--border-strong)] bg-[#EEF4FF] shadow-[var(--shadow-md)]"
+                : "border-[var(--border)] bg-card hover:border-[var(--border-strong)] hover:bg-[#EEF4FF]"
             }`}>
-              <div className={`flex-shrink-0 w-20 h-20 rounded-2xl flex items-center justify-center text-4xl transition-transform group-hover:scale-110 ${
-                isSelected ? "bg-white/20" : "bg-[#0ea5e9]/20"
-              }`}>
+              <div className={`flex-shrink-0 w-20 h-20 rounded-2xl flex items-center justify-center text-4xl bg-[#EEF4FF] border border-[var(--border)] transition-transform group-hover:scale-105`}>
                 {theme.icon}
               </div>
               
               <div className="flex-1 text-left">
-                <h3 className="text-2xl font-black text-white mb-1">
+                <h3 className="text-2xl font-black text-[#102A43] mb-1">
                   {theme.name}
                 </h3>
-                <p className="text-sm text-[#7dd3fc] font-semibold">
+                <p className="text-sm text-[#486581] font-semibold">
                   Tap to target this niche →
                 </p>
               </div>
 
               <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
                 isSelected 
-                  ? "bg-white/30" 
-                  : "bg-[#0ea5e9]/20 group-hover:bg-[#0ea5e9]/30"
+                  ? "bg-[#2563EB]/30" 
+                  : "bg-[#2563EB]/20 group-hover:bg-[#2563EB]/30"
               }`}>
                 {isSelected ? (
-                  <Zap className="w-6 h-6 text-white fill-white animate-pulse" />
+                  <Zap className="w-6 h-6 text-[#102A43] fill-[#102A43] animate-pulse" />
                 ) : (
-                  <ChevronRight className="w-6 h-6 text-[#0ea5e9] group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="w-6 h-6 text-[#2563EB] group-hover:translate-x-1 transition-transform" />
                 )}
               </div>
             </div>

@@ -67,9 +67,9 @@ export function ProfileForm({ profile, userEmail }: ProfileFormProps) {
 
       {message && (
         <div
-          className={`p-4 rounded-xl ${message.includes("success") ? "bg-accent/10 border border-accent/30" : "bg-destructive/10 border border-destructive/30"}`}
+          className={`p-4 rounded-xl ${message.includes("success") ? "bg-[#DDF7EC] border border-[#DDF7EC]" : "bg-[#FDE4E4] border border-[#FDE4E4]"}`}
         >
-          <p className={`text-base font-semibold ${message.includes("success") ? "text-accent" : "text-destructive"}`}>
+          <p className={`text-base font-semibold ${message.includes("success") ? "text-[#16875C]" : "text-destructive"}`}>
             {message}
           </p>
         </div>

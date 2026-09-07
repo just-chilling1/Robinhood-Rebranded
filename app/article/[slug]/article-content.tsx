@@ -64,39 +64,39 @@ export default function ArticleContent({ page }: ArticleContentProps) {
   const heroTitle = page.niches?.name ? generateHeroTitle(page.niches.name) : "Life-Changing Insights You Need"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-background">
       {/* Hero Section - New personalized hero */}
       <div className="relative overflow-hidden">
         {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#2563EB]/10 via-[#1D4ED8]/10 to-[#2563EB]/10 animate-pulse" />
         
         {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#2563EB]/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#1D4ED8]/20 rounded-full blur-3xl animate-pulse delay-1000" />
 
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           {/* Hero Title */}
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <Sparkles className="w-6 h-6 text-cyan-400 animate-pulse" />
-              <span className="text-cyan-400 font-semibold tracking-wider uppercase text-sm">
+              <Sparkles className="w-6 h-6 text-[#2563EB] animate-pulse" />
+              <span className="text-[#486581] font-semibold tracking-wider uppercase text-sm">
                 {page.niches?.name}
               </span>
-              <Sparkles className="w-6 h-6 text-cyan-400 animate-pulse" />
+              <Sparkles className="w-6 h-6 text-[#1D4ED8] animate-pulse" />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight bg-gradient-to-r from-white via-cyan-100 to-purple-100 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight text-[#102A43]">
               {heroTitle}
             </h1>
 
             {/* Trust badges */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-white/60 text-sm">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-[#486581] text-sm">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-green-400" />
+                <TrendingUp className="w-4 h-4 text-[#16875C]" />
                 <span>{page.views || 0}+ readers</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-yellow-400" />
+                <Award className="w-4 h-4 text-[#B7791F]" />
                 <span>Expert Reviewed</span>
               </div>
               <div className="flex items-center gap-2">
@@ -109,28 +109,28 @@ export default function ArticleContent({ page }: ArticleContentProps) {
 
       {/* Article Content - New clean, magazine-style layout */}
       <main className="container mx-auto px-4 pb-20 max-w-4xl">
-        <article className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+        <article className="bg-card/80 backdrop-blur-xl rounded-3xl border border-[var(--border-strong)] shadow-2xl overflow-hidden">
           {/* Content */}
           <div className="p-8 md:p-16">
             <div 
               ref={contentRef} 
-              className="article-content prose prose-invert prose-lg max-w-none" 
+              className="article-content prose prose-lg max-w-none" 
               dangerouslySetInnerHTML={{ __html: page.content }} 
             />
           </div>
 
           {/* Footer CTA - More compelling and clean design */}
-          <div className="border-t border-white/10 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 p-8 md:p-12">
+          <div className="border-t border-[var(--border-strong)] bg-gradient-to-br from-[#2563EB]/10 to-[#1D4ED8]/10 p-8 md:p-12">
             <div className="max-w-2xl mx-auto text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 mb-6">
-                <Sparkles className="w-8 h-8 text-white" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] mb-6">
+                <Sparkles className="w-8 h-8 text-[#102A43]" />
               </div>
               
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h3 className="text-3xl md:text-4xl font-bold text-[#102A43] mb-4">
                 Ready to Take Action?
               </h3>
               
-              <p className="text-xl text-white/80 mb-8 leading-relaxed">
+              <p className="text-xl text-[#486581] mb-8 leading-relaxed">
                 Join thousands who have already transformed their lives. Your journey starts here.
               </p>
               
@@ -138,7 +138,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
                 href={page.affiliate_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white text-lg font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,240,255,0.6)] hover:scale-105 transition-all duration-300 group"
+                className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-[#2563EB] via-[#2563EB] to-[#1D4ED8] text-white text-lg font-bold rounded-full hover:shadow-[0_0_40px_rgba(37,99,235,0.6)] hover:scale-105 transition-all duration-300 group"
               >
                 Get Started Now
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -146,7 +146,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
                 </svg>
               </a>
               
-              <p className="text-sm text-white/50 mt-6">
+              <p className="text-sm text-[#486581] mt-6">
                 100% Risk-Free • Instant Access • No Hidden Fees
               </p>
             </div>
@@ -158,10 +158,10 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         .article-content h1 {
           font-size: 2.5rem;
           font-weight: 800;
-          color: white;
+          color: #102A43;
           line-height: 1.2;
           margin-bottom: 2rem;
-          background: linear-gradient(135deg, #ffffff 0%, #60efff 100%);
+          background: linear-gradient(135deg, #102A43 0%, #2563EB 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -170,18 +170,18 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         .article-content h2 {
           font-size: 2rem;
           font-weight: 700;
-          color: white;
+          color: #102A43;
           line-height: 1.3;
           margin-top: 3rem;
           margin-bottom: 1.5rem;
           padding-bottom: 0.75rem;
-          border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+          border-bottom: 2px solid rgba(37,99,235, 0.45);
         }
 
         .article-content h3 {
           font-size: 1.5rem;
           font-weight: 600;
-          color: rgba(255, 255, 255, 0.95);
+          color: #486581;
           line-height: 1.4;
           margin-top: 2rem;
           margin-bottom: 1rem;
@@ -190,52 +190,49 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         .article-content p {
           font-size: 1.125rem;
           line-height: 1.9;
-          color: rgba(255, 255, 255, 0.9);
+          color: #486581;
           margin-bottom: 1.5rem;
         }
 
         .article-content strong {
           font-weight: 600;
-          color: white;
+          color: #102A43;
         }
 
-        /* Inline keyword hyperlinks - subtle but clear */
         .article-content a.inline-link {
-          color: #06b6d4;
+          color: #2563EB;
           text-decoration: none;
           font-weight: 600;
           transition: all 0.2s ease;
-          border-bottom: 1px solid rgba(6, 182, 212, 0.4);
+          border-bottom: 1px solid rgba(37,99,235, 0.5);
           padding-bottom: 1px;
         }
 
         .article-content a.inline-link:hover {
-          color: #22d3ee;
-          border-bottom-color: rgba(34, 211, 238, 0.6);
+          color: #1D4ED8;
+          border-bottom-color: rgba(35,141,207, 0.6);
         }
 
-        /* CTA links - more prominent */
         .article-content a.affiliate-link {
-          color: #8b5cf6;
+          color: #486581;
           text-decoration: none;
           font-weight: 700;
           transition: all 0.2s ease;
-          border-bottom: 2px solid rgba(139, 92, 246, 0.5);
+          border-bottom: 2px solid rgba(90, 132, 148, 0.5);
           padding-bottom: 2px;
         }
 
         .article-content a.affiliate-link:hover {
-          color: #a78bfa;
-          border-bottom-color: rgba(167, 139, 250, 0.7);
+          color: #2563EB;
+          border-bottom-color: rgba(37,99,235, 0.7);
           transform: translateY(-1px);
         }
 
-        /* Added mid-article CTA styling */
         .article-content .mid-article-cta {
           margin: 3rem 0;
           padding: 2.5rem;
-          background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
-          border: 2px solid rgba(6, 182, 212, 0.3);
+          background: linear-gradient(135deg, rgba(37,99,235, 0.15) 0%, rgba(35,141,207, 0.15) 100%);
+          border: 2px solid rgba(37,99,235, 0.3);
           border-radius: 1rem;
           text-align: center;
         }
@@ -244,7 +241,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
           margin-top: 0;
           margin-bottom: 1rem;
           font-size: 1.75rem;
-          background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+          background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -255,26 +252,25 @@ export default function ArticleContent({ page }: ArticleContentProps) {
           margin-bottom: 0;
         }
 
-        /* Fallback for any other links */
         .article-content a {
-          color: #06b6d4;
+          color: #2563EB;
           text-decoration: none;
           font-weight: 600;
           transition: all 0.2s ease;
-          border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+          border-bottom: 1px solid rgba(37,99,235, 0.35);
           padding-bottom: 1px;
         }
 
         .article-content a:hover {
-          color: #8b5cf6;
-          border-bottom-color: rgba(139, 92, 246, 0.5);
+          color: #486581;
+          border-bottom-color: rgba(90, 132, 148, 0.5);
         }
 
         .article-content ul,
         .article-content ol {
           margin-left: 2rem;
           margin-bottom: 1.5rem;
-          color: rgba(255, 255, 255, 0.9);
+          color: #486581;
         }
 
         .article-content li {
@@ -284,7 +280,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content li::marker {
-          color: #06b6d4;
+          color: #2563EB;
         }
 
         @media (max-width: 768px) {

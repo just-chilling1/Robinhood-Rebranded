@@ -60,7 +60,7 @@ export function InfoHint({ label, className, srLabel = "What does this mean?", s
         onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
-        className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#06b6d4]/50 bg-[#06b6d4]/10 text-[#06b6d4] transition-colors hover:bg-[#06b6d4]/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06b6d4]/70"
+        className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-border bg-primary-light text-primary-active transition-colors hover:bg-primary-light hover:text-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
@@ -68,7 +68,7 @@ export function InfoHint({ label, className, srLabel = "What does this mean?", s
         <span
           role="tooltip"
           className={cn(
-            "glass pointer-events-none absolute left-1/2 z-[100] w-max max-w-[260px] -translate-x-1/2 rounded-lg border border-[#06b6d4]/40 px-3 py-2 text-left text-xs font-medium leading-relaxed text-white shadow-xl",
+            "glass pointer-events-none absolute left-1/2 z-[100] w-max max-w-[260px] -translate-x-1/2 rounded-lg border border-border-strong px-3 py-2 text-left text-xs font-medium leading-relaxed text-foreground shadow-card",
             side === "top" ? "bottom-full mb-2" : "top-full mt-2",
           )}
         >

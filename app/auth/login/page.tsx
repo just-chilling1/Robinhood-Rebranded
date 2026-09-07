@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Brain } from "lucide-react"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function LoginPage() {
   const [callbackError, setCallbackError] = useState(false)
@@ -48,26 +49,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-gradient-to-br from-[#0d0a1a] via-[#1a1429] to-[#0d0a1a]">
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md">
-        <Card className="glass-strong glow-purple border border-[#a855f7]/40">
+        <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#a855f7] via-[#d946ef] to-[#fbbf24] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-                <div className="w-12 h-12 rounded-lg bg-[#0d0a1a] flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-[#a855f7]" />
-                </div>
+              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
+                <Brain className="w-6 h-6 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">Access RH</CardTitle>
-            <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
+            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">Access {PRODUCT_NAME}</CardTitle>
+            <CardDescription className="text-sm text-[#486581] text-center font-medium">
               Neural Engagement Platform
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-white">
+                <Label htmlFor="email" className="text-sm font-medium text-[#102A43]">
                   Email Address
                 </Label>
                 <Input
@@ -77,17 +76,17 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-10 glass border border-[#a855f7]/30 focus:border-[#a855f7] rounded-lg"
+                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                 />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <Label htmlFor="password" className="text-sm font-medium text-white">
+                  <Label htmlFor="password" className="text-sm font-medium text-[#102A43]">
                     Password
                   </Label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-xs text-[#fbbf24] hover:text-[#fb923c] font-medium transition-colors"
+                    className="text-xs text-[#1E40AF] hover:text-[#1D4ED8] font-medium transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -98,7 +97,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-10 glass border border-[#a855f7]/30 focus:border-[#a855f7] rounded-lg"
+                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                 />
               </div>
               {callbackError && (
@@ -113,13 +112,13 @@ export default function LoginPage() {
                   <p className="text-sm text-destructive font-medium">{error}</p>
                 </div>
               )}
-              <Button type="submit" className="w-full h-10 font-semibold glow-purple bg-gradient-to-r from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] rounded-lg transition-all duration-300" disabled={isLoading}>
+              <Button type="submit" className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300" disabled={isLoading}>
                 {isLoading ? "Authenticating..." : "Enter Platform"}
               </Button>
               <div className="text-center pt-1">
-                <p className="text-sm text-[#c4b5fd]">
+                <p className="text-sm text-[#486581]">
                   New user?{" "}
-                  <Link href="/auth/sign-up" className="text-[#fbbf24] hover:text-[#fb923c] font-semibold transition-colors">
+                  <Link href="/auth/sign-up" className="text-[#1E40AF] hover:text-[#1D4ED8] font-semibold transition-colors">
                     Create Account
                   </Link>
                 </p>

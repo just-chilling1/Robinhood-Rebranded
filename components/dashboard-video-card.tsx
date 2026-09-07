@@ -20,11 +20,11 @@ export function DashboardVideoCard({ video }: Props) {
 
   return (
     <>
-      <Card className="glass-strong border border-white/10 overflow-hidden shadow-lg">
+      <Card className="glass-strong overflow-hidden border border-border shadow-card">
         <CardContent className="p-0">
           <div className="p-5 pb-3">
-            <h3 className="text-lg font-bold text-white md:text-xl">{video.title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-[#94a3b8]">{video.description}</p>
+            <h3 className="text-lg font-bold text-[#102A43] md:text-xl">{video.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-700">{video.description}</p>
           </div>
 
           <button
@@ -32,24 +32,12 @@ export function DashboardVideoCard({ video }: Props) {
             onClick={() => {
               if (canPlay) setPlaying(true)
             }}
-            aria-label={canPlay ? `Play ${video.title}` : `${video.title} thumbnail`}
+            aria-label={canPlay ? `Play ${video.title}` : video.title}
             aria-disabled={!canPlay}
-            className="group relative block aspect-video w-full overflow-hidden bg-black ring-1 ring-white/[0.06]"
+            className="group relative block aspect-video w-full overflow-hidden bg-gradient-to-br from-[#102A43] to-[#486581] ring-1 ring-white/[0.06]"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={video.thumbnail}
-              alt={`${video.title} thumbnail`}
-              className="absolute inset-0 h-full w-full object-cover"
-              loading={video.priority ? "eager" : "lazy"}
-              decoding="async"
-              fetchPriority={video.priority ? "high" : "auto"}
-              width={1280}
-              height={720}
-            />
-            <div className="absolute inset-0 thumb-scrim" />
             <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 text-slate-900 shadow-2xl ring-4 ring-black/30 transition-transform group-hover:scale-105">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-card/95 text-[#102A43] shadow-2xl ring-4 ring-black/30 transition-transform group-hover:scale-105">
                 <Play className="ml-1 h-8 w-8 fill-current" aria-hidden />
               </span>
               <span className="text-sm font-semibold text-white drop-shadow-lg">Click to Play Video</span>

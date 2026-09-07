@@ -1,17 +1,9 @@
-export type UpgradeLevel = "free" | "dfy_vault" | "instant_income" | "automated_income"
+import { PREMIUM_FEATURE_LABELS, getUpgradeLevelLabel, type UpgradeLevel } from "@/lib/premium-features"
 
-const UPGRADE_LABELS: Record<UpgradeLevel, string> = {
-  free: "Core Access",
-  dfy_vault: "Accelerator",
-  instant_income: "Recurring Streams",
-  automated_income: "Social Payouts",
-}
+export type { UpgradeLevel }
 
 export function getUpgradeLabel(level: string | null | undefined): string {
-  if (level && level in UPGRADE_LABELS) {
-    return UPGRADE_LABELS[level as UpgradeLevel]
-  }
-  return "Core Access"
+  return getUpgradeLevelLabel(level)
 }
 
 export function getMembershipStatus(level: string | null | undefined): string {
@@ -51,3 +43,5 @@ export function formatRelativeTime(iso: string | null | undefined): string {
 export function shortenUserId(id: string): string {
   return `${id.slice(0, 8)}…`
 }
+
+export { PREMIUM_FEATURE_LABELS }

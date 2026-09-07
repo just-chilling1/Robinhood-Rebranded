@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Brain, CheckCircle2 } from "lucide-react"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
@@ -75,35 +76,33 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-gradient-to-br from-[#0d0a1a] via-[#1a1429] to-[#0d0a1a]">
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md">
-        <Card className="glass-strong glow-purple border border-[#a855f7]/40">
+        <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#a855f7] via-[#d946ef] to-[#fbbf24] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-                <div className="w-12 h-12 rounded-lg bg-[#0d0a1a] flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-[#a855f7]" />
-                </div>
+              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
+                <Brain className="w-6 h-6 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white text-center tracking-tight">
+            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">
               Choose New Password
             </CardTitle>
-            <CardDescription className="text-sm text-[#c4b5fd] text-center font-medium">
-              Enter a new password for your RH account
+            <CardDescription className="text-sm text-[#486581] text-center font-medium">
+              Enter a new password for your {PRODUCT_NAME} account
             </CardDescription>
           </CardHeader>
           <CardContent>
             {sessionValid === null ? (
-              <p className="text-center text-sm text-[#c4b5fd] font-medium">Verifying reset link...</p>
+              <p className="text-center text-sm text-[#486581] font-medium">Verifying reset link...</p>
             ) : success ? (
               <div className="space-y-4 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#DDF7EC]">
+                  <CheckCircle2 className="h-6 w-6 text-[#16875C]" />
                 </div>
                 <div className="space-y-2">
-                  <p className="text-base font-semibold text-white">Password updated</p>
-                  <p className="text-sm text-[#c4b5fd]">Redirecting you to the dashboard...</p>
+                  <p className="text-base font-semibold text-[#102A43]">Password updated</p>
+                  <p className="text-sm text-[#486581]">Redirecting you to the dashboard...</p>
                 </div>
               </div>
             ) : !sessionValid ? (
@@ -113,14 +112,14 @@ export default function ResetPasswordPage() {
                     Your reset link is invalid or has expired. Please request a new one.
                   </p>
                 </div>
-                <Button asChild className="w-full h-10 font-semibold rounded-lg">
+                <Button asChild className="w-full h-10 font-semibold rounded-lg bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white">
                   <Link href="/auth/forgot-password">Request New Reset Link</Link>
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-white">
+                  <Label htmlFor="password" className="text-sm font-medium text-[#102A43]">
                     New Password
                   </Label>
                   <Input
@@ -131,11 +130,11 @@ export default function ResetPasswordPage() {
                     minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-10 glass border border-[#a855f7]/30 focus:border-[#a855f7] rounded-lg"
+                    className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-white">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-[#102A43]">
                     Confirm Password
                   </Label>
                   <Input
@@ -145,7 +144,7 @@ export default function ResetPasswordPage() {
                     minLength={6}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="h-10 glass border border-[#a855f7]/30 focus:border-[#a855f7] rounded-lg"
+                    className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
                   />
                 </div>
                 {error && (
@@ -155,7 +154,7 @@ export default function ResetPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full h-10 font-semibold glow-purple bg-gradient-to-r from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] rounded-lg transition-all duration-300"
+                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? "Updating password..." : "Update Password"}

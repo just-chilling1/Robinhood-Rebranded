@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function SetupPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0E12]">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <div className="w-full max-w-2xl space-y-6">
-        <Card className="glass-strong border-border/50">
+        <Card className="glass-strong border-border">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-foreground">RH Setup</CardTitle>
+            <CardTitle className="text-3xl font-bold text-foreground">{PRODUCT_NAME} Setup</CardTitle>
             <p className="text-muted-foreground">
               Your Supabase environment variables aren’t set yet, so the app can’t connect to your new database.
             </p>

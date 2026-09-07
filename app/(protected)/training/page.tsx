@@ -1,15 +1,44 @@
 import { redirect } from "next/navigation"
-import { SUPPORT_PORTAL_URL } from "@/lib/support"
+import Link from "next/link"
+import type { LucideIcon } from "lucide-react"
+import { ArrowRight, CheckCircle2, Lightbulb, Play, Star } from "lucide-react"
+
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent } from "@/components/ui/card"
-import { Play, Gem, Sparkles } from "lucide-react"
-import { TrainingVideo } from "@/components/training-video"
 import { PageHeader } from "@/components/page-header"
+import { TrainingVideoCard } from "@/components/training-video-card"
 import { ACADEMY_TRAINING_VIDEOS } from "@/lib/academy-training-videos"
 import {
   PREMIUM_TRAINING_MODULES,
   getPremiumTrainingVimeoId,
 } from "@/lib/premium-training-videos"
+import {
+  TRAINING_CTA,
+  TRAINING_PRO_TIPS,
+  TRAINING_QUICK_START_CHECKLIST,
+  TRAINING_WORKFLOW_STEPS,
+} from "@/lib/training-page-content"
+
+function TrainingSectionHeader({
+  icon: Icon,
+  title,
+  subtitle,
+}: {
+  icon: LucideIcon
+  title: string
+  subtitle: string
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200">
+        <Icon className="h-5 w-5 text-sapphire-700" />
+      </div>
+      <div>
+        <h2 className="text-lg font-medium text-ink">{title}</h2>
+        <p className="text-sm text-text-muted">{subtitle}</p>
+      </div>
+    </div>
+  )
+}
 
 export default async function TrainingPage() {
   const supabase = await createClient()
@@ -21,134 +50,131 @@ export default async function TrainingPage() {
     redirect("/auth/login")
   }
 
-  const premiumTrainings = PREMIUM_TRAINING_MODULES.map((module) => ({
-    title: module.title,
-    feature: module.feature,
-    videoId: getPremiumTrainingVimeoId(module.key),
-    description: module.description,
-  }))
+  const CtaIcon = TRAINING_CTA.icon
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
+    <div className="page-container mx-auto w-full max-w-7xl animate-fade-in-up">
       <PageHeader
-        eyebrow="Training"
-        title="Robinhood Training Center"
-        subtitle="Watch the core system videos first, then the premium feature trainings when you unlock each upgrade"
+        eyebrow="Academy"
+        title="Training"
+        subtitle="Click-by-click walkthroughs for every core tool — watch in order after the Dashboard intro videos."
       />
 
-      <div className="glass-strong rounded-2xl border-border/50 p-6">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/20">
-            <Play className="h-6 w-6 text-accent" />
+      <div className="page-stack">
+        <section className="flex flex-col gap-6">
+          <TrainingSectionHeader
+            icon={Play}
+            title="Platform Tutorials"
+            subtitle="Core workflow — watch in order after Dashboard intro videos"
+          />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+            {ACADEMY_TRAINING_VIDEOS.map((training) => (
+              <TrainingVideoCard
+                key={training.vimeoId}
+                video={{
+                  id: training.vimeoId,
+                  title: training.title,
+                  description: training.description,
+                  duration: training.duration,
+                  step: training.step,
+                }}
+              />
+            ))}
           </div>
-          <div>
-            <p className="text-lg font-bold text-foreground">Complete Training Program</p>
-            <p className="text-base text-muted-foreground">
-              {ACADEMY_TRAINING_VIDEOS.length} essential videos to master the system +{" "}
-              {premiumTrainings.length} premium feature trainings
-            </p>
-          </div>
-        </div>
-      </div>
+        </section>
 
-      <div className="grid grid-cols-1 gap-8">
-        {ACADEMY_TRAINING_VIDEOS.map((training) => (
-          <Card
-            key={training.vimeoId}
-            className="glass-strong glow-violet overflow-hidden border-border/50 transition-all hover:shadow-xl"
-          >
-            <CardContent className="p-0">
-              <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
-                <TrainingVideo videoId={training.vimeoId} title={training.title} />
-
-                <div className="flex flex-col justify-center space-y-4 p-8">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-2xl font-black text-white shadow-lg">
-                      {training.step}
-                    </div>
-                    <span className="rounded-full bg-accent/20 px-3 py-1 text-sm font-bold text-accent">
-                      {training.duration}
-                    </span>
-                  </div>
-                  <div>
-                    <h2 className="mb-3 text-3xl font-bold text-foreground">{training.title}</h2>
-                    <p className="text-lg leading-relaxed text-muted-foreground">{training.description}</p>
-                  </div>
-                  <div className="pt-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Play className="h-4 w-4" />
-                      <span>Watch this video to continue</span>
-                    </div>
-                  </div>
+        <section className="glass-card p-5 sm:p-6">
+          <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-text-muted">Quick reference</h3>
+          <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {TRAINING_WORKFLOW_STEPS.map((step) => (
+              <li key={step.step} className="flex gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[13px] font-medium text-sapphire-700">
+                  {step.step}
+                </span>
+                <div className="min-w-0">
+                  <Link
+                    href={step.page}
+                    className="text-sm font-medium text-ink transition-colors hover:text-sapphire-700"
+                  >
+                    {step.title}
+                  </Link>
+                  <p className="mt-1 text-xs leading-relaxed text-text-muted">{step.description}</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-      <div className="space-y-6 pt-4">
-        <div>
-          <div className="mb-3 inline-flex items-center gap-2 rounded-lg border border-[#fbbf24]/30 bg-gradient-to-r from-[#fbbf24]/20 to-[#f97316]/20 px-4 py-2">
-            <Sparkles className="h-4 w-4 text-[#fbbf24]" />
-            <span className="text-sm font-black uppercase tracking-widest text-[#fbbf24]">Premium Tier</span>
+        <section className="flex flex-col gap-6">
+          <TrainingSectionHeader
+            icon={Star}
+            title="Premium Feature Tutorials"
+            subtitle="Scale after your first live pack — watch in any order"
+          />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
+            {PREMIUM_TRAINING_MODULES.map((module) => (
+              <TrainingVideoCard
+                key={module.key}
+                video={{
+                  id: getPremiumTrainingVimeoId(module.key),
+                  title: module.title,
+                  description: module.description,
+                  badge: module.feature,
+                }}
+              />
+            ))}
           </div>
-          <h2 className="mb-2 text-3xl font-bold text-foreground">Premium Feature Trainings</h2>
-          <p className="text-lg text-muted-foreground">
-            Tutorials for Accelerator, Recurring Streams, Social Payouts, and Protector
-          </p>
+        </section>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <section className="glass-card p-5 sm:p-6">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-sapphire-700" />
+              <h3 className="text-base font-medium text-ink">Launch checklist</h3>
+            </div>
+            <ul className="mt-4 space-y-3">
+              {TRAINING_QUICK_START_CHECKLIST.map((item) => (
+                <li key={item} className="flex gap-2.5 text-sm leading-relaxed text-text-secondary">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="glass-card p-5 sm:p-6">
+            <div className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-sapphire-700" />
+              <h3 className="text-base font-medium text-ink">Pro tips</h3>
+            </div>
+            <ul className="mt-4 space-y-4">
+              {TRAINING_PRO_TIPS.map((tip) => (
+                <li key={tip.title}>
+                  <p className="text-sm font-medium text-ink">{tip.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-text-muted">{tip.text}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
-          {premiumTrainings.map((training) => (
-            <Card
-              key={training.videoId}
-              className="glass-strong overflow-hidden border-2 border-[#fbbf24]/25 transition-all hover:border-[#fbbf24]/50 hover:shadow-xl"
-            >
-              <CardContent className="p-0">
-                <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
-                  <TrainingVideo videoId={training.videoId} title={training.title} />
-
-                  <div className="flex flex-col justify-center space-y-4 p-8">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fbbf24] to-[#f97316] px-4 py-1.5 text-sm font-black uppercase tracking-wider text-[#1a1305]">
-                        <Gem className="h-4 w-4" />
-                        Premium
-                      </span>
-                      <span className="rounded-full bg-accent/20 px-3 py-1 text-sm font-bold text-accent">
-                        {training.feature}
-                      </span>
-                    </div>
-                    <div>
-                      <h2 className="mb-3 text-3xl font-bold text-foreground">{training.title}</h2>
-                      <p className="text-lg leading-relaxed text-muted-foreground">{training.description}</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <section className="glass-card overflow-hidden">
+          <div className="border-b border-[var(--ds-line-sapphire)] bg-sapphire-200 px-5 py-6 sm:px-8">
+            <h2 className="text-lg font-medium text-ink">{TRAINING_CTA.headline}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary">{TRAINING_CTA.subcopy}</p>
+          </div>
+          <div className="flex flex-col gap-3 p-5 sm:flex-row sm:px-8">
+            <Link href={TRAINING_CTA.href} className="btn-primary min-h-[48px] flex-1 text-sm sm:text-base">
+              <CtaIcon className="h-5 w-5 shrink-0" />
+              {TRAINING_CTA.buttonLabel}
+            </Link>
+            <Link href="/support" className="btn-secondary min-h-[48px] shrink-0 px-6 text-sm">
+              Get help
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </section>
       </div>
-
-      <Card className="glass-strong glow-jade border-border/50">
-        <CardContent className="space-y-4 p-8 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/20">
-            <Play className="h-8 w-8 text-accent" />
-          </div>
-          <div>
-            <h3 className="mb-2 text-2xl font-bold text-foreground">Need More Help?</h3>
-            <a
-              href={SUPPORT_PORTAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-lg font-semibold text-[#06b6d4] underline decoration-2 decoration-[#06b6d4] underline-offset-4 hover:text-[#0ea5e9] hover:decoration-[#0ea5e9]"
-            >
-              Questions about the training? Visit our support portal anytime for help
-            </a>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

@@ -16,13 +16,13 @@ export function OnboardingLogo({ size = "md" }: OnboardingLogoProps) {
 
   return (
     <div
-      className={`relative ${s.outer} ${s.rounded} bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-200`}
+      className={`relative ${s.outer} ${s.rounded} bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]`}
       aria-hidden
     >
       <div
-        className={`${s.inner} ${s.rounded} bg-white flex items-center justify-center`}
+        className={`${s.inner} ${s.rounded} bg-[#1E40AF] flex items-center justify-center`}
       >
-        <Brain className={`${s.icon} text-sky-600`} />
+        <Brain className={`${s.icon} text-white`} />
       </div>
     </div>
   )

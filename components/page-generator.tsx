@@ -144,14 +144,14 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
   if (success) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Card className="glass-strong glow-gold border-2 border-[#fbbf24]/40 max-w-2xl">
+        <Card className="glass-strong border border-[#DDF7EC] max-w-2xl">
           <CardContent className="p-12 text-center space-y-6">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fbbf24] to-[#fb923c] flex items-center justify-center mx-auto glow-gold shadow-lg">
-              <CheckCircle2 className="w-16 h-16 text-[#0d0a1a]" />
+            <div className="w-24 h-24 rounded-full bg-[#DDF7EC] flex items-center justify-center mx-auto shadow-[var(--shadow-sm)]">
+              <CheckCircle2 className="w-16 h-16 text-[#16875C]" />
             </div>
             <div>
-              <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-3 tracking-tight">AI Task Complete!</h2>
-              <p className="text-xl text-[#c4b5fd] font-semibold">Your engagement pack is secured. Redirecting to vault...</p>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-[#102A43] mb-3 tracking-tight">AI Task Complete!</h2>
+              <p className="text-xl text-[#486581] font-semibold">Your engagement pack is secured. Redirecting to vault...</p>
             </div>
             {generatedComments && (
               <div className="glass rounded-xl p-4 text-left space-y-3">
@@ -170,7 +170,7 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
               </div>
             )}
             <div className="pt-4">
-              <p className="text-lg text-accent font-semibold animate-pulse">Redirecting to your pages...</p>
+              <p className="text-lg text-[#1E40AF] font-semibold animate-pulse">Redirecting to your pages...</p>
             </div>
           </CardContent>
         </Card>
@@ -188,18 +188,18 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
       </div>
 
       <div className="text-center space-y-2">
-        <h2 className="text-4xl font-extrabold text-white tracking-tight">Deploy AI Content Scout</h2>
-        <p className="text-xl text-[#c4b5fd] font-semibold">Select a trending Short and let the AI generate your engagement pack</p>
+        <h2 className="text-4xl font-extrabold text-[#102A43] tracking-tight">Deploy AI Content Scout</h2>
+        <p className="text-xl text-[#486581] font-semibold">Select a trending Short and let the AI generate your engagement pack</p>
       </div>
 
-      <Card className="glass-strong glow-purple border-2 border-[#a855f7]/40">
+      <Card className="glass-strong glow-blue border-2 border-[var(--border)]">
         <CardContent className="p-8 space-y-6">
-          <div className="bg-[#a855f7]/10 rounded-2xl p-6 border-2 border-[#a855f7]/30 space-y-3">
-            <h3 className="text-2xl font-extrabold text-[#a855f7] flex items-center gap-2">
+          <div className="bg-[#486581]/10 rounded-2xl p-6 border-2 border-[#486581]/30 space-y-3">
+            <h3 className="text-2xl font-extrabold text-[#486581] flex items-center gap-2">
               <Sparkles className="w-7 h-7" />
               AI Agent Instructions
             </h3>
-            <ul className="space-y-2 text-base text-[#c4b5fd] font-semibold">
+            <ul className="space-y-2 text-base text-[#486581] font-semibold">
               <li>✓ Copy one comment, personalize 1–2 words before posting</li>
               <li>✓ Ask real questions (questions get more replies)</li>
               <li>✓ Avoid links or "DM me" patterns (flagged as spam)</li>
@@ -225,16 +225,10 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
                         type="button"
                         onClick={() => setSelectedShort(s)}
                         className={`text-left glass rounded-xl p-4 border transition-all ${
-                          isSelected ? "border-accent glow-jade" : "border-border/50 hover:glow-cyan"
+                          isSelected ? "border-[#2563EB] bg-[#EEF4FF]" : "border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[#EEF4FF]"
                         }`}
                       >
                         <div className="flex gap-3">
-                          <div className="w-24 h-14 rounded-lg bg-muted overflow-hidden flex-shrink-0">
-                            {s.thumbnailUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={s.thumbnailUrl} alt="" className="w-full h-full object-cover" />
-                            ) : null}
-                          </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-foreground truncate">{s.title}</p>
                             <p className="text-sm text-muted-foreground truncate">{s.channelTitle}</p>
@@ -267,33 +261,33 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
 
           {generating && (
             <div className="space-y-6 py-6">
-              <div className="flex flex-col items-center justify-center gap-2 p-8 glass-strong rounded-2xl border-4 border-[#a855f7]/70 glow-purple bg-gradient-to-br from-[#a855f7]/10 to-[#fbbf24]/10">
-                <Clock className="w-12 h-12 text-[#a855f7] animate-pulse mb-2" />
+              <div className="flex flex-col items-center justify-center gap-2 p-8 glass-strong rounded-2xl border-4 border-[var(--border)] glow-blue bg-gradient-to-br from-[#486581]/10 to-[#2563EB]/10">
+                <Clock className="w-12 h-12 text-[#486581] animate-pulse mb-2" />
                 <div className="text-center">
-                  <p className="text-5xl font-black text-[#a855f7] mb-1">{timeRemaining}s</p>
-                  <p className="text-lg font-bold text-white">AI Processing Time</p>
-                  <p className="text-sm text-[#c4b5fd] mt-1">Neural network analyzing content...</p>
+                  <p className="text-5xl font-black text-[#486581] mb-1">{timeRemaining}s</p>
+                  <p className="text-lg font-bold text-[#102A43]">AI Processing Time</p>
+                  <p className="text-sm text-[#486581] mt-1">Neural network analyzing content...</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
-                <Loader2 className="w-6 h-6 animate-spin text-[#a855f7]" />
-                <p className="text-lg font-semibold text-white">{currentMessage}</p>
+                <Loader2 className="w-6 h-6 animate-spin text-[#486581]" />
+                <p className="text-lg font-semibold text-[#102A43]">{currentMessage}</p>
               </div>
-              <div className="w-full h-4 rounded-full bg-[#231d35] overflow-hidden border-2 border-[#a855f7]/30">
+              <div className="w-full h-4 rounded-full bg-[#ECF6FB] overflow-hidden border border-[var(--border)]">
                 <div
-                  className="h-full bg-gradient-to-r from-[#a855f7] to-[#fbbf24] glow-purple transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-[#2563EB] to-[#2563EB] glow-blue transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-center text-base text-[#c4b5fd] font-bold">{progress}% Complete</p>
+              <p className="text-center text-base text-[#486581] font-bold">{progress}% Complete</p>
             </div>
           )}
 
           <Button
             onClick={handleGenerate}
             disabled={generating || !selectedShort}
-            className="w-full h-16 text-xl font-extrabold glow-purple bg-gradient-to-r from-[#a855f7] to-[#d946ef] hover:from-[#d946ef] hover:to-[#a855f7] rounded-2xl"
+            className="w-full h-16 text-xl font-extrabold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-2xl"
           >
             {generating ? (
               <>
@@ -308,9 +302,9 @@ export function PageGenerator({ nicheId, categoryName, onBack, affiliateLink, of
             )}
           </Button>
 
-          <div className="glass rounded-2xl p-5 space-y-3 border-2 border-[#fbbf24]/30">
-            <p className="text-lg font-extrabold text-[#fbbf24]">AI Output Preview:</p>
-            <ul className="space-y-2 text-base text-[#c4b5fd]">
+          <div className="glass rounded-2xl p-5 space-y-3 border border-[#FFF3D6] bg-[#FFF3D6]">
+            <p className="text-lg font-extrabold text-[#B7791F]">AI Output Preview:</p>
+            <ul className="space-y-2 text-base text-[#486581]">
               <li>✓ Variety pack of natural-sounding comments</li>
               <li>✓ Includes questions + value statements + reactions</li>
               <li>✓ Saved to your vault for reuse anytime</li>

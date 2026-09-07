@@ -1,4 +1,7 @@
 /** Premium upgrade training videos (roster 6–9). */
+import { PRODUCT_NAME } from "@/lib/brand"
+import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
+
 export const PREMIUM_TRAINING_VIMEO_IDS = {
   accelerator: "1214134021",
   recurringStreams: "1214136849",
@@ -11,28 +14,28 @@ export type PremiumTrainingKey = keyof typeof PREMIUM_TRAINING_VIMEO_IDS
 export const PREMIUM_TRAINING_MODULES = [
   {
     key: "accelerator" as const,
-    title: "Accelerator Training",
-    feature: "Accelerator",
+    title: `${PREMIUM_FEATURE_LABELS.dfyVault} Training`,
+    feature: PREMIUM_FEATURE_LABELS.dfyVault,
     description:
-      "Watch this first to maximize your results with the 200+ Accelerator videos and ready-made comment packs",
+      `Watch this first to maximize your results with the 200+ ${PREMIUM_FEATURE_LABELS.dfyVault} videos and ready-made comment packs`,
   },
   {
     key: "recurringStreams" as const,
-    title: "Recurring Streams Training",
-    feature: "Recurring Streams",
+    title: `${PREMIUM_FEATURE_LABELS.instantIncome} Training`,
+    feature: PREMIUM_FEATURE_LABELS.instantIncome,
     description: "Learn how to copy the 200+ proven Facebook posts and start making money today",
   },
   {
     key: "socialPayouts" as const,
-    title: "Social Payouts Training",
-    feature: "Social Payouts",
+    title: `${PREMIUM_FEATURE_LABELS.automatedIncome} Training`,
+    feature: PREMIUM_FEATURE_LABELS.automatedIncome,
     description: "Learn how to submit your link to 100+ traffic sources and get automated traffic forever",
   },
   {
     key: "protector" as const,
-    title: "Protector Training",
-    feature: "Protector",
-    description: "Understand how Protector keeps your Robinhood account and activity secure",
+    title: `${PREMIUM_FEATURE_LABELS.protector} Training`,
+    feature: PREMIUM_FEATURE_LABELS.protector,
+    description: `Understand how ${PREMIUM_FEATURE_LABELS.protector} keeps your ${PRODUCT_NAME} account and activity secure`,
   },
 ] as const
 

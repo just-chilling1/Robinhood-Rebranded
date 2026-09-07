@@ -1,10 +1,12 @@
 /**
- * RH onboarding — edit copy here only.
+ * Wifi Code onboarding — edit copy here only.
  * Plain language, no product/page names, no ads.
  */
 
+import { PRODUCT_NAME } from "@/lib/brand"
+
 export const onboardingConfig = {
-  productName: "RH",
+  productName: PRODUCT_NAME,
   productTagline: "Your comment helper",
   dashboardRoute: "/dashboard",
 

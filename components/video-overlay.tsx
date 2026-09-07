@@ -75,14 +75,14 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} />
 
       <div
-        className="relative flex h-[100dvh] w-full max-w-5xl flex-col overflow-hidden rounded-none border-0 border-white/10 sm:h-[min(92dvh,56rem)] sm:rounded-2xl sm:border"
+        className="relative flex h-[100dvh] w-full max-w-5xl flex-col overflow-hidden rounded-none border-0 border-[var(--border)] sm:h-[min(92dvh,56rem)] sm:rounded-2xl sm:border"
         style={{
           backgroundColor: "rgba(5, 10, 8, 0.92)",
           boxShadow: "0 0 0 1px rgba(0,163,108,0.10) inset, 0 24px 80px rgba(0,0,0,0.7)",
         }}
       >
         <div
-          className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-white/10 px-5 py-3"
+          className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-[var(--border)] px-5 py-3"
           style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
         >
           <p className="flex-1 truncate text-sm font-bold text-white">{title || "Now Playing"}</p>
