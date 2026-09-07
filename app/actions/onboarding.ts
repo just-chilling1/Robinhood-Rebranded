@@ -16,20 +16,15 @@ export async function completeOnboarding(firstName?: string) {
       return { success: false, error: "Not authenticated" }
     }
 
-    const updates: {
-      onboarding_completed_at: string
-      full_name?: string
-      updated_at: string
-    } = {
-      onboarding_completed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-
-    if (firstName?.trim()) {
-      updates.full_name = firstName.trim()
-    }
-
-    const { error: updateError } = await supabase.from("users").update(updates).eq("id", user.id)
+    // Keep the profile update limited to columns that always exist on `users`.
+    // Some environments only have id / created_at / onboarding_completed_at.
+    // Persist the display name in auth metadata (and optionally full_name below).
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        onboarding_completed_at: new Date().toISOString(),
+      })
+      .eq("id", user.id)
 
     if (updateError) {
       console.error("[onboarding] Failed to complete:", updateError)
@@ -37,9 +32,20 @@ export async function completeOnboarding(firstName?: string) {
     }
 
     if (firstName?.trim()) {
+      const trimmed = firstName.trim()
       await supabase.auth.updateUser({
-        data: { full_name: firstName.trim() },
+        data: { full_name: trimmed },
       })
+
+      // Best-effort: older DBs may not have full_name / updated_at yet.
+      const { error: profileNameError } = await supabase
+        .from("users")
+        .update({ full_name: trimmed, updated_at: new Date().toISOString() })
+        .eq("id", user.id)
+
+      if (profileNameError) {
+        console.warn("[onboarding] Name saved to auth only; users.full_name unavailable:", profileNameError.message)
+      }
     }
 
     revalidatePath("/dashboard")
