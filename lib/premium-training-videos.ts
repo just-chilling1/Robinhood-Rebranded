@@ -1,4 +1,4 @@
-/** Premium upgrade training videos (roster 6–9). */
+/** Premium upgrade training videos (roster 6–10). */
 import { PRODUCT_NAME } from "@/lib/brand"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 
@@ -7,6 +7,10 @@ export const PREMIUM_TRAINING_VIMEO_IDS = {
   recurringStreams: "1214136849",
   socialPayouts: "1214140189",
   protector: "1214142200",
+  /** Swap in the real Vimeo ID when the Reseller training is uploaded. */
+  licenseRights: "",
+  /** Swap in the real Vimeo ID when the High-Ticket Payouts training is uploaded. */
+  highTicketPayouts: "",
 } as const
 
 export type PremiumTrainingKey = keyof typeof PREMIUM_TRAINING_VIMEO_IDS
@@ -36,6 +40,20 @@ export const PREMIUM_TRAINING_MODULES = [
     title: `${PREMIUM_FEATURE_LABELS.protector} Training`,
     feature: PREMIUM_FEATURE_LABELS.protector,
     description: `Understand how ${PREMIUM_FEATURE_LABELS.protector} keeps your ${PRODUCT_NAME} account and activity secure`,
+  },
+  {
+    key: "licenseRights" as const,
+    title: `${PREMIUM_FEATURE_LABELS.licenseRights} Training`,
+    feature: PREMIUM_FEATURE_LABELS.licenseRights,
+    description:
+      "Learn how to request activation for the Full Turnkey Reseller & License Rights Edition",
+  },
+  {
+    key: "highTicketPayouts" as const,
+    title: `${PREMIUM_FEATURE_LABELS.highTicketPayouts} Training`,
+    feature: PREMIUM_FEATURE_LABELS.highTicketPayouts,
+    description:
+      "Learn how to pick an authority article, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog",
   },
 ] as const
 

@@ -7,7 +7,6 @@ import { DashboardTipsWidget } from "@/components/dashboard-tips-widget"
 import { PremiumUpgradesWidget } from "@/components/premium-upgrades-widget"
 import { DashboardVideoCard } from "@/components/dashboard-video-card"
 import { BonusTrainingCard } from "@/components/bonus-training-card"
-import { DashboardSupportBanner } from "@/components/dashboard-support-banner"
 import { BookOpen, Brain, Play } from "lucide-react"
 import { DASHBOARD_TRAINING_VIDEOS } from "@/lib/dashboard-training-videos"
 import { PRODUCT_NAME } from "@/lib/brand"
@@ -79,8 +78,6 @@ export default async function DashboardPage() {
               Know More from the Academy
             </Link>
           </div>
-
-          <DashboardSupportBanner />
         </div>
 
         <aside className="hidden min-w-0 space-y-6 xl:col-span-1 xl:block">

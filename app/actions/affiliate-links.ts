@@ -106,10 +106,10 @@ export async function listAffiliateLinks(): Promise<ActionResult<{ links: Affili
       .order("created_at", { ascending: false })
 
     if (queryError) {
-      console.error("[affiliate-links] list failed:", queryError)
-      if (missingTableError(queryError.message)) {
+      if (missingTableError(queryError.message ?? "")) {
         return { success: false, error: MISSING_TABLE_MESSAGE }
       }
+      console.error("[affiliate-links] list failed:", queryError.message, queryError.code, queryError.details)
       return { success: false, error: "Couldn’t load your links. Please try again." }
     }
 
@@ -143,10 +143,10 @@ export async function createAffiliateLink(
       .single()
 
     if (insertError || !data) {
-      console.error("[affiliate-links] create failed:", insertError)
-      if (insertError && missingTableError(insertError.message)) {
+      if (insertError && missingTableError(insertError.message ?? "")) {
         return { success: false, error: MISSING_TABLE_MESSAGE }
       }
+      console.error("[affiliate-links] create failed:", insertError?.message, insertError?.code, insertError?.details)
       return { success: false, error: "Couldn’t save this link. Please try again." }
     }
 

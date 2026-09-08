@@ -1,6 +1,6 @@
 /**
  * Academy Track B core videos (roster 4–5).
- * Premium modules (6–9) live in lib/premium-training-videos.ts.
+ * Premium modules (6–10) live in lib/premium-training-videos.ts.
  */
 export type AcademyTrainingVideo = {
   step: number

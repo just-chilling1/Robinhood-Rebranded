@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRight, Headphones } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-/** Support CTA at the bottom of the dashboard main column. */
+/** Support CTA banner — “Need Help?” with link to /support. */
 export function DashboardSupportBanner() {
   return (
     <section
