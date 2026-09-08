@@ -1,4 +1,4 @@
-import { Gem, Sparkles, Zap, ShieldCheck, type LucideIcon } from "lucide-react"
+import { Gem, Sparkles, Zap, ShieldCheck, FileText, BookOpen, Package, type LucideIcon } from "lucide-react"
 
 /** User-facing premium tier names — single source of truth. */
 export const PREMIUM_FEATURE_LABELS = {
@@ -6,6 +6,9 @@ export const PREMIUM_FEATURE_LABELS = {
   instantIncome: "Instant Income",
   automatedIncome: "Automated Profits",
   protector: "Cyber Protection",
+  licenseRights: "Reseller & License Rights",
+  highTicketPayouts: "Guaranteed High-Ticket Payouts",
+  dfyProfit: "Done-For-You Profit",
 } as const
 
 export type PremiumFeatureKey = keyof typeof PREMIUM_FEATURE_LABELS
@@ -61,5 +64,23 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     label: PREMIUM_FEATURE_LABELS.protector,
     description: "Keep your account and links safe and healthy.",
     icon: ShieldCheck,
+  },
+  {
+    href: "/upgrades/license-rights",
+    label: PREMIUM_FEATURE_LABELS.licenseRights,
+    description: "Request reseller license rights — our team activates the edition.",
+    icon: FileText,
+  },
+  {
+    href: "/upgrades/high-ticket-payouts",
+    label: PREMIUM_FEATURE_LABELS.highTicketPayouts,
+    description: "100 ready-to-publish authority articles built around your offer.",
+    icon: BookOpen,
+  },
+  {
+    href: "/upgrades/dfy-profit",
+    label: PREMIUM_FEATURE_LABELS.dfyProfit,
+    description: "One link, one niche, a complete promo kit in one run.",
+    icon: Package,
   },
 ]

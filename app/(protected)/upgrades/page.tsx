@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Check, Crown, Zap, Rocket, ShieldCheck } from "lucide-react"
+import { Check, Crown, Zap, Rocket, ShieldCheck, FileText, BookOpen, Package } from "lucide-react"
 import Link from "next/link"
 import { PageHeader } from "@/components/page-header"
 import { PREMIUM_FEATURE_LABELS, getUpgradeLevelLabel } from "@/lib/premium-features"
@@ -71,6 +71,51 @@ const upgrades = [
     ],
     href: "/upgrades/protector",
   },
+  {
+    id: "license_rights",
+    name: PREMIUM_FEATURE_LABELS.licenseRights,
+    tagline: "Resell under your brand",
+    icon: FileText,
+    color: "cyan",
+    features: [
+      "Reseller license",
+      "Rebrandable assets",
+      "Sales pages",
+      "Support docs",
+      "Team activation via License Rights ticket",
+    ],
+    href: "/upgrades/license-rights",
+  },
+  {
+    id: "high_ticket_payouts",
+    name: PREMIUM_FEATURE_LABELS.highTicketPayouts,
+    tagline: "100 authority articles",
+    icon: BookOpen,
+    color: "violet",
+    features: [
+      "100 long-form authority articles",
+      "9 niches with SEO-ready templates",
+      "Affiliate link woven into every preview",
+      "Copy plain text or HTML for any platform",
+      "Medium, LinkedIn, Quora & blog posting guides",
+    ],
+    href: "/upgrades/high-ticket-payouts",
+  },
+  {
+    id: "dfy_profit",
+    name: PREMIUM_FEATURE_LABELS.dfyProfit,
+    tagline: "Your complete promo kit",
+    icon: Package,
+    color: "cyan",
+    features: [
+      "5 Videos Ready To Comment On",
+      "AI Comments For Every Video",
+      "Hosted Authority Article",
+      "3 Ready-To-Post Facebook Posts",
+      "One Link, One Niche, One Click",
+    ],
+    href: "/upgrades/dfy-profit",
+  },
 ]
 
 export default async function UpgradesPage() {
@@ -104,7 +149,7 @@ export default async function UpgradesPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {upgrades.map((upgrade) => {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
