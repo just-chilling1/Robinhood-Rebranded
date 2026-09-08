@@ -50,20 +50,33 @@ export function PremiumVideoTutorial({
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
+                  <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-sapphire-900 via-sapphire-700 to-sapphire-500">
+                    <div
+                      className="absolute inset-0 opacity-40"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle at 18% 22%, rgba(255,255,255,0.28), transparent 42%), radial-gradient(circle at 82% 78%, rgba(96,165,250,0.45), transparent 38%), linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+                        backgroundSize: "auto, auto, 28px 28px, 28px 28px",
+                      }}
+                    />
+                  </div>
                 )}
-                <div className="video-thumb-scrim absolute inset-0" />
+                {thumbnailSrc ? (
+                  <div className="video-thumb-scrim absolute inset-0" />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-t from-sapphire-900/35 via-transparent to-white/10" />
+                )}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-sapphire text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105">
-                    <Play className="ml-1 h-8 w-8 fill-white" />
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-sapphire-700 shadow-[0_10px_28px_-8px_rgba(20,33,61,0.45)] transition-transform duration-300 hover:scale-105">
+                    <Play className="ml-1 h-8 w-8 fill-sapphire-700" />
                   </span>
                   {hasVideo ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/70 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
                       ▶ Click to Play Video
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
-                      <Clock className="h-3 w-3" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/92 px-3 py-1.5 text-[13px] font-semibold text-ink shadow-sm backdrop-blur-sm">
+                      <Clock className="h-3 w-3 text-sapphire-700" />
                       Training video coming soon
                     </span>
                   )}

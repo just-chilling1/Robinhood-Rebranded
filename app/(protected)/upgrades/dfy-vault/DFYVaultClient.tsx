@@ -21,14 +21,13 @@ import {
   ArrowRight,
   Gem,
   Link2,
-  MessageSquare,
-  Rocket,
-  Clock,
+  Tag,
 } from "lucide-react"
 import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { PageHeader } from "@/components/page-header"
+import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
@@ -36,11 +35,29 @@ import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import { cn } from "@/lib/utils"
 
+const UNLIMITED_STEPS = [
+  {
+    num: "1",
+    title: "Lock in your offer",
+    desc: "Add the product name and money link once. Unlimited inserts them for you.",
+  },
+  {
+    num: "2",
+    title: "Browse ready videos",
+    desc: "Open a vault of high-view Shorts already matched to popular niches.",
+  },
+  {
+    num: "3",
+    title: "Copy and post",
+    desc: "Each video has 5 comments with your offer inside. Paste and go.",
+  },
+] as const
+
 const primaryCtaClass =
-  "rounded-xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] font-black text-white shadow-lg shadow-[#2563EB]/30 transition-[transform,box-shadow,filter,background] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:from-[#1D4ED8] hover:to-[#1E40AF] hover:shadow-2xl hover:shadow-[#2563EB]/50 hover:brightness-110 active:translate-y-0 active:scale-[0.99]"
+  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-colors hover:bg-primary-hover"
 
 const outlineCtaClass =
-  "glass rounded-xl border-2 border-[var(--border)] font-bold text-[#102A43] shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:border-[#2563EB] hover:bg-[#2563EB]/10 hover:text-[#1D4ED8] hover:shadow-xl hover:shadow-[#2563EB]/25 active:translate-y-0 active:scale-[0.99]"
+  "rounded-xl border border-[var(--ds-line)] bg-card font-semibold text-ink transition-colors hover:border-ink hover:bg-surface-nested"
 
 type FieldKey = "productName" | "productLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
@@ -212,7 +229,7 @@ export default function DFYVaultClient() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-[#2563EB]" />
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     )
   }
@@ -226,15 +243,8 @@ export default function DFYVaultClient() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <PageHeader
-        eyebrow={PREMIUM_FEATURE_LABELS.dfyVault}
-        title={
-          <span className="inline-flex items-center gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#2563EB]/20 bg-[#2563EB]/10">
-              <Gem className="h-5 w-5 text-[#2563EB]" />
-            </span>
-            {PREMIUM_FEATURE_LABELS.dfyVault}
-          </span>
-        }
+        eyebrow="Premium"
+        title={PREMIUM_FEATURE_LABELS.dfyVault}
         subtitle={`${libraryCountLabel} Select your product once, then copy and paste comments on any video.`}
       />
 
@@ -245,143 +255,162 @@ export default function DFYVaultClient() {
         iframeTitle={`${PREMIUM_FEATURE_LABELS.dfyVault} training video`}
       />
 
+      <PremiumFeatureBanner
+        icon={Gem}
+        kicker="Comment vault"
+        title="Ready-made viral videos"
+        description="Lock your offer once. Every comment already includes the product name and your link."
+        chip={videos.length > 0 ? `${videos.length} videos loaded` : "Library ready"}
+      />
+
       {!productSelected ? (
         <div className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card className="glass-strong border border-[var(--border)] p-6">
-              <div className="mb-5 flex items-center gap-2">
-                <Clock className="h-5 w-5 text-[#2563EB]" />
-                <h3 className="text-lg font-black text-[#102A43]">How it works</h3>
-              </div>
-              <ol className="space-y-4">
-                {[
-                  {
-                    icon: Link2,
-                    title: "Lock in your offer",
-                    body: "Add the product name and money link once. Unlimited inserts them for you.",
-                  },
-                  {
-                    icon: Search,
-                    title: "Browse ready videos",
-                    body: "Open a vault of high-view Shorts already matched to popular niches.",
-                  },
-                  {
-                    icon: MessageSquare,
-                    title: "Copy and post",
-                    body: "Each video has 5 comments with your offer inside. Paste and go.",
-                  },
-                ].map((item) => (
-                  <li key={item.title} className="flex gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[#2563EB]/8">
-                      <item.icon className="h-5 w-5 text-[#2563EB]" />
-                    </div>
-                    <div>
-                      <p className="font-black text-[#102A43]">{item.title}</p>
-                      <p className="text-sm font-semibold leading-relaxed text-[#486581]">{item.body}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </Card>
+          <PremiumSteps title="Three steps to post" steps={UNLIMITED_STEPS} />
 
-            <Card className="border border-[#2563EB]/20 bg-gradient-to-br from-[#2563EB]/8 to-transparent p-6">
-              <div className="mb-3 flex items-center gap-2">
-                <Rocket className="h-5 w-5 text-[#2563EB]" />
-                <h3 className="text-lg font-black text-[#102A43]">What you walk away with</h3>
-              </div>
-              <ul className="space-y-2 text-sm font-semibold text-[#486581]">
-                <li>Viral videos you can comment on immediately</li>
-                <li>Five ready comments on every video</li>
-                <li>Your product and link already filled in</li>
-              </ul>
-            </Card>
-          </div>
-
-          <Card className="glass-strong border-2 border-[var(--border-strong)] p-6 sm:p-8">
-            <form className="space-y-6" onSubmit={handleSelectProduct} noValidate>
-              <div className="flex items-start justify-between gap-4 border-b-2 border-[#2563EB]/45 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[var(--border-strong)] bg-gradient-to-br from-[#2563EB]/20 to-[#2563EB]/10 sm:h-14 sm:w-14">
-                    <Zap className="h-6 w-6 text-[#2563EB] sm:h-7 sm:w-7" />
+          <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
+            <form onSubmit={handleSelectProduct} noValidate>
+              <div className="flex flex-col lg:flex-row">
+                <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[220px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
+                    <Zap size={22} aria-hidden />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-[#102A43] sm:text-3xl">Select Your Product</h2>
-                    <p className="font-semibold text-[#486581]">Your product goes into every comment automatically</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">
+                      Step 1 of 3
+                    </p>
+                    <p className="mt-1 text-sm font-semibold leading-snug text-white">
+                      Lock in your offer
+                    </p>
                   </div>
                 </div>
-                <p className="shrink-0 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/8 px-2.5 py-1 text-[11px] font-black text-[#2563EB] sm:px-3 sm:text-xs">
-                  {filledCount}/2 ready
-                </p>
-              </div>
 
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div>
-                  <Label htmlFor="unlimited-product-name" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
-                    Product Name
-                    <InfoHint label="The product or offer you're promoting. It gets dropped into every ready-made comment." />
-                  </Label>
-                  <Input
-                    id="unlimited-product-name"
-                    value={productName}
-                    onChange={(e) => {
-                      setProductName(e.target.value)
-                      clearFieldError("productName")
-                    }}
-                    placeholder="e.g., Keto Weight Loss System"
-                    aria-invalid={Boolean(fieldErrors.productName)}
-                    className="h-14 text-lg"
-                  />
-                  {fieldErrors.productName ? (
-                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productName}</p>
-                  ) : null}
+                <div className="flex-1 space-y-6 p-5 sm:p-7">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h2 className="text-xl font-semibold text-ink sm:text-2xl">Select your product</h2>
+                      <p className="mt-1 text-sm text-text-secondary">
+                        Your name and link drop into every ready-made comment.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide",
+                          filledCount === 2
+                            ? "bg-[#DDF7EC] text-[#147551]"
+                            : filledCount === 1
+                              ? "bg-primary text-white"
+                              : "border border-[#F5D998] bg-[#FFF3D6] text-[#7A4F0C]",
+                        )}
+                      >
+                        {filledCount}/2 ready
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="h-1.5 overflow-hidden rounded-full bg-surface-nested">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all duration-300",
+                        filledCount === 2 ? "bg-[#147551]" : "bg-primary",
+                      )}
+                      style={{ width: `${(filledCount / 2) * 100}%` }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4">
+                      <Label
+                        htmlFor="unlimited-product-name"
+                        className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                      >
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-ink text-white">
+                          <Tag size={12} aria-hidden />
+                        </span>
+                        Product name
+                        <InfoHint label="The product or offer you're promoting. It gets dropped into every ready-made comment." />
+                      </Label>
+                      <Input
+                        id="unlimited-product-name"
+                        value={productName}
+                        onChange={(e) => {
+                          setProductName(e.target.value)
+                          clearFieldError("productName")
+                        }}
+                        placeholder="e.g., Keto Weight Loss System"
+                        aria-invalid={Boolean(fieldErrors.productName)}
+                        className="h-12 bg-card text-base"
+                      />
+                      {fieldErrors.productName ? (
+                        <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productName}</p>
+                      ) : (
+                        <p className="mt-2 text-xs text-text-muted">Shown inside each comment as the offer name.</p>
+                      )}
+                    </div>
+                    <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4">
+                      <Label
+                        htmlFor="unlimited-affiliate-link"
+                        className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                      >
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-primary text-white">
+                          <Link2 size={12} aria-hidden />
+                        </span>
+                        Affiliate link
+                        <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it." />
+                      </Label>
+                      <Input
+                        id="unlimited-affiliate-link"
+                        type="url"
+                        value={productLink}
+                        onChange={(e) => {
+                          setProductLink(e.target.value)
+                          clearFieldError("productLink")
+                        }}
+                        placeholder="https://digistore24.com/..."
+                        aria-invalid={Boolean(fieldErrors.productLink)}
+                        className="h-12 bg-card text-base"
+                      />
+                      {fieldErrors.productLink ? (
+                        <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productLink}</p>
+                      ) : (
+                        <p className="mt-2 text-xs text-text-muted">Must start with http:// or https://</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {productError && (
+                    <Alert variant="destructive" className="border border-[#C53030]/40 bg-[#FDE4E4] text-[#C53030]">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription className="font-semibold text-[#C53030]">{productError}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {unlocking && (
+                    <GenerationProgress
+                      offer="welcome"
+                      label={`Unlocking your ${PREMIUM_FEATURE_LABELS.dfyVault} library...`}
+                    />
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={unlocking}
+                    className={cn("h-12 w-full text-base sm:h-14 sm:text-lg", primaryCtaClass)}
+                  >
+                    {unlocking ? (
+                      <span className="inline-flex items-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Unlocking library…
+                      </span>
+                    ) : (
+                      <>
+                        Unlock {PREMIUM_FEATURE_LABELS.dfyVault} library
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                    )}
+                  </Button>
                 </div>
-                <div>
-                  <Label htmlFor="unlimited-affiliate-link" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
-                    Affiliate Link
-                    <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it." />
-                  </Label>
-                  <Input
-                    id="unlimited-affiliate-link"
-                    type="url"
-                    value={productLink}
-                    onChange={(e) => {
-                      setProductLink(e.target.value)
-                      clearFieldError("productLink")
-                    }}
-                    placeholder="https://digistore24.com/..."
-                    aria-invalid={Boolean(fieldErrors.productLink)}
-                    className="h-14 text-lg"
-                  />
-                  {fieldErrors.productLink ? (
-                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productLink}</p>
-                  ) : null}
-                </div>
               </div>
-
-              {productError && (
-                <Alert variant="destructive" className="glass-strong border-2 border-[#C53030]/50 text-[#C53030]">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription className="font-semibold text-[#C53030]">{productError}</AlertDescription>
-                </Alert>
-              )}
-
-              {unlocking && (
-                <GenerationProgress
-                  offer="welcome"
-                  label={`Unlocking your ${PREMIUM_FEATURE_LABELS.dfyVault} library...`}
-                />
-              )}
-
-              <Button type="submit" disabled={unlocking} className={cn("h-16 w-full text-xl", primaryCtaClass)}>
-                {unlocking ? (
-                  "Unlocking..."
-                ) : (
-                  <>
-                    Unlock {PREMIUM_FEATURE_LABELS.dfyVault} Library
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </Button>
             </form>
           </Card>
         </div>
@@ -390,28 +419,38 @@ export default function DFYVaultClient() {
           <WelcomeOfferBanner />
 
           <div ref={libraryResultsRef} className="space-y-6">
-            <Card className="glass-strong border-2 border-[#1D4ED8]/40 p-6">
-              <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                <div className="min-w-0">
-                  <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#2563EB]">Promoting</p>
-                  <p className="text-2xl font-black text-[#102A43]">{productName}</p>
-                  <p className="max-w-xl truncate text-sm font-semibold text-[#486581]">{productLink}</p>
+            <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
+              <div className="flex flex-col sm:flex-row">
+                <div className="flex items-center gap-3 bg-[#147551] px-5 py-4 text-white sm:w-[180px] sm:flex-col sm:items-start sm:justify-center">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#147551]">
+                    <Check size={16} aria-hidden />
+                  </span>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">
+                    Offer locked
+                  </p>
                 </div>
-                <Button
-                  onClick={() => setProductSelected(false)}
-                  variant="outline"
-                  className={cn("shrink-0", outlineCtaClass)}
-                >
-                  Change Product
-                </Button>
+                <div className="flex flex-1 flex-col justify-between gap-3 p-5 sm:flex-row sm:items-center">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Promoting</p>
+                    <p className="text-lg font-semibold text-ink">{productName}</p>
+                    <p className="max-w-xl truncate text-sm text-text-secondary">{productLink}</p>
+                  </div>
+                  <Button
+                    onClick={() => setProductSelected(false)}
+                    variant="outline"
+                    className={cn("shrink-0", outlineCtaClass)}
+                  >
+                    Change product
+                  </Button>
+                </div>
               </div>
             </Card>
 
-            <Card className="glass-strong border-2 border-[var(--border)] p-6">
+            <Card className="border border-[var(--ds-line)] bg-card p-6">
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#486581]" />
+                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-text-secondary" />
                     <Input
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -428,7 +467,7 @@ export default function DFYVaultClient() {
                       variant={selectedNiche === niche ? "default" : "outline"}
                       className={`whitespace-nowrap font-bold ${
                         selectedNiche === niche
-                          ? "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white"
+                          ? "bg-ink text-white hover:bg-ink"
                           : outlineCtaClass
                       }`}
                     >
@@ -437,7 +476,7 @@ export default function DFYVaultClient() {
                   ))}
                 </div>
               </div>
-              <p className="mt-4 text-sm font-semibold text-[#486581]">
+              <p className="mt-4 text-sm font-semibold text-text-secondary">
                 {liveSearching
                   ? `Searching YouTube for "${searchQuery.trim()}"...`
                   : `Showing ${displayedVideos.length} opportunities`}
@@ -455,11 +494,11 @@ export default function DFYVaultClient() {
 
             {!liveSearching && searchQuery.trim() && displayedVideos.length === 0 && (
               <Card className="glass-strong border-2 border-[var(--border)] p-10 text-center">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-[var(--border)] bg-[#2563EB]/10">
-                  <Search className="h-8 w-8 text-[#2563EB]" />
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink text-white">
+                  <Search className="h-8 w-8" />
                 </div>
-                <h3 className="mb-2 text-2xl font-black text-[#102A43]">No videos found</h3>
-                <p className="mx-auto max-w-md font-semibold text-[#486581]">
+                <h3 className="mb-2 text-2xl font-black text-ink">No videos found</h3>
+                <p className="mx-auto max-w-md font-semibold text-text-secondary">
                   Try a broader keyword like &quot;crypto&quot;, &quot;weight loss&quot; or &quot;side hustle&quot;.
                 </p>
               </Card>
@@ -469,7 +508,7 @@ export default function DFYVaultClient() {
               {displayedVideos.map((video) => (
                 <Card
                   key={video.videoId}
-                  className="glass-strong border-2 border-[var(--border)] p-6 transition-all hover:border-[#1D4ED8]/50 hover:shadow-xl hover:shadow-[#2563EB]/10"
+                  className="border border-[var(--ds-line)] bg-card p-6 transition-colors hover:border-ink/30"
                 >
                   <div className="space-y-4">
                     <div className="flex gap-4">
@@ -489,9 +528,9 @@ export default function DFYVaultClient() {
                         </a>
                       ) : null}
                       <div className="min-w-0 flex-1">
-                        <h3 className="mb-1 line-clamp-2 text-lg font-black text-[#102A43]">{video.title}</h3>
-                        <p className="text-xs font-semibold text-[#486581]">{video.channelTitle}</p>
-                        <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-[#1D4ED8]">
+                        <h3 className="mb-1 line-clamp-2 text-lg font-black text-ink">{video.title}</h3>
+                        <p className="text-xs font-semibold text-text-secondary">{video.channelTitle}</p>
+                        <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-sapphire-700">
                           <Gem className="h-3 w-3" />
                           {video.niche}
                         </p>
@@ -500,24 +539,24 @@ export default function DFYVaultClient() {
 
                     <div className="grid grid-cols-3 gap-2">
                       <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <Eye className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
-                        <p className="text-sm font-black text-[#102A43]">{formatNumber(video.viewCount)}</p>
-                        <p className="text-[10px] font-bold text-[#486581]">Views</p>
+                        <Eye className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
+                        <p className="text-sm font-black text-ink">{formatNumber(video.viewCount)}</p>
+                        <p className="text-[10px] font-bold text-text-secondary">Views</p>
                       </div>
                       <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <Flame className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
-                        <p className="text-sm font-black text-[#102A43]">{video.viralScore}</p>
-                        <p className="text-[10px] font-bold text-[#486581]">Viral</p>
+                        <Flame className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
+                        <p className="text-sm font-black text-ink">{video.viralScore}</p>
+                        <p className="text-[10px] font-bold text-text-secondary">Viral</p>
                       </div>
                       <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <TrendingUp className="mx-auto mb-1 h-3 w-3 text-[#2563EB]" />
-                        <p className="text-sm font-black text-[#102A43]">{video.estimatedClicks}</p>
-                        <p className="text-[10px] font-bold text-[#486581]">Est. clicks</p>
+                        <TrendingUp className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
+                        <p className="text-sm font-black text-ink">{video.estimatedClicks}</p>
+                        <p className="text-[10px] font-bold text-text-secondary">Est. clicks</p>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <p className="text-sm font-bold text-[#102A43]">5 ready comments</p>
+                      <p className="text-sm font-bold text-ink">5 ready comments</p>
                       {video.commentTemplates.map((template, index) => {
                         const preview = template
                           .replace(/\[PRODUCT\]/g, productName)
@@ -526,17 +565,17 @@ export default function DFYVaultClient() {
                         return (
                           <div
                             key={index}
-                            className="glass rounded-lg border border-[#2563EB]/45 p-3 transition-all hover:border-[#1D4ED8]/50"
+                            className="rounded-lg border border-[var(--ds-line)] bg-surface-nested p-3"
                           >
                             <div className="flex items-start gap-3">
-                              <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-[#102A43]">{preview}</p>
+                              <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-ink">{preview}</p>
                               <Button
                                 onClick={() => handleCopyComment(template, video.videoId, index)}
                                 size="sm"
                                 className={`h-8 flex-shrink-0 rounded-lg px-3 font-bold transition-[transform,box-shadow,background] duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                                   copiedComment === `${video.videoId}-${index}`
-                                    ? "bg-[#16875C] text-white"
-                                    : "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
+                                    ? "bg-[#147551] text-white"
+                                    : "bg-ink text-white hover:bg-ink/90"
                                 }`}
                               >
                                 {copiedComment === `${video.videoId}-${index}` ? (

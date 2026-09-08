@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import {
+  ArrowRight,
   Award,
   BookOpen,
   Check,
@@ -18,6 +19,7 @@ import {
   Send,
   Sparkles,
   Tag,
+  Unlock,
 } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
@@ -44,6 +46,24 @@ import {
 } from "@/lib/license-rights/request"
 import { cn } from "@/lib/utils"
 
+const ACTIVATION_STEPS = [
+  {
+    num: "1",
+    title: "Send your request",
+    desc: "Tell support you purchased this edition. Your ticket is filed as License Rights.",
+  },
+  {
+    num: "2",
+    title: "Team reviews it",
+    desc: "We verify the purchase on your account. Typical reply is 2 hours, up to 48.",
+  },
+  {
+    num: "3",
+    title: "License unlocks",
+    desc: "The reseller edition is activated on your account and the assets below open.",
+  },
+] as const
+
 type FormState = "idle" | "submitting" | "error"
 
 const fieldClassName =
@@ -63,20 +83,20 @@ function EditionContentCard({ item }: { item: EditionContent }) {
   const Icon = EDITION_ICONS[item.icon]
 
   return (
-    <div className="rounded-xl border border-[var(--ds-line-sapphire)] bg-card p-4 sm:p-5">
+    <div className="rounded-xl border border-[var(--ds-line)] bg-card p-4 sm:p-5">
       <div className="flex items-start gap-4">
         <div className="relative shrink-0">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-sapphire-700">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-white">
             <Icon size={20} aria-hidden />
           </div>
-          <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[var(--ds-line-sapphire)] bg-card text-sapphire-700">
+          <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[#F5D998] bg-[#FFF3D6] text-[#7A4F0C]">
             <Lock size={10} aria-hidden />
           </div>
         </div>
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-            <span className="rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sapphire-700">
+            <span className="rounded-full border border-[#F5D998] bg-[#FFF3D6] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#7A4F0C]">
               Locked
             </span>
           </div>
@@ -99,11 +119,11 @@ function PendingActivationPanel({
   return (
     <div className="space-y-6 rounded-xl border border-[var(--ds-line)] bg-surface-nested p-6 sm:p-8">
       <div className="flex flex-col items-center space-y-4 text-center">
-        <div className="rounded-full border border-[#DDF7EC] bg-[#DDF7EC] p-3">
-          <CheckCircle2 className="h-6 w-6 text-[#16875C]" aria-hidden />
+        <div className="rounded-full bg-[#DDF7EC] p-3">
+          <CheckCircle2 className="h-6 w-6 text-[#147551]" aria-hidden />
         </div>
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#B7791F]/25 bg-[#B7791F]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#B7791F]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#F5D998] bg-[#FFF3D6] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#7A4F0C]">
             <Clock size={12} aria-hidden />
             Awaiting team activation
           </span>
@@ -233,18 +253,16 @@ export function LicenseRightsContent() {
   )
 
   const statusBadge = pending ? (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#B7791F]/25 bg-[#B7791F]/10 px-4 py-3">
-      <Clock size={16} className="text-[#B7791F]" aria-hidden />
-      <span className="text-sm font-semibold uppercase tracking-wider text-[#B7791F]">
+    <div className="inline-flex items-center gap-2 rounded-full border border-[#F5D998] bg-[#FFF3D6] px-4 py-2.5">
+      <Clock size={15} className="text-[#7A4F0C]" aria-hidden />
+      <span className="text-xs font-bold uppercase tracking-wider text-[#7A4F0C]">
         Pending review
       </span>
     </div>
   ) : (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 px-4 py-3">
-      <Lock size={16} className="text-sapphire-700" aria-hidden />
-      <span className="text-sm font-semibold uppercase tracking-wider text-sapphire-700">
-        Activation required
-      </span>
+    <div className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-white shadow-[0_4px_14px_-6px_rgba(20,33,61,0.45)]">
+      <Lock size={15} aria-hidden />
+      <span className="text-xs font-bold uppercase tracking-wider">Activation required</span>
     </div>
   )
 
@@ -253,7 +271,7 @@ export function LicenseRightsContent() {
       label: "Edition status",
       value: pending ? "Pending review" : "Not activated",
       icon: pending ? Clock : Lock,
-      tone: pending ? "text-[#B7791F]" : "text-sapphire-700",
+      tone: pending ? "text-[#7A4F0C]" : "text-ink",
     },
     {
       label: "Ticket subject",
@@ -265,7 +283,7 @@ export function LicenseRightsContent() {
       label: "Typical reply",
       value: "2–48 hours",
       icon: Clock,
-      tone: "text-text-secondary",
+      tone: "text-ink",
     },
   ]
 
@@ -287,13 +305,23 @@ export function LicenseRightsContent() {
         iframeTitle={`${PREMIUM_FEATURE_LABELS.licenseRights} training video`}
       />
 
-      <div className="rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-200/60 p-5 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
+      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]">
+        <div className="flex flex-col lg:flex-row">
+          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[240px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-ink">
               <Award size={22} aria-hidden />
             </div>
-            <div className="space-y-1">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">
+                Included edition
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-snug text-white">
+                Full Turnkey Reseller Rights
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="space-y-1.5">
               <p className="flex items-center gap-2 text-sm font-semibold text-ink">
                 <Sparkles size={15} className="text-sapphire-700" aria-hidden />
                 Premium reseller edition
@@ -302,21 +330,48 @@ export function LicenseRightsContent() {
                 Sell {PRODUCT_NAME} under your own brand with turnkey assets. Submit one request
                 below — our team handles activation manually.
               </p>
-              <p className="text-sm font-medium text-ink">
-                Full Turnkey Reseller & License Rights Edition
-              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-white">
+                <Tag size={13} aria-hidden />
+                Subject: {REQUEST_SUBJECT}
+              </span>
+              <a
+                href="#license-request"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-colors hover:bg-primary-hover"
+              >
+                Request access
+                <ArrowRight size={13} aria-hidden />
+              </a>
             </div>
           </div>
-          <div className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--ds-line-sapphire)] bg-card px-3 py-1.5 text-xs font-semibold text-sapphire-700 sm:self-center">
-            <Tag size={13} aria-hidden />
-            Subject: {REQUEST_SUBJECT}
-          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="space-y-4">
+        <div>
+          <p className="page-eyebrow mb-2">How it works</p>
+          <h2 className="text-xl font-medium text-ink">Three steps to activation</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {ACTIVATION_STEPS.map((step) => (
+            <div
+              key={step.num}
+              className="rounded-xl border border-[var(--ds-line)] bg-card p-5 sm:p-6"
+            >
+              <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
+                {step.num}
+              </span>
+              <h3 className="text-base font-semibold text-ink">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {overviewStats.map((stat) => (
-          <Card key={stat.label} className="glass-strong border-border">
+          <Card key={stat.label} className="border-border bg-card">
             <CardContent className="p-4 sm:p-5">
               <div className="mb-2 flex items-center gap-2">
                 <stat.icon className={cn("h-4 w-4", stat.tone)} aria-hidden />
@@ -331,12 +386,12 @@ export function LicenseRightsContent() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <div className="xl:col-span-7">
-          <Card className="glass-strong border-border">
+        <div className="scroll-mt-8 xl:col-span-7" id="license-request">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="shrink-0 rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 p-2.5">
-                  <FileText className="h-5 w-5 text-sapphire-700" />
+                <div className="shrink-0 rounded-xl bg-ink p-2.5 text-white">
+                  <FileText className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
                   <CardTitle className="text-sm font-semibold uppercase tracking-widest text-ink">
@@ -396,7 +451,7 @@ export function LicenseRightsContent() {
                     <p className="text-sm text-red-600">{errorMessage}</p>
                   ) : null}
 
-                  <div className="rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200/50 px-4 py-3">
+                  <div className="rounded-xl border border-[var(--ds-line)] bg-surface-nested px-4 py-3">
                     <p className="text-xs leading-relaxed text-text-secondary">
                       <span className="font-semibold text-ink">What happens next:</span> Support
                       receives your ticket, verifies your purchase, and replies when the reseller
@@ -463,11 +518,11 @@ export function LicenseRightsContent() {
         </div>
 
         <div className="xl:col-span-5">
-          <Card className="glass-strong h-full border-border">
+          <Card className="h-full border-border bg-card">
             <CardContent className="p-5 sm:p-6">
               <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-sapphire-700">
-                  <Lock size={18} aria-hidden />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-white">
+                  <Unlock size={18} aria-hidden />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-ink">What you unlock</h2>

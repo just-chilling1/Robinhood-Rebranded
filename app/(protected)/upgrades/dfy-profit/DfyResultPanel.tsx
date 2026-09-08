@@ -45,11 +45,11 @@ function KitSection({
       open={defaultOpen}
       className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-3 border-b border-transparent bg-gradient-to-r from-sapphire-200 to-white px-4 py-3.5 transition-colors hover:bg-sapphire-200/30 group-open:border-border [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-3 border-b border-transparent bg-surface-nested px-4 py-3.5 transition-colors hover:bg-card group-open:border-border [&::-webkit-details-marker]:hidden">
         <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
         <span className="min-w-0 flex-1 text-sm font-medium text-foreground">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-sapphire-200 px-2.5 py-0.5 text-[13px] font-medium tabular-nums text-sapphire-700">
+          <span className="shrink-0 rounded-full bg-ink px-2.5 py-0.5 text-[13px] font-medium tabular-nums text-white">
             {count}
           </span>
         )}
@@ -111,7 +111,7 @@ export function DfyResultPanel({
 
       <KitSection title="Videos to comment on" count={videos.length || undefined} defaultOpen={videos.length > 0}>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-sapphire-700">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
             <Youtube className="h-[18px] w-[18px]" />
           </div>
           <p className="text-sm text-muted-foreground">
@@ -152,8 +152,8 @@ export function DfyResultPanel({
                           onClick={() => void copyText(id, comment)}
                           className={`mt-2 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] font-medium transition-colors ${
                             copied
-                              ? "bg-sapphire-200 text-sapphire-700"
-                              : "bg-sapphire-200/70 text-muted-foreground hover:bg-sapphire-200"
+                              ? "bg-[#DDF7EC] text-[#147551]"
+                              : "bg-surface-nested text-text-secondary hover:bg-card hover:text-ink"
                           }`}
                         >
                           {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
@@ -239,7 +239,7 @@ export function DfyResultPanel({
                     event.preventDefault()
                     void copyText("article-html", article.html)
                   }}
-                  className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-sapphire-200 px-2.5 py-1 text-[13px] font-medium text-muted-foreground hover:bg-sapphire-200/70"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-2.5 py-1 text-[13px] font-medium text-white hover:bg-ink/90"
                 >
                   {copiedId === "article-html" ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                   {copiedId === "article-html" ? "Copied" : "Copy HTML"}
@@ -317,8 +317,8 @@ export function DfyResultPanel({
                       onClick={() => void copyText(post.id, post.body)}
                       className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors ${
                         copied
-                          ? "bg-sapphire-200 text-sapphire-700"
-                          : "bg-sapphire-200/70 text-muted-foreground hover:bg-sapphire-200"
+                          ? "bg-[#DDF7EC] text-[#147551]"
+                          : "bg-surface-nested text-text-secondary hover:bg-card hover:text-ink"
                       }`}
                     >
                       {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}

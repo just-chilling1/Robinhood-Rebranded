@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { ArrowLeft, TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Copy, Check } from "lucide-react"
-import Link from "next/link"
+import { TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Copy, Check } from "lucide-react"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { PageHeader } from "@/components/page-header"
+import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
@@ -2076,25 +2076,12 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
     : ""
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
-      <Button asChild variant="ghost" className="text-[#16875C] hover:text-[#16875C]">
-        <Link href="/dashboard">
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Dashboard
-        </Link>
-      </Button>
-
-      {/* Header */}
-      <div className="text-center space-y-6 bg-[#DDF7EC] rounded-2xl p-12 border border-[#DDF7EC]">
-        <div className="w-24 h-24 rounded-full bg-[#DDF7EC] flex items-center justify-center mx-auto shadow-[var(--shadow-sm)]">
-          <TrendingUp className="w-12 h-12 text-[#16875C]" />
-        </div>
-        <PageHeader
-          eyebrow={PREMIUM_FEATURE_LABELS.automatedIncome}
-          title={`${PREMIUM_FEATURE_LABELS.automatedIncome} — Hands-Free Traffic`}
-          subtitle="100+ Free Traffic Sources - Submit Once, Get Traffic Forever. Stop chasing traffic every day. Submit your link to these 100+ sites ONCE and get ongoing traffic automatically. Our members have generated over 2.8 million visitors using these sources."
-        />
-      </div>
+    <div className="mx-auto max-w-7xl space-y-8 pb-12">
+      <PageHeader
+        eyebrow="Premium"
+        title={PREMIUM_FEATURE_LABELS.automatedIncome}
+        subtitle="Submit your page to 100+ traffic sources once. They keep sending visitors after you walk away."
+      />
 
       <PremiumVideoTutorial
         vimeoId={getPremiumTrainingVimeoId("socialPayouts")}
@@ -2103,77 +2090,48 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         iframeTitle={`${PREMIUM_FEATURE_LABELS.automatedIncome} training video`}
       />
 
-      {/* Simple Explanation */}
-      <Card className="bg-gradient-to-br from-[#DDF7EC] to-[#DDF7EC] border-[#DDF7EC] shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-3xl font-black text-[#102A43] flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#16875C]" />
-            How This Works (Super Simple!)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="bg-[#DDF7EC] rounded-xl p-8 border border-[#DDF7EC]">
-            <p className="text-2xl text-[#102A43] font-black mb-6">The Secret To Automated Traffic:</p>
-            <p className="text-xl text-[#486581] font-semibold leading-relaxed mb-6">
-              Most people waste hours every day posting on social media for traffic.
-            </p>
-            <p className="text-xl text-[#486581] font-semibold leading-relaxed mb-6">
-              But what if you could submit your link ONCE and get traffic for months or even YEARS?
-            </p>
-            <p className="text-xl text-[#16875C] font-black leading-relaxed">
-              That's exactly what these traffic sources do. You submit once, and they send you visitors automatically -
-              no daily work required!
-            </p>
-          </div>
+      <PremiumFeatureBanner
+        icon={TrendingUp}
+        kicker="Hands-free traffic"
+        title="Submit once, keep visitors"
+        description="Pick a niche, save your page URL, then follow the short instructions for each source. No daily posting required after you submit."
+        chip="100+ sources"
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#DDF7EC] rounded-xl p-6 border border-[#DDF7EC]">
-              <div className="w-16 h-16 rounded-full bg-[#16875C] flex items-center justify-center mb-4 text-2xl font-black text-white">
-                1
-              </div>
-              <h3 className="text-2xl font-black text-[#102A43] mb-3">Pick Your Niche</h3>
-              <p className="text-lg text-[#486581] font-semibold leading-relaxed">
-                Choose your niche below and get 100+ traffic sources specifically for your market.
-              </p>
-            </div>
+      <PremiumSteps
+        title="Three steps to automated traffic"
+        steps={[
+          {
+            num: "1",
+            title: "Pick your niche",
+            desc: "Filter the directory so you only see sources that fit your market.",
+          },
+          {
+            num: "2",
+            title: "Save your page URL",
+            desc: "We drop it into every submission description so you can copy and send.",
+          },
+          {
+            num: "3",
+            title: "Submit and wait",
+            desc: "Follow the steps for each site. Traffic keeps arriving after you submit.",
+          },
+        ]}
+      />
 
-            <div className="bg-green-500/10 rounded-xl p-6 border border-green-500/30">
-              <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mb-4 text-2xl font-black text-[#102A43]">
-                2
-              </div>
-              <h3 className="text-2xl font-black text-[#102A43] mb-3">Submit Your Link</h3>
-              <p className="text-lg text-[#486581] font-semibold leading-relaxed">
-                Follow the simple step-by-step instructions to submit your link to each site. Takes 5-15 minutes per
-                site.
-              </p>
-            </div>
-
-            <div className="bg-teal-500/10 rounded-xl p-6 border border-teal-500/30">
-              <div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center mb-4 text-2xl font-black text-[#102A43]">
-                3
-              </div>
-              <h3 className="text-2xl font-black text-[#102A43] mb-3">Get Automatic Traffic</h3>
-              <p className="text-lg text-[#486581] font-semibold leading-relaxed">
-                Once submitted, these sites send you traffic automatically. No daily work needed!
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-yellow-500/10 rounded-xl p-6 border border-yellow-500/30">
-            <p className="text-xl text-[#B7791F] font-black mb-3">💡 Pro Tip:</p>
-            <p className="text-lg text-[#486581] font-semibold leading-relaxed">
-              Set aside 2-3 hours and submit to as many sources as possible. The more you submit to, the more automatic
-              traffic you get. Most members submit to 50+ sources in their first week!
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="rounded-xl border border-[#F5D998] bg-[#FFF3D6] px-5 py-4">
+        <p className="text-sm font-semibold text-[#7A4F0C]">Pro tip</p>
+        <p className="mt-1 text-sm leading-relaxed text-[#7A4F0C]">
+          Set aside a block of time and submit to as many sources as you can. More submissions means more automatic
+          traffic later.
+        </p>
+      </div>
 
       {/* Page URL Input */}
-      <Card className="glass-strong border-2 border-[#DDF7EC]">
-        <CardContent className="p-8">
-          <Label htmlFor="page-url" className="text-2xl font-black text-[#102A43] mb-4 block">
-            Enter Your Page URL:
+      <Card className="border border-[var(--ds-line)] bg-card">
+        <CardContent className="p-6 sm:p-8">
+          <Label htmlFor="page-url" className="mb-3 block text-sm font-semibold uppercase tracking-wide text-text-secondary">
+            Your page URL
           </Label>
           <Input
             id="page-url"
@@ -2181,9 +2139,9 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             placeholder="https://your-page-url.com"
             value={pageUrl}
             onChange={(e) => setPageUrl(e.target.value)}
-            className="glass border-2 border-[#DDF7EC] text-[#102A43] text-xl font-semibold h-14"
+            className="h-14 border-[var(--ds-line)] bg-card text-ink"
           />
-          <p className="text-base text-[#829AB1] font-semibold mt-3">
+          <p className="mt-3 text-sm text-text-secondary">
             This is the page you want to promote. We'll automatically insert it in all the submission descriptions
             below.
           </p>
@@ -2210,7 +2168,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <Button
             onClick={handleSaveLink}
             disabled={savingLink}
-            className="mt-6 w-full h-16 text-xl font-black bg-gradient-to-r from-[#16875C] to-[#147551] hover:from-[#147551] hover:to-[#16875C] text-white rounded-xl shadow-lg shadow-emerald-500/25"
+            className="mt-6 h-12 w-full rounded-xl bg-ink text-base font-semibold text-white hover:bg-ink/90"
           >
             {savingLink ? "Saving Your Link..." : linkSaved ? "Link Saved ✓ — Update It Anytime" : "Save My Link →"}
           </Button>
@@ -2226,8 +2184,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             variant={selectedNiche === niche ? "default" : "outline"}
             className={
               selectedNiche === niche
-                ? "bg-[#16875C] hover:bg-[#147551] text-white font-bold"
-                : "border-[#DDF7EC] text-[#16875C] hover:bg-[#DDF7EC] font-bold"
+                ? "bg-ink text-white hover:bg-ink/90 font-semibold"
+                : "border-[var(--ds-line)] text-ink hover:bg-surface-nested font-semibold"
             }
             size="lg"
           >
@@ -2250,25 +2208,25 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       <>
       {/* Progress Tracker */}
       <div ref={sourcesResultsRef}>
-      <Card className="bg-gradient-to-br from-[#DDF7EC] to-[#DDF7EC] border-[#DDF7EC]">
+      <Card className="border border-[var(--ds-line)] bg-card">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xl font-black text-[#102A43]">Your Progress:</p>
-              <p className="text-lg text-[#486581] font-semibold">
+              <p className="text-base font-semibold text-ink">Your progress</p>
+              <p className="text-sm text-text-secondary">
                 {completedSources.size} of {filteredSources.length} sources completed
               </p>
             </div>
             <div className="text-right">
-              <p className="text-3xl font-black text-[#16875C]">
+              <p className="text-2xl font-semibold text-[#147551]">
                 {Math.round((completedSources.size / filteredSources.length) * 100)}%
               </p>
-              <p className="text-sm text-[#829AB1] font-semibold">Complete</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Complete</p>
             </div>
           </div>
-          <div className="w-full bg-[#ECF6FB] rounded-full h-4 mt-4">
+          <div className="mt-4 h-2 w-full rounded-full bg-surface-nested">
             <div
-              className="bg-gradient-to-r from-[#16875C] to-[#147551] h-4 rounded-full transition-all"
+              className="h-2 rounded-full bg-[#147551] transition-all"
               style={{ width: `${(completedSources.size / filteredSources.length) * 100}%` }}
             />
           </div>
@@ -2282,7 +2240,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           return (
             <Card
               key={source.id}
-              className={`glass-strong border-2 border-[#DDF7EC] hover:border-[#16875C]/40 transition-all duration-300 cursor-pointer ${
+              className={`cursor-pointer border border-[var(--ds-line)] bg-card transition-colors hover:border-ink/30 ${
                 isCompleted ? "opacity-60" : ""
               }`}
               onClick={() => setSelectedSource(source)}
@@ -2304,7 +2262,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                         </span>
                       )}
                     </div>
-                    <h3 className="text-2xl font-black text-[#102A43] mb-3">{source.name}</h3>
+                    <h3 className="text-2xl font-black text-ink mb-3">{source.name}</h3>
                     <div className="space-y-2 mb-4">
                       <p className="text-[#16875C] font-bold flex items-center gap-2">
                         <Users className="w-5 h-5" />
@@ -2324,7 +2282,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <p className="text-base font-black text-[#102A43]">📝 Use This Description When Submitting:</p>
+                    <p className="text-base font-black text-ink">📝 Use This Description When Submitting:</p>
                     <Button
                       size="sm"
                       onClick={(e) => handleCopyDescription(e, source)}
@@ -2337,7 +2295,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                       {copiedSourceId === source.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </Button>
                   </div>
-                  <p className="text-base font-semibold leading-relaxed text-[#486581] break-words">
+                  <p className="text-base font-semibold leading-relaxed text-text-secondary break-words">
                     {getPopulatedDescription(source)}
                   </p>
                 </div>
@@ -2359,8 +2317,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       <Dialog open={!!selectedSource} onOpenChange={() => setSelectedSource(null)}>
         <DialogContent className="max-w-4xl max-h-[90dvh] overflow-y-auto glass-strong border-2 border-[#DDF7EC]">
           <DialogHeader>
-            <DialogTitle className="text-3xl font-black text-[#102A43]">{selectedSource?.name}</DialogTitle>
-            <DialogDescription className="text-lg font-semibold text-[#486581]">
+            <DialogTitle className="text-3xl font-black text-ink">{selectedSource?.name}</DialogTitle>
+            <DialogDescription className="text-lg font-semibold text-text-secondary">
               Traffic Potential: {selectedSource?.trafficPotential} | Time: {selectedSource?.timeToComplete}
             </DialogDescription>
           </DialogHeader>
@@ -2390,23 +2348,23 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             </div>
 
             <div className="bg-[#DDF7EC] rounded-xl p-6 border border-[#DDF7EC]">
-              <h4 className="text-2xl font-black text-[#102A43] mb-4">📋 Step-By-Step Instructions:</h4>
+              <h4 className="text-2xl font-black text-ink mb-4">📋 Step-By-Step Instructions:</h4>
               <ol className="space-y-4">
                 {selectedSource?.instructions.map((instruction, index) => (
                   <li key={index} className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#16875C] flex items-center justify-center text-white font-black">
                       {index + 1}
                     </span>
-                    <p className="text-lg text-[#486581] font-semibold leading-relaxed pt-1">{instruction}</p>
+                    <p className="text-lg text-text-secondary font-semibold leading-relaxed pt-1">{instruction}</p>
                   </li>
                 ))}
               </ol>
             </div>
 
             <div className="glass rounded-xl p-6 border border-[#DDF7EC]">
-              <h4 className="text-xl font-black text-[#102A43] mb-4">📝 Use This Description When Submitting:</h4>
+              <h4 className="text-xl font-black text-ink mb-4">📝 Use This Description When Submitting:</h4>
               <div className="bg-background/70 rounded-lg p-4 border border-[#DDF7EC]">
-                <p className="text-[#486581] font-mono text-base leading-relaxed">
+                <p className="text-text-secondary font-mono text-base leading-relaxed">
                   {pageUrl ? populatedDescription : selectedSource?.submissionDescription}
                 </p>
               </div>

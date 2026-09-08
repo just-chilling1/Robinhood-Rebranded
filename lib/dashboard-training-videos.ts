@@ -6,6 +6,7 @@ export type DashboardTrainingVideo = {
   title: string
   description: string
   duration: string
+  step: 1 | 2 | 3
   priority?: boolean
 }
 
@@ -15,7 +16,8 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
     title: "Watch This First",
     description:
       "Before you touch a single tool — watch this. It kills the night-one doubt and shows you exactly what you bought.",
-    duration: "10+ min",
+    duration: "11 min",
+    step: 1,
     priority: true,
   },
   {
@@ -23,14 +25,16 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
     title: "How The Money Flows",
     description:
       `Where the money comes from, who pays you, and what every word inside ${PRODUCT_NAME} actually means — in plain language.`,
-    duration: "10+ min",
+    duration: "14 min",
+    step: 2,
   },
   {
     id: "1214125517",
     title: "Your 5-Minute Tour",
     description:
       "A quick walkthrough of where everything lives in the app — so you never feel lost when you start working.",
-    duration: "3–5 min",
+    duration: "4 min",
+    step: 3,
   },
 ]
 

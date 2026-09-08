@@ -13,7 +13,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.dfyVault,
     tagline: "Ready-made templates",
     icon: Crown,
-    color: "cyan",
     features: [
       "50+ Pre-Written Page Templates",
       "Swipe File of Top Performers",
@@ -29,7 +28,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.instantIncome,
     tagline: "Fast-Track Your Earnings",
     icon: Zap,
-    color: "violet",
     features: [
       `Everything in ${PREMIUM_FEATURE_LABELS.dfyVault}`,
       "Paid Traffic Training",
@@ -45,7 +43,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.automatedIncome,
     tagline: "Set It and Forget It",
     icon: Rocket,
-    color: "jade",
     features: [
       `Everything in ${PREMIUM_FEATURE_LABELS.instantIncome}`,
       "Email Automation System",
@@ -61,7 +58,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.protector,
     tagline: "Account Security Overview",
     icon: ShieldCheck,
-    color: "jade",
     features: [
       "Real-time security monitoring",
       "Encryption & session status",
@@ -76,7 +72,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.licenseRights,
     tagline: "Resell under your brand",
     icon: FileText,
-    color: "cyan",
     features: [
       "Reseller license",
       "Rebrandable assets",
@@ -91,7 +86,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.highTicketPayouts,
     tagline: "100 authority articles",
     icon: BookOpen,
-    color: "violet",
     features: [
       "100 long-form authority articles",
       "9 niches with SEO-ready templates",
@@ -106,7 +100,6 @@ const upgrades = [
     name: PREMIUM_FEATURE_LABELS.dfyProfit,
     tagline: "Your complete promo kit",
     icon: Package,
-    color: "cyan",
     features: [
       "5 Videos Ready To Comment On",
       "AI Comments For Every Video",
@@ -139,43 +132,39 @@ export default async function UpgradesPage() {
       />
 
       {profile?.upgrade_level !== "free" && (
-        <Card className="glass-strong glow-jade border-border">
-          <CardContent className="p-6 text-center">
-            <p className="text-lg font-bold text-[#1E40AF]">
-              Current Plan:{" "}
-              {getUpgradeLevelLabel(profile?.upgrade_level)}
-            </p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-[var(--ds-line)] bg-ink px-5 py-4 text-white sm:px-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">Current plan</p>
+          <p className="mt-1 text-lg font-semibold">
+            {getUpgradeLevelLabel(profile?.upgrade_level)}
+          </p>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {upgrades.map((upgrade) => {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
-          const glowClass =
-            upgrade.color === "cyan" ? "glow-cyan" : upgrade.color === "violet" ? "glow-blue" : "glow-jade"
 
           return (
-            <Card key={upgrade.id} className={`glass-strong border-border ${glowClass} flex flex-col`}>
-              <CardHeader className="text-center pb-6">
-                <div className="w-20 h-20 rounded-2xl bg-[#EEF4FF] flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-10 h-10 text-[#1E40AF]" />
+            <Card key={upgrade.id} className="flex flex-col border-[var(--ds-line)] bg-card">
+              <CardHeader className="pb-4">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-white">
+                  <Icon className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-3xl font-bold text-foreground mb-2">{upgrade.name}</CardTitle>
-                <p className="text-base text-muted-foreground">{upgrade.tagline}</p>
+                <CardTitle className="text-xl font-semibold text-ink">{upgrade.name}</CardTitle>
+                <p className="text-sm text-text-secondary">{upgrade.tagline}</p>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col">
-                <div className="space-y-3 mb-8 flex-1">
-                  {upgrade.features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-[#16875C] flex-shrink-0 mt-0.5" />
-                      <p className="text-base text-foreground leading-relaxed">{feature}</p>
+              <CardContent className="flex flex-1 flex-col">
+                <div className="mb-6 flex-1 space-y-2.5">
+                  {upgrade.features.map((feature) => (
+                    <div key={feature} className="flex items-start gap-3">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" />
+                      <p className="text-sm leading-relaxed text-ink">{feature}</p>
                     </div>
                   ))}
                 </div>
-                <Button asChild className={`w-full h-14 text-lg font-bold ${glowClass}`}>
-                  <Link href={upgrade.href}>{isCurrentPlan ? "Access Your Content" : "View Details"}</Link>
+                <Button asChild className="h-11 w-full bg-ink font-semibold text-white hover:bg-ink/90">
+                  <Link href={upgrade.href}>{isCurrentPlan ? "Open this feature" : "View details"}</Link>
                 </Button>
               </CardContent>
             </Card>

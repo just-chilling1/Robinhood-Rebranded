@@ -14,12 +14,14 @@ import {
   Filter,
   FolderOpen,
   Loader2,
+  BookOpen,
   X,
 } from "lucide-react"
 import type { AffiliateLink } from "@/app/actions/affiliate-links"
 import { CrossPlatformGuide } from "@/components/cross-platform-guide"
 import { GenerationProgress } from "@/components/generation-progress"
 import { PageHeader } from "@/components/page-header"
+import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -250,26 +252,15 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
         iframeTitle={`${PREMIUM_FEATURE_LABELS.highTicketPayouts} training video`}
       />
 
-      <section className="space-y-4">
-        <div>
-          <p className="page-eyebrow mb-2">How it works</p>
-          <h2 className="text-xl font-medium text-ink">Three quiet steps</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {STEPS.map((step) => (
-            <div
-              key={step.num}
-              className="rounded-xl border border-[var(--ds-line)] bg-card p-5 sm:p-6"
-            >
-              <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-200 text-sm font-semibold text-sapphire-700">
-                {step.num}
-              </span>
-              <h3 className="text-base font-semibold text-ink">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PremiumFeatureBanner
+        icon={BookOpen}
+        kicker="Authority library"
+        title={`${HIGH_TICKET_ARTICLE_TARGET_COUNT} ready articles`}
+        description="Weave your offer link into a long-form template, preview it, then copy plain text or HTML for Medium, LinkedIn, or your blog."
+        chip="Publish anywhere"
+      />
+
+      <PremiumSteps title="Three quiet steps" steps={STEPS} />
 
       <section className="rounded-xl border border-[var(--ds-line)] bg-card p-5 sm:p-8">
         <div className="mb-6">

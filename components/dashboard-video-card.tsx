@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Play } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Clock, Play } from "lucide-react"
 import { VideoOverlay } from "@/components/video-overlay"
 import { buildVimeoEmbedUrl } from "@/lib/vimeo"
+import { getVideoThumbnail } from "@/lib/video-thumbnails"
+import { cn } from "@/lib/utils"
 import {
   isPlayableVimeoId,
   type DashboardTrainingVideo,
@@ -17,42 +18,82 @@ type Props = {
 export function DashboardVideoCard({ video }: Props) {
   const [playing, setPlaying] = useState(false)
   const canPlay = isPlayableVimeoId(video.id)
+  const thumbnail = getVideoThumbnail(video.id)
 
   return (
     <>
-      <Card className="glass-strong overflow-hidden border border-border shadow-card">
-        <CardContent className="p-0">
-          <div className="p-5 pb-3">
-            <h3 className="text-lg font-bold text-[#102A43] md:text-xl">{video.title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-slate-700">{video.description}</p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (canPlay) setPlaying(true)
-            }}
-            aria-label={canPlay ? `Play ${video.title}` : video.title}
-            aria-disabled={!canPlay}
-            className="group relative block aspect-video w-full overflow-hidden bg-gradient-to-br from-[#102A43] to-[#486581] ring-1 ring-white/[0.06]"
-          >
-            <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-card/95 text-[#102A43] shadow-2xl ring-4 ring-black/30 transition-transform group-hover:scale-105">
-                <Play className="ml-1 h-8 w-8 fill-current" aria-hidden />
+      <article
+        className={cn(
+          "glass-card overflow-hidden transition-[border-color,box-shadow] duration-200",
+          "hover:border-[var(--ds-line-sapphire)]",
+          video.priority && "accent-card",
+        )}
+      >
+        <div className="px-5 pb-4 pt-5 sm:px-6">
+          <div className="flex flex-wrap items-center gap-2">
+            {video.priority ? (
+              <span className="inline-flex items-center rounded-full bg-sapphire-200 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-sapphire-700">
+                Start here
               </span>
-              <span className="text-sm font-semibold text-white drop-shadow-lg">Click to Play Video</span>
+            ) : (
+              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-sapphire-200 px-1.5 text-[12px] font-semibold text-sapphire-700">
+                {video.step}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-text-muted">
+              <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              {video.duration}
             </span>
-          </button>
-        </CardContent>
-      </Card>
+          </div>
+          <h3 className="ds-h3 mt-2">{video.title}</h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">{video.description}</p>
+        </div>
 
-      {playing && (
+        <button
+          type="button"
+          onClick={() => {
+            if (canPlay) setPlaying(true)
+          }}
+          disabled={!canPlay}
+          aria-label={canPlay ? `Play ${video.title}` : `${video.title} — coming soon`}
+          className="group relative block aspect-video w-full overflow-hidden bg-ink text-left disabled:cursor-default"
+        >
+          {thumbnail ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={thumbnail}
+              alt=""
+              loading={video.priority ? "eager" : "lazy"}
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-ink via-[#1e3a5f] to-sapphire-700" />
+          )}
+          <div className="video-thumb-scrim absolute inset-0" />
+
+          <span className="absolute right-3 top-3 z-10 rounded-md bg-ink/80 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+            {video.duration}
+          </span>
+
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-sapphire-700 shadow-[0_10px_28px_-8px_rgba(20,33,61,0.45)] transition-transform duration-300 group-hover:scale-105 motion-reduce:group-hover:scale-100 sm:h-[4.5rem] sm:w-[4.5rem]">
+              <Play className="ml-1 h-8 w-8 fill-current" aria-hidden />
+            </span>
+            <span className="inline-flex items-center rounded-full bg-ink/70 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
+              {canPlay ? "Click to Play Video" : "Video coming soon"}
+            </span>
+          </span>
+        </button>
+      </article>
+
+      {playing ? (
         <VideoOverlay
           videoUrl={buildVimeoEmbedUrl(video.id)}
           title={video.title}
           onClose={() => setPlaying(false)}
         />
-      )}
+      ) : null}
     </>
   )
 }

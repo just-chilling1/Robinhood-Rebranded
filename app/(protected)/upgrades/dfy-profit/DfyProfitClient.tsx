@@ -4,12 +4,13 @@ import { useState } from "react"
 import Link from "next/link"
 import {
   Check,
-  CheckCircle2,
   Loader2,
+  Package,
   Sparkles,
   Wallet,
 } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
+import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
 import { GenerationProgress } from "@/components/generation-progress"
 import { SavedLinksPicker } from "@/components/saved-links-picker"
 import { Button } from "@/components/ui/button"
@@ -195,38 +196,25 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
         subtitle="Paste your affiliate link, pick a niche, and get 5 videos to comment on, an authority article, and Facebook posts in one run."
       />
 
-      {/* How-to steps — blackbox PremiumStepsSection shape */}
-      <section className="glass-card p-6 sm:p-8">
-        <div className="mb-8 flex items-center gap-3">
-          <CheckCircle2 className="h-[22px] w-[22px] text-sapphire-700" />
-          <h2 className="text-xl font-medium text-foreground">How to Use This (3 Simple Steps)</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {STEPS.map((step) => (
-            <div
-              key={step.num}
-              className="flex flex-col gap-4 rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-200 p-6"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-grad-sapphire text-sm font-medium text-white shadow-sapphire">
-                {step.num}
-              </div>
-              <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PremiumFeatureBanner
+        icon={Package}
+        kicker="Promo kit"
+        title="One link, one niche"
+        description="Generate 5 comment-ready videos, a hosted authority article, and Facebook posts in a single run."
+        chip="Done-for-you"
+      />
 
-      {/* Control card — blackbox PremiumControlCard shape */}
-      <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-border bg-sapphire-200 p-5 md:p-6">
+      <PremiumSteps title="Three steps to a kit" steps={STEPS} />
+
+      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card">
+        <div className="border-b border-[var(--ds-line)] bg-ink p-5 text-white md:p-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--ds-line-sapphire)] bg-white text-sapphire-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-ink">
               <Wallet className="h-6 w-6" />
             </div>
             <div>
-              <p className="font-medium text-foreground">Generate your kit</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-semibold text-white">Generate your kit</p>
+              <p className="text-sm text-white/70">
                 One click creates 5 comment-ready videos, a hosted authority article, and Facebook posts.
               </p>
             </div>
@@ -274,7 +262,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
 
           <fieldset>
             <legend className="mb-3 text-sm font-medium text-foreground">2. Niche</legend>
-            <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-200/40 p-3">
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--ds-line)] bg-surface-nested p-3">
               {NICHES.map((option) => {
                 const selected = niche === option
                 return (
@@ -286,11 +274,11 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
                     onClick={() => setNiche(option)}
                     className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-50 ${
                       selected
-                        ? "border-[2.5px] border-sapphire-700 bg-white text-sapphire-700 shadow-[0_0_0_3px_rgba(52,120,246,0.28),0_4px_14px_-4px_rgba(52,120,246,0.45)] ring-1 ring-sapphire-500/40"
-                        : "border border-[var(--ds-line)] bg-card text-text-secondary hover:border-[var(--ds-line-sapphire)] hover:text-ink"
+                        ? "bg-ink text-white"
+                        : "border border-[var(--ds-line)] bg-card text-text-secondary hover:border-ink/30 hover:text-ink"
                     }`}
                   >
-                    {selected && <Check className="h-3.5 w-3.5 shrink-0 text-sapphire-700" strokeWidth={2.75} aria-hidden />}
+                    {selected && <Check className="h-3.5 w-3.5 shrink-0 text-white" strokeWidth={2.75} aria-hidden />}
                     {option}
                   </button>
                 )
@@ -308,7 +296,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
             type="button"
             disabled={generating}
             onClick={() => void handleGenerate()}
-            className="btn-primary inline-flex h-11 items-center gap-2 transition-[transform,box-shadow,filter,background] duration-200 hover:-translate-y-1 hover:scale-[1.04] hover:brightness-110 hover:shadow-[0_10px_28px_-6px_rgba(52,120,246,0.65)] active:translate-y-0 active:scale-100 active:brightness-100 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:hover:brightness-100 disabled:hover:shadow-[var(--ds-shadow-sapphire)]"
+            className="inline-flex h-11 items-center gap-2 bg-ink text-white hover:bg-ink/90"
           >
             {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             {generating ? "Generating…" : videos.length > 0 ? "Generate another kit" : "Generate kit"}
