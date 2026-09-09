@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
-import { generateStructuredJson, isAiConfigured } from "@/lib/dfy-profit/ai"
-import { buildArticlePrompt, normalizeArticleContent } from "@/lib/dfy-profit/prompts"
-import { buildFallbackArticle } from "@/lib/dfy-profit/article-fallback"
+import { generateAuthorityArticle } from "@/lib/dfy-profit/generate-authority-article"
 import { weaveAffiliateLinks } from "@/lib/dfy-profit/weave-affiliate-links"
 import { buildArticleSlug } from "@/lib/dfy-profit/slug"
-import type { GeneratedArticleContent } from "@/lib/dfy-profit/types"
 
 export const dynamic = "force-dynamic"
 export const maxDuration = 120
@@ -36,24 +33,12 @@ export async function POST(request: Request) {
     )
   }
 
-  const promptInput = { productName, productContext, niche }
-  let content: GeneratedArticleContent
-
-  if (!isAiConfigured()) {
-    content = buildFallbackArticle(promptInput)
-  } else {
-    try {
-      content = await generateStructuredJson<GeneratedArticleContent>({
-        prompt: buildArticlePrompt(promptInput),
-        validate: (raw) => normalizeArticleContent(raw, `The Honest Guide to ${niche}`),
-        options: { maxRetries: 3, timeoutMs: 45_000 },
-      })
-    } catch (error) {
-      console.error("[rh] dfy-profit article AI failed, using template fallback:", error)
-      content = buildFallbackArticle(promptInput)
-    }
-  }
-
+  const content = await generateAuthorityArticle({
+    productName,
+    productContext,
+    niche,
+    affiliateUrl,
+  })
   const html = weaveAffiliateLinks(content.html, affiliateUrl)
 
   // Satisfies pages.niche_id NOT NULL without a migration.

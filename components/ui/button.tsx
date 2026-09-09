@@ -10,17 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-grad-sapphire text-white shadow-sapphire hover:brightness-105 active:shadow-[0_2px_6px_-2px_rgba(37,99,235,0.5)] rounded-full',
+          'bg-grad-sapphire text-white shadow-sapphire hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)] active:translate-y-0 active:shadow-[0_2px_6px_-2px_rgba(37,99,235,0.5)] rounded-full',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 rounded-full',
         outline:
-          'border border-[var(--ds-line-strong)] bg-surface text-ink shadow-sm hover:bg-[var(--ds-surface-field)] rounded-full',
+          'border border-[var(--ds-line-strong)] bg-surface text-ink shadow-sm hover:-translate-y-px hover:bg-primary-light hover:border-primary hover:text-sapphire-700 hover:shadow-hover rounded-full',
         secondary:
-          'border border-[var(--ds-line-strong)] bg-surface text-ink shadow-sm hover:bg-[var(--ds-surface-field)] rounded-full',
+          'border border-[var(--ds-line-strong)] bg-surface text-ink shadow-sm hover:-translate-y-px hover:bg-primary-light hover:border-primary hover:text-sapphire-700 hover:shadow-hover rounded-full',
         ghost:
           'text-ink-3 hover:text-ink hover:bg-surface-hover rounded-md',
         link: 'text-sapphire-700 underline-offset-4 hover:underline rounded-md',
-        ink: 'bg-grad-ink text-[#f8fafc] shadow-raised hover:brightness-105 rounded-full',
+        ink: 'bg-grad-ink text-[#f8fafc] shadow-raised hover:-translate-y-px hover:bg-grad-ink-hover rounded-full',
       },
       size: {
         default: 'h-11 min-h-11 px-6 py-2 has-[>svg]:px-4',

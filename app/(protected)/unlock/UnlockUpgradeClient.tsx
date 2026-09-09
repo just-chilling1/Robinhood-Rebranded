@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import { unlockUpgrade } from "@/app/actions/unlock-upgrade"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, Sparkles, ArrowRight, Loader2 } from "lucide-react"
 import Link from "next/link"
-import Confetti from "react-confetti"
+
+const Confetti = dynamic(() => import("react-confetti"), { ssr: false })
 
 interface UnlockUpgradeClientProps {
   upgradeLevel: "dfy_vault" | "instant_income" | "automated_income"

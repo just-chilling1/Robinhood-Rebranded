@@ -65,14 +65,14 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-3">
             <Link
               href="/create"
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#2563EB] px-8 text-sm font-bold text-white shadow-lg shadow-[#2563EB]/25 transition-all hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-grad-sapphire px-8 text-sm font-bold text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)]"
             >
               <Brain className="h-5 w-5" />
               Get Started Now with Gold Rush
             </Link>
             <Link
               href="/training"
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl border border-border-strong bg-card px-8 text-sm font-bold text-foreground shadow-card transition-colors hover:border-primary hover:bg-primary-light"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl border border-border-strong bg-card px-8 text-sm font-bold text-foreground shadow-card transition-[background-color,border-color,color,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700"
             >
               <BookOpen className="h-5 w-5" />
               Know More from the Academy

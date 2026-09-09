@@ -2,14 +2,17 @@ import { describe, expect, it } from "vitest"
 import { buildArticlePrompt, buildFacebookPostsPrompt, normalizeArticleContent } from "./prompts"
 import { buildFallbackArticle } from "./article-fallback"
 
-const longBody = `<p>${"word ".repeat(950)}</p><h2>FAQ</h2><p>Q and A</p>`
+const longBody = `<p>${"word ".repeat(1100)}</p><h2>FAQ</h2><p>Q and A</p>`
 
 describe("buildArticlePrompt", () => {
-  it("includes the product, niche, and a json-only instruction", () => {
+  it("uses the Blackbox authority prompt: territory, #offer placeholder, and JSON output", () => {
     const prompt = buildArticlePrompt({ productName: "KetoMax", productContext: "a keto plan", niche: "Weight Loss" })
     expect(prompt).toContain("KetoMax")
     expect(prompt).toContain("Weight Loss")
-    expect(prompt).toContain("[LINK]")
+    expect(prompt).toContain("The Complete Buyer's Guide")
+    expect(prompt).toContain('href="#offer"')
+    expect(prompt).toContain("1,500-2,500 words")
+    expect(prompt).toContain("Frequently Asked Questions")
     expect(prompt.toLowerCase()).toContain("json")
   })
 })
@@ -26,7 +29,7 @@ describe("normalizeArticleContent", () => {
   })
 
   it("rejects an article with no faq section", () => {
-    const noFaq = `<p>${"word ".repeat(950)}</p>`
+    const noFaq = `<p>${"word ".repeat(1100)}</p>`
     expect(normalizeArticleContent({ title: "T", excerpt: "E", html: noFaq }, "Fallback")).toBeNull()
   })
 
@@ -35,9 +38,17 @@ describe("normalizeArticleContent", () => {
     expect(normalizeArticleContent("nope", "Fallback")).toBeNull()
   })
 
-  it("substitutes the fallback title when the title is missing", () => {
-    const result = normalizeArticleContent({ excerpt: "E", html: longBody }, "Fallback")
-    expect(result?.title).toBe("Fallback")
+  it("rejects a payload with no title", () => {
+    expect(normalizeArticleContent({ excerpt: "E", html: longBody }, "Fallback")).toBeNull()
+  })
+
+  it("strips a model-supplied h1 so the template can own the title", () => {
+    const result = normalizeArticleContent(
+      { title: "T", excerpt: "E", html: `<h1>Wrong</h1>${longBody}` },
+      "Fallback",
+    )
+    expect(result?.html).not.toContain("<h1>")
+    expect(result?.html).toContain("FAQ")
   })
 
   it("derives an excerpt from the body when it is missing", () => {
@@ -66,8 +77,14 @@ describe("buildFallbackArticle", () => {
     expect(normalizeArticleContent(article, "Fallback")).not.toBeNull()
   })
 
-  it("includes a [LINK] token for weaving", () => {
+  it("uses the Recurring Stream / High-Ticket authority template", () => {
     const article = buildFallbackArticle({ productName: "KetoMax", productContext: "", niche: "Weight Loss" })
-    expect(article.html).toContain("[LINK]")
+    expect(article.title).toBe("KetoMax: The Complete Buyer's Guide")
+    expect(article.html).toContain('class="article-body"')
+    expect(article.html).toContain('href="#offer"')
+    expect(article.html).toContain('aria-label="Table of contents"')
+    expect(article.html).toContain("Frequently Asked Questions")
+    expect(article.html).toContain('class="cta-box"')
+    expect(article.html).toContain("<figure>")
   })
 })

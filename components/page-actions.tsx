@@ -18,9 +18,10 @@ interface PageActionsProps {
   affiliateLink: string
   videoUrl?: string
   comments: string[]
+  stacked?: boolean
 }
 
-export function PageActions({ pageId, affiliateLink, videoUrl, comments }: PageActionsProps) {
+export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked = false }: PageActionsProps) {
   const [loading, setLoading] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [expanded, setExpanded] = useState(false)
@@ -78,68 +79,81 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments }: PageA
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      <div className={stacked ? "flex flex-col gap-2" : "flex items-center gap-2"}>
         <Button
+          type="button"
           onClick={handleToggleComments}
-          className="flex-1 h-14 text-base font-black bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-xl border-0 shadow-lg shadow-[#2563EB]/30"
+          className="h-10 w-full rounded-xl border-2 border-transparent bg-[#2563EB] text-sm font-bold text-white shadow-none hover:border-[#2563EB] hover:bg-white hover:text-[#1D4ED8] hover:shadow-none"
         >
-          {expanded ? <ChevronUp className="w-5 h-5 mr-2" /> : <MessageSquare className="w-5 h-5 mr-2" />}
+          {expanded ? <ChevronUp className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
           {expanded ? "Hide Comments" : "View Comments"}
         </Button>
 
-        <Button
-          asChild
-          className="flex-1 h-14 text-base font-black bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-xl border-0 shadow-lg shadow-[#2563EB]/30"
-        >
-          <a href={videoUrl || affiliateLink} target="_blank" rel="noopener noreferrer">
-            <Youtube className="w-5 h-5 mr-2" />
-            Open Video
-          </a>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            asChild
+            variant="outline"
+            className="h-10 min-w-0 flex-1 rounded-xl border-2 border-[var(--ds-line-strong)] px-3 text-sm font-semibold shadow-none hover:border-[#2563EB] hover:bg-[#2563EB]/12 hover:text-[#1D4ED8] hover:shadow-none"
+          >
+            <a href={videoUrl || affiliateLink} target="_blank" rel="noopener noreferrer">
+              <Youtube className="h-4 w-4" />
+              Open Video
+            </a>
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => setConfirmOpen(true)}
-          disabled={loading}
-          className="h-14 px-5 glass bg-transparent border-2 border-[#C53030]/30 text-[#C53030] hover:bg-[#C53030]/10 hover:text-[#C53030] font-bold rounded-xl"
-        >
-          <Trash2 className="w-5 h-5" />
-        </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setConfirmOpen(true)}
+            disabled={loading}
+            aria-label="Delete pack"
+            className="h-10 w-10 shrink-0 rounded-xl border-2 border-[#C53030]/30 px-0 text-[#C53030] shadow-none hover:border-[#C53030] hover:bg-[#C53030]/15 hover:text-[#9B2C2C] hover:shadow-none"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {expanded && (
-        <div className="glass rounded-xl border-2 border-[var(--border)] p-4 space-y-3">
+        <div className="space-y-2.5 rounded-xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] p-3 sm:p-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-black text-[#102A43]">
-              {comments.length} comment{comments.length === 1 ? "" : "s"} — copy one and paste it on the video
+            <p className="text-sm font-semibold text-[#14213d]">
+              {comments.length} comment{comments.length === 1 ? "" : "s"} — copy and paste on the video
             </p>
             <Button
+              type="button"
               onClick={handleCopyAll}
               variant="outline"
               size="sm"
-              className="glass bg-transparent border-2 border-[var(--border)] text-[#102A43] font-bold rounded-lg hover:bg-[#2563EB]/10"
+              className="h-8 rounded-lg text-xs font-semibold"
             >
-              {copiedAll ? <Check className="w-4 h-4 mr-2 text-[#1D4ED8]" /> : <Copy className="w-4 h-4 mr-2" />}
-              {copiedAll ? "Copied!" : "Copy All"}
+              {copiedAll ? <Check className="h-3.5 w-3.5 text-[#16875c]" /> : <Copy className="h-3.5 w-3.5" />}
+              {copiedAll ? "Copied" : "Copy All"}
             </Button>
           </div>
 
           {comments.length === 0 ? (
-            <p className="text-sm text-[#486581]">No comments found in this pack.</p>
+            <p className="text-sm text-text-secondary">No comments found in this pack.</p>
           ) : (
             comments.map((comment, idx) => (
               <div
                 key={idx}
-                className="glass rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 border border-[var(--border)]"
+                className="flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-white p-3 sm:flex-row sm:items-start"
               >
-                <p className="flex-1 text-sm text-[#486581] leading-relaxed">{comment}</p>
+                <div className="flex min-w-0 flex-1 items-start gap-2.5">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[10px] font-bold text-sapphire-700">
+                    {idx + 1}
+                  </span>
+                  <p className="min-w-0 flex-1 text-sm leading-relaxed text-[#14213d]">{comment}</p>
+                </div>
                 <Button
+                  type="button"
                   onClick={() => handleCopyOne(idx)}
                   size="sm"
-                  className="h-10 font-black bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg border-0 flex-shrink-0"
+                  className="h-8 w-full shrink-0 rounded-lg text-xs font-bold sm:w-auto"
                 >
-                  {copiedIdx === idx ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                  {copiedIdx === idx ? "Copied!" : "Copy"}
+                  {copiedIdx === idx ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copiedIdx === idx ? "Copied" : "Copy"}
                 </Button>
               </div>
             ))

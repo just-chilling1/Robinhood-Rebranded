@@ -12,9 +12,36 @@ import {
   RefreshCw,
   Youtube,
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/dfy-profit/types"
+import { cn } from "@/lib/utils"
+
+const primaryCtaClass =
+  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:bg-primary-hover hover:shadow-[var(--ds-shadow-sapphire-hover)]"
+
+const outlineCtaClass =
+  "rounded-xl border-2 border-[var(--ds-line-strong)] bg-white font-semibold text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
+
+const POST_ACCENTS = [
+  {
+    bar: "border-l-primary",
+    chip: "bg-sapphire-200 text-sapphire-700",
+    card: "bg-sapphire-100",
+  },
+  {
+    bar: "border-l-ink",
+    chip: "bg-ink text-white",
+    card: "bg-[var(--ds-canvas)]",
+  },
+  {
+    bar: "border-l-[#147551]",
+    chip: "bg-[var(--ds-offer-green-200)] text-[#147551]",
+    card: "bg-[var(--ds-offer-green-100)]",
+  },
+] as const
 
 interface DfyResultPanelProps {
+  niche: string
   videos: DfyVideoResult[]
   article: DfyArticleResult | null
   posts: DfyFacebookPost[]
@@ -33,28 +60,46 @@ function KitSection({
   title,
   count,
   defaultOpen = true,
+  tone = "neutral",
   children,
 }: {
   title: string
   count?: number
   defaultOpen?: boolean
+  tone?: "neutral" | "video" | "social"
   children: ReactNode
 }) {
+  const toneClass = {
+    neutral: "border-[var(--ds-line-strong)]",
+    video: "border-[var(--ds-line-sapphire)]",
+    social: "border-[var(--ds-line-offer)]",
+  }[tone]
+  const headerClass = {
+    neutral: "bg-surface-nested",
+    video: "bg-sapphire-200",
+    social: "bg-[var(--ds-offer-green-200)]",
+  }[tone]
+
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm"
+      className={cn("group overflow-hidden rounded-2xl border-2 bg-white shadow-[var(--ds-shadow-raised)]", toneClass)}
     >
-      <summary className="flex cursor-pointer list-none items-center gap-3 border-b border-transparent bg-surface-nested px-4 py-3.5 transition-colors hover:bg-card group-open:border-border [&::-webkit-details-marker]:hidden">
-        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-        <span className="min-w-0 flex-1 text-sm font-medium text-foreground">{title}</span>
+      <summary
+        className={cn(
+          "flex cursor-pointer list-none items-center gap-3 border-b-2 border-transparent px-4 py-3.5 transition-colors hover:bg-surface-hover group-open:border-[var(--ds-line-strong)] [&::-webkit-details-marker]:hidden",
+          headerClass,
+        )}
+      >
+        <ChevronDown className="h-4 w-4 shrink-0 text-ink transition-transform group-open:rotate-180" />
+        <span className="min-w-0 flex-1 text-sm font-semibold text-ink">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-ink px-2.5 py-0.5 text-[13px] font-medium tabular-nums text-white">
+          <span className="shrink-0 rounded-full bg-ink px-2.5 py-0.5 text-[13px] font-semibold tabular-nums text-white">
             {count}
           </span>
         )}
       </summary>
-      <div className="space-y-3 bg-[var(--ds-canvas)]/40 p-3">{children}</div>
+      <div className="space-y-3 bg-[var(--ds-canvas)] p-3 sm:p-4">{children}</div>
     </details>
   )
 }
@@ -69,7 +114,36 @@ function htmlToText(html: string): string {
     .trim()
 }
 
+function CopyButton({
+  copied,
+  onClick,
+  label = "Copy",
+  copiedLabel = "Copied",
+  size = "sm",
+}: {
+  copied: boolean
+  onClick: () => void
+  label?: string
+  copiedLabel?: string
+  size?: "sm" | "md"
+}) {
+  return (
+    <Button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        size === "sm" ? "h-10 px-4 text-sm" : "h-11 px-4",
+        copied ? "rounded-xl bg-[#147551] font-semibold text-white hover:bg-[#147551]" : primaryCtaClass,
+      )}
+    >
+      {copied ? <Check className="mr-1.5 h-4 w-4" /> : <Copy className="mr-1.5 h-4 w-4" />}
+      {copied ? copiedLabel : label}
+    </Button>
+  )
+}
+
 export function DfyResultPanel({
+  niche,
   videos,
   article,
   posts,
@@ -107,14 +181,19 @@ export function DfyResultPanel({
 
   return (
     <section id="dfy-profit-results" className="scroll-mt-24 space-y-4">
-      <h2 className="text-lg font-medium text-foreground">Your Done-For-You kit</h2>
+      <h2 className="text-lg font-semibold text-ink">Your Done-For-You kit</h2>
 
-      <KitSection title="Videos to comment on" count={videos.length || undefined} defaultOpen={videos.length > 0}>
-        <div className="flex items-center gap-3">
+      <KitSection
+        title="Videos to comment on"
+        count={videos.length || undefined}
+        defaultOpen={videos.length > 0}
+        tone="video"
+      >
+        <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-sapphire)] bg-white px-3 py-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
             <Youtube className="h-[18px] w-[18px]" />
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-medium text-ink">
             {videos.length > 0
               ? `${videos.length} videos with ready-to-copy comments`
               : "Your comment-ready videos will appear here."}
@@ -122,43 +201,68 @@ export function DfyResultPanel({
         </div>
 
         {videos.length > 0 && (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {videos.map((video) => (
-              <article key={video.videoId} className="glass-card flex flex-col gap-3 p-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium leading-snug text-foreground">{video.title}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{video.channelTitle}</p>
+              <article
+                key={video.videoId}
+                className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-sapphire)] bg-card shadow-[var(--ds-shadow-card)]"
+              >
+                <div className="flex gap-3 bg-ink p-4 text-white">
+                  {video.thumbnailUrl ? (
+                    <a
+                      href={video.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative block h-[4.75rem] w-[8.5rem] shrink-0 overflow-hidden rounded-lg bg-white/10"
+                      aria-label={`Open ${video.title} on YouTube`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={video.thumbnailUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </a>
+                  ) : null}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/75">
+                      {video.channelTitle}
+                    </p>
+                    <p className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-white">
+                      {video.title}
+                    </p>
+                    <a
+                      href={video.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "mt-3 inline-flex h-10 items-center gap-2 px-4 text-sm",
+                        primaryCtaClass,
+                      )}
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      Open video
+                    </a>
+                  </div>
                 </div>
-                <a
-                  href={video.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary inline-flex w-fit items-center gap-2 text-sm"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  Open video
-                </a>
-                <div className="space-y-2 border-t border-border pt-3">
+                <div className="space-y-2.5 bg-sapphire-200 p-4">
                   {video.comments.map((comment, index) => {
                     const id = `${video.videoId}-${index}`
                     const copied = copiedId === id
                     return (
-                      <div key={id} className="rounded-xl border border-border bg-white p-3">
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                          {comment}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => void copyText(id, comment)}
-                          className={`mt-2 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] font-medium transition-colors ${
-                            copied
-                              ? "bg-[#DDF7EC] text-[#147551]"
-                              : "bg-surface-nested text-text-secondary hover:bg-card hover:text-ink"
-                          }`}
-                        >
-                          {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                          {copied ? "Copied" : "Copy"}
-                        </button>
+                      <div
+                        key={id}
+                        className="flex flex-col gap-3 rounded-xl border-2 border-[var(--ds-line-strong)] border-l-4 border-l-primary bg-white p-3.5 shadow-sm sm:flex-row sm:items-start"
+                      >
+                        <div className="flex min-w-0 flex-1 items-start gap-3">
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
+                            {index + 1}
+                          </span>
+                          <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink">
+                            {comment}
+                          </p>
+                        </div>
+                        <CopyButton copied={copied} onClick={() => void copyText(id, comment)} />
                       </div>
                     )
                   })}
@@ -169,105 +273,121 @@ export function DfyResultPanel({
         )}
       </KitSection>
 
-      <KitSection title="Authority article" count={article ? 1 : undefined} defaultOpen={Boolean(article)}>
-        <div className="flex items-start gap-3">
-          <FileText className="mt-0.5 h-[18px] w-[18px] shrink-0 text-sapphire-700" />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-foreground">{article?.title || "Authority article"}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {article
-                ? "Open the live page, or copy it to your blog, Medium, or LinkedIn."
-                : retryingArticle || isGeneratingArticle
-                  ? "Writing your authority article…"
-                  : articleError || "Your copy-ready article will appear here."}
-            </p>
+      {isGeneratingArticle || retryingArticle ? (
+        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
+          <div className="flex items-center gap-3 bg-ink px-5 py-4 text-white md:px-6">
+            <FileText className="h-5 w-5 shrink-0 text-white/80" aria-hidden />
+            <p className="text-sm font-semibold">Writing your authority article…</p>
           </div>
-        </div>
-
-        {isGeneratingArticle || retryingArticle ? (
-          <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <p className="inline-flex items-center gap-2 px-5 py-6 text-sm font-medium text-ink">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            Generating your authority article…
+            Generating a long-form guide with your offer woven in.
           </p>
-        ) : articleError ? (
-          <button
+        </section>
+      ) : articleError ? (
+        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card p-5 shadow-[var(--ds-shadow-card)]">
+          <p className="text-sm font-medium text-destructive">{articleError}</p>
+          <Button
             type="button"
             disabled={retryingArticle}
             onClick={onRetryArticle}
-            className="btn-secondary inline-flex items-center gap-2 text-sm disabled:opacity-50"
+            variant="outline"
+            className={cn("mt-3 h-11 px-4 disabled:opacity-50", outlineCtaClass)}
           >
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw className="mr-2 h-3.5 w-3.5" />
             Retry article
-          </button>
-        ) : article ? (
-          <div className="space-y-3">
-            {article.saveWarning && (
-              <p className="text-sm text-destructive">{article.saveWarning}</p>
-            )}
-            <div className="flex flex-wrap gap-2">
-              {article.url && (
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary inline-flex items-center gap-2 text-sm"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
+          </Button>
+        </section>
+      ) : article ? (
+        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
+          {article.saveWarning ? (
+            <p className="border-b border-[var(--ds-line)] bg-[#FDE4E4] px-5 py-3 text-sm font-medium text-[#C53030]">
+              {article.saveWarning}
+            </p>
+          ) : null}
+          <div className="flex items-start justify-between gap-3 border-b border-[var(--ds-line)] bg-ink px-5 py-4 text-white md:px-6">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">
+                {niche || "Authority article"}
+              </p>
+              <h3 className="mt-1 text-lg font-semibold leading-snug text-white">{article.title}</h3>
+              {article.excerpt ? (
+                <p className="mt-2 text-sm leading-relaxed text-white/80">{article.excerpt}</p>
+              ) : null}
+            </div>
+            <FileText className="mt-1 h-5 w-5 shrink-0 text-white/80" aria-hidden />
+          </div>
+          <div
+            className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
+            dangerouslySetInnerHTML={{ __html: article.html }}
+          />
+          <div className="flex flex-wrap gap-2 border-t-2 border-[var(--ds-line-strong)] bg-surface-nested px-5 py-4 md:px-6">
+            {article.url ? (
+              <Button asChild className={cn("h-11 px-4", primaryCtaClass)}>
+                <a href={article.url} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   Open live article
                 </a>
+              </Button>
+            ) : null}
+            {article.url ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void copyText("article-url", article.url!)}
+                className={cn("h-11 px-4", outlineCtaClass)}
+              >
+                {copiedId === "article-url" ? (
+                  <Check className="mr-2 h-4 w-4" />
+                ) : (
+                  <Copy className="mr-2 h-4 w-4" />
+                )}
+                {copiedId === "article-url" ? "Copied" : "Copy URL"}
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void copyText("article-text", `${article.title}\n\n${htmlToText(article.html)}`)}
+              className={cn("h-11 px-4", outlineCtaClass)}
+            >
+              {copiedId === "article-text" ? (
+                <Check className="mr-2 h-4 w-4" />
+              ) : (
+                <Copy className="mr-2 h-4 w-4" />
               )}
-              {article.url && (
-                <button
-                  type="button"
-                  onClick={() => void copyText("article-url", article.url!)}
-                  className="btn-secondary inline-flex items-center gap-2 text-sm"
-                >
-                  {copiedId === "article-url" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copiedId === "article-url" ? "Copied" : "Copy URL"}
-                </button>
+              {copiedId === "article-text" ? "Copied" : "Copy plain text"}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => void copyText("article-html", article.html)}
+              className={cn(
+                "h-11 px-4",
+                copiedId === "article-html"
+                  ? "rounded-xl bg-[#147551] font-semibold text-white hover:bg-[#147551]"
+                  : primaryCtaClass,
               )}
-            </div>
-            <details open className="group overflow-hidden rounded-xl border border-border bg-white">
-              <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
-                <FileText className="h-3.5 w-3.5 shrink-0 text-sapphire-700" />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
-                  {article.title}
-                </span>
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    void copyText("article-html", article.html)
-                  }}
-                  className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-2.5 py-1 text-[13px] font-medium text-white hover:bg-ink/90"
-                >
-                  {copiedId === "article-html" ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                  {copiedId === "article-html" ? "Copied" : "Copy HTML"}
-                </button>
-              </summary>
-              <div
-                className="prose prose-sm max-h-[560px] max-w-none overflow-y-auto border-t border-border bg-white px-5 py-6 text-foreground"
-                dangerouslySetInnerHTML={{ __html: article.html }}
-              />
-              <div className="flex flex-wrap gap-2 border-t border-border p-3">
-                <button
-                  type="button"
-                  onClick={() => void copyText("article-text", htmlToText(article.html))}
-                  className="btn-secondary inline-flex items-center gap-2 text-sm"
-                >
-                  {copiedId === "article-text" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copiedId === "article-text" ? "Copied" : "Copy text"}
-                </button>
-              </div>
-            </details>
+            >
+              {copiedId === "article-html" ? (
+                <Check className="mr-2 h-4 w-4" />
+              ) : (
+                <Copy className="mr-2 h-4 w-4" />
+              )}
+              {copiedId === "article-html" ? "Copied" : "Copy HTML"}
+            </Button>
           </div>
-        ) : null}
-      </KitSection>
+        </section>
+      ) : null}
 
-      <KitSection title="Facebook posts" count={posts.length || undefined} defaultOpen={posts.length > 0}>
-        <div className="flex items-start gap-3">
-          <Megaphone className="mt-0.5 h-[18px] w-[18px] shrink-0 text-sapphire-700" />
-          <p className="text-sm text-muted-foreground">
+      <KitSection
+        title="Facebook posts"
+        count={posts.length || undefined}
+        defaultOpen={posts.length > 0}
+        tone="social"
+      >
+        <div className="flex items-start gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white px-3 py-3">
+          <Megaphone className="mt-0.5 h-[18px] w-[18px] shrink-0 text-[#147551]" />
+          <p className="text-sm font-medium text-ink">
             {posts.length > 0
               ? `${posts.length} ready-to-copy variants`
               : postsError || "Your Facebook post variants will appear here."}
@@ -275,57 +395,57 @@ export function DfyResultPanel({
         </div>
 
         {usedFallbackLink && posts.length > 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-medium text-ink">
             These posts use your affiliate link directly, because the article was not saved.
           </p>
         )}
 
         {isGeneratingPosts && posts.length === 0 ? (
-          <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <p className="inline-flex items-center gap-2 text-sm font-medium text-ink">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Generating Facebook posts…
           </p>
         ) : postsError && posts.length === 0 ? (
-          <button
+          <Button
             type="button"
             disabled={retryingPosts}
             onClick={onRetryPosts}
-            className="btn-secondary inline-flex items-center gap-2 text-sm disabled:opacity-50"
+            variant="outline"
+            className={cn("h-11 px-4 disabled:opacity-50", outlineCtaClass)}
           >
             {retryingPosts ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
             ) : (
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw className="mr-2 h-3.5 w-3.5" />
             )}
             Retry Facebook posts
-          </button>
+          </Button>
         ) : posts.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             {posts.map((post, index) => {
               const copied = copiedId === post.id
+              const accent = POST_ACCENTS[index % POST_ACCENTS.length]
               return (
                 <article
                   key={post.id}
-                  className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--ds-line-sapphire)]"
+                  className={cn(
+                    "flex flex-col gap-3 rounded-2xl border-2 border-[var(--ds-line-strong)] border-l-4 p-4 shadow-[var(--ds-shadow-card)]",
+                    accent.bar,
+                    accent.card,
+                  )}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[13px] font-medium uppercase tracking-wider text-sapphire-700">
+                    <p
+                      className={cn(
+                        "rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider",
+                        accent.chip,
+                      )}
+                    >
                       Variant {index + 1}
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => void copyText(post.id, post.body)}
-                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                        copied
-                          ? "bg-[#DDF7EC] text-[#147551]"
-                          : "bg-surface-nested text-text-secondary hover:bg-card hover:text-ink"
-                      }`}
-                    >
-                      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                      {copied ? "Copied" : "Copy"}
-                    </button>
+                    <CopyButton copied={copied} onClick={() => void copyText(post.id, post.body)} />
                   </div>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                  <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink">
                     {post.body}
                   </p>
                 </article>

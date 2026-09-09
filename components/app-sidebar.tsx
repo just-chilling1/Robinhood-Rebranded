@@ -18,6 +18,7 @@ import {
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { BrandLogo } from "@/components/brand-logo"
 import { createClient } from "@/lib/supabase/client"
 import { PREMIUM_FEATURES } from "@/lib/premium-features"
 import { onboardingConfig } from "@/lib/onboarding/config"
@@ -78,16 +79,14 @@ function SidebarBody({
             }`}
             title={onboardingConfig.productName}
           >
-            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--ds-r-md)] bg-grad-sapphire shadow-sapphire">
-              <Brain className="h-5 w-5 text-white" />
-            </div>
+            <BrandLogo variant="icon" size={40} className="flex-shrink-0 rounded-[var(--ds-r-md)]" />
             {!collapsed && (
-              <div className="min-w-0">
-                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-ink">
-                  {onboardingConfig.productName}
-                </h2>
-                <p className="whitespace-nowrap text-[13px] font-medium text-ink-4">Your comment helper</p>
-              </div>
+              <BrandLogo
+                variant="wordmark"
+                width={148}
+                className="min-w-0 flex-shrink overflow-hidden rounded-[var(--ds-r-md)]"
+                priority
+              />
             )}
           </Link>
           <button
@@ -271,12 +270,8 @@ export function AppSidebar() {
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-          <div className="relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[var(--ds-r-md)] bg-grad-sapphire">
-            <Brain className="h-4 w-4 text-white" />
-          </div>
-          <span className="whitespace-nowrap text-base font-bold tracking-tight text-ink">
-            {onboardingConfig.productName}
-          </span>
+          <BrandLogo variant="icon" size={32} className="flex-shrink-0 rounded-[var(--ds-r-md)]" />
+          <BrandLogo variant="wordmark" width={120} className="overflow-hidden rounded-[var(--ds-r-sm)]" priority />
         </Link>
       </div>
     </>

@@ -7,10 +7,7 @@ import { createClient } from "@/lib/supabase/server"
 import { PageHeader } from "@/components/page-header"
 import { TrainingVideoCard } from "@/components/training-video-card"
 import { ACADEMY_TRAINING_VIDEOS } from "@/lib/academy-training-videos"
-import {
-  PREMIUM_TRAINING_MODULES,
-  getPremiumTrainingVimeoId,
-} from "@/lib/premium-training-videos"
+import { PREMIUM_TRAINING_VIDEOS } from "@/lib/premium-training-videos"
 import {
   TRAINING_CTA,
   TRAINING_PRO_TIPS,
@@ -57,7 +54,7 @@ export default async function TrainingPage() {
       <PageHeader
         eyebrow="Academy"
         title="Training"
-        subtitle="Click-by-click walkthroughs for every core tool — watch in order after the Dashboard intro videos."
+        subtitle="Mindset videos first, then click-by-click walkthroughs — watch in order after the Dashboard intro videos."
       />
 
       <div className="page-stack">
@@ -65,18 +62,20 @@ export default async function TrainingPage() {
           <TrainingSectionHeader
             icon={Play}
             title="Platform Tutorials"
-            subtitle="Core workflow — watch in order after Dashboard intro videos"
+            subtitle="Mindset then how-to for each core tool — watch in order after Dashboard intro videos"
           />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+          <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-7">
             {ACADEMY_TRAINING_VIDEOS.map((training) => (
               <TrainingVideoCard
-                key={training.vimeoId}
+                key={training.slug}
                 video={{
                   id: training.vimeoId,
                   title: training.title,
                   description: training.description,
                   duration: training.duration,
                   step: training.step,
+                  badge: training.badge,
+                  thumbnailSlug: training.thumbnailSlug,
                 }}
               />
             ))}
@@ -109,17 +108,19 @@ export default async function TrainingPage() {
           <TrainingSectionHeader
             icon={Star}
             title="Premium Feature Tutorials"
-            subtitle="Scale after your first live pack — watch in any order"
+            subtitle="Mindset then how-to per premium feature — scale after your first live pack"
           />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
-            {PREMIUM_TRAINING_MODULES.map((module) => (
+          <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
+            {PREMIUM_TRAINING_VIDEOS.map((video) => (
               <TrainingVideoCard
-                key={module.key}
+                key={video.slug}
                 video={{
-                  id: getPremiumTrainingVimeoId(module.key),
-                  title: module.title,
-                  description: module.description,
-                  badge: module.feature,
+                  id: video.vimeoId,
+                  title: video.title,
+                  description: video.description,
+                  duration: video.duration,
+                  badge: video.badge ?? video.feature,
+                  thumbnailSlug: video.thumbnailSlug,
                 }}
               />
             ))}

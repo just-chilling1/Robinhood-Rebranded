@@ -299,6 +299,7 @@ export function LicenseRightsContent() {
       />
 
       <PremiumVideoTutorial
+        premiumKey="licenseRights"
         vimeoId={licenseVideoId}
         title={`${PREMIUM_FEATURE_LABELS.licenseRights} Training`}
         description={`Watch this to understand how the Full Turnkey Reseller & License Rights Edition works and how to request activation for your ${PRODUCT_NAME} account.`}

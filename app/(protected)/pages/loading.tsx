@@ -10,11 +10,11 @@ export default function PagesLoading() {
         <div className="h-12 w-48 animate-pulse rounded-full bg-muted/70" />
       </div>
 
-      <div className="h-24 animate-pulse rounded-2xl bg-muted/50" />
+      <div className="h-20 animate-pulse rounded-xl bg-muted/40" />
 
-      <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 animate-pulse rounded-2xl bg-muted/50" />
+          <div key={i} className="h-72 animate-pulse rounded-2xl bg-muted/50" />
         ))}
       </div>
     </div>

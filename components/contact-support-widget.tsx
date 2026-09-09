@@ -2,18 +2,16 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { CheckCircle2, Headphones, Loader2, Mail } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import { APP_SUPPORT_NAME, FREE_TRAINING_URL, SUPPORT_EMAIL } from "@/lib/support"
 
 type FormState = "idle" | "submitting" | "success" | "error"
 
 const fieldClassName =
-  "w-full min-w-0 rounded-xl border-[1.5px] border-[var(--border-strong)] bg-card px-3.5 py-3 text-sm leading-normal text-foreground placeholder:text-muted-foreground hover:border-[var(--ds-sapphire-300)] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25 disabled:bg-surface-nested disabled:text-[var(--text-disabled)]"
+  "w-full min-w-0 rounded-lg border border-border bg-card px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted shadow-sm focus:border-sapphire-700 focus:outline-none focus:ring-2 focus:ring-sapphire-100 transition-all disabled:bg-surface-nested disabled:text-[var(--text-disabled)]"
 
 const labelClassName =
-  "mb-2 block text-xs font-bold uppercase tracking-wide text-text-secondary"
+  "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
 
 function openSupportMailto(email: string, message: string) {
   const subject = `${APP_SUPPORT_NAME} — Support Request`
@@ -141,97 +139,81 @@ export function ContactSupportWidget() {
 
   if (formState === "success") {
     return (
-      <Card className="glass-strong min-w-0 overflow-hidden border border-border shadow-card">
-        <CardContent className="space-y-5 px-5 py-6">
-          <div className="flex flex-col items-center">
-            <div className="mb-4 rounded-full border border-[#DDF7EC] bg-[#DDF7EC] p-3">
-              <CheckCircle2 className="h-6 w-6 text-[#16875C]" />
-            </div>
-            <h3 className="text-base font-black uppercase tracking-tight text-foreground">
-              {sentViaMailto ? "Check your email app" : "Message sent"}
-            </h3>
-            <p className="mt-3 w-full text-sm leading-relaxed text-text-secondary">
-              {sentViaMailto ? (
-                <>
-                  Your email app should open with your message ready to send. Tap{" "}
-                  <span className="font-semibold text-foreground">Send</span> to deliver it — then
-                  we&apos;ll reply to{" "}
-                  <span className="break-all font-semibold text-foreground">{submittedEmail}</span>. We
-                  usually respond within about 2 hours — during busy periods, please allow 24–48
-                  hours.
-                </>
-              ) : (
-                <>
-                  We&apos;ll reply to{" "}
-                  <span className="break-all font-semibold text-foreground">{submittedEmail}</span>. We
-                  usually respond within about 2 hours — during busy periods, please allow 24–48
-                  hours.
-                </>
-              )}
-            </p>
-            <p className="mt-3 w-full text-sm leading-relaxed text-text-secondary">
-              Remember: our reply will go to{" "}
-              <span className="break-all font-semibold text-foreground">{submittedEmail}</span> only — not
-              another inbox you may use elsewhere. If you don&apos;t see it within 48 hours, check
-              that inbox&apos;s spam or junk folder.
-            </p>
+      <div className="card-base min-w-0 overflow-hidden">
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-success/20 bg-success-light text-success">
+            <CheckCircle2 className="h-6 w-6" aria-hidden />
           </div>
+          <h3 className="ds-h3">
+            {sentViaMailto ? "Check your email app" : "Message sent"}
+          </h3>
+          <p className="w-full text-sm leading-relaxed text-text-secondary">
+            {sentViaMailto ? (
+              <>
+                Your email app should open with your message ready to send. Tap{" "}
+                <span className="font-medium text-text-heading">Send</span> to deliver it — then
+                we&apos;ll reply to{" "}
+                <span className="break-all font-medium text-text-primary">{submittedEmail}</span>.
+              </>
+            ) : (
+              <>
+                We&apos;ll reply to{" "}
+                <span className="break-all font-medium text-text-primary">{submittedEmail}</span>.
+              </>
+            )}{" "}
+            We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+          </p>
+          <p className="w-full text-sm leading-relaxed text-text-secondary">
+            Remember: our reply will go to{" "}
+            <span className="break-all font-medium text-text-primary">{submittedEmail}</span> only —
+            not another inbox you may use elsewhere. If you don&apos;t see it within 48 hours, check
+            that inbox&apos;s spam or junk folder.
+          </p>
+        </div>
 
-          <div className="border-t border-border pt-5">
-            <p className="text-sm leading-relaxed text-text-secondary">
-              While you wait, start with our{" "}
-              <span className="font-semibold text-[#d97706]">free training</span> — discover how to
-              wake up with an extra{" "}
-              <span className="font-semibold text-[#d97706]">$1,000–$5,000</span> in your account
-              and scale to $1k–$5k per day without extra grind.
-            </p>
-            <p className="mt-3 text-xs font-bold uppercase tracking-wide text-[#C53030]">
-              Warning: This may be taken down soon
-            </p>
-            <a
-              href={FREE_TRAINING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 block w-full rounded-xl bg-primary px-4 py-3 text-center text-xs font-black uppercase text-primary-foreground shadow-card transition-all hover:bg-primary-hover active:bg-primary-active"
-            >
-              Watch The Free Training &gt;&gt;
-            </a>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            onClick={resetForm}
-            className="h-11 w-full rounded-xl border-[var(--border-strong)] bg-card font-bold text-text-secondary hover:bg-primary-light hover:text-foreground"
+        <div className="mt-5 rounded-xl border border-border-dim/80 bg-page/60 p-4">
+          <p className="text-sm leading-relaxed text-text-secondary">
+            While you wait, start with our{" "}
+            <span className="font-medium text-warning">free training</span> — discover how to wake
+            up with an extra <span className="font-medium text-warning">$1,000–$5,000</span> in your
+            account and scale to $1k–$5k per day without extra grind.
+          </p>
+          <p className="mt-3 text-xs font-medium uppercase tracking-wide text-danger">
+            Warning: This may be taken down soon
+          </p>
+          <a
+            href={FREE_TRAINING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mt-4 w-full"
           >
-            Send another message
-          </Button>
-        </CardContent>
-      </Card>
+            Watch The Free Training &gt;&gt;
+          </a>
+        </div>
+
+        <button type="button" onClick={resetForm} className="btn-secondary mt-4 w-full">
+          Send another message
+        </button>
+      </div>
     )
   }
 
   return (
-    <Card className="glass-strong min-w-0 overflow-hidden border border-border shadow-card">
-      <CardHeader className="pb-2">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="shrink-0 rounded-xl border border-border bg-primary-light p-2.5">
-            <Headphones className="h-5 w-5 text-foreground" />
-          </div>
-          <CardTitle className="text-sm font-black uppercase tracking-widest text-foreground">
-            Contact Support
-          </CardTitle>
+    <div className="card-base min-w-0 overflow-hidden">
+      <div className="flex items-center gap-3 border-b border-border-dim/60 pb-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100">
+          <Headphones size={20} className="text-sapphire-700" />
         </div>
-      </CardHeader>
+        <h3 className="ds-h3 min-w-0">Contact Support</h3>
+      </div>
 
-      <CardContent className="space-y-5 pb-6 pt-0">
+      <div className="mt-3 flex flex-col gap-4">
         <p className="text-sm leading-relaxed text-text-secondary">
-          We usually reply within about 2 hours. Because of high email volume, please allow{" "}
-          <span className="font-medium text-foreground">24–48 hours</span> during busy periods. Your
-          answer will go to the email you enter below.
+          We usually reply within about 2 hours — allow{" "}
+          <span className="font-medium text-text-primary">24–48 hours</span> during busy periods.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div className="min-w-0">
             <label htmlFor="support-email" className={labelClassName}>
               Your email
@@ -261,26 +243,23 @@ export function ContactSupportWidget() {
               placeholder="Tell us what you need help with..."
               required
               disabled={formState === "submitting"}
-              rows={4}
-              className={`${fieldClassName} min-h-[112px] resize-y`}
+              rows={3}
+              className={`${fieldClassName} min-h-[96px] resize-y`}
             />
           </div>
 
-          {formState === "error" && errorMessage && (
-            <p className="text-sm text-red-600">{errorMessage}</p>
-          )}
+          {formState === "error" && errorMessage ? (
+            <p className="text-sm font-medium text-danger" role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
 
-          <p className="rounded-lg border border-border bg-surface-nested px-3.5 py-3 text-xs leading-relaxed text-text-secondary">
-            <span className="font-semibold text-foreground">Please note:</span> We will reply to the email
-            address you enter above. If you don&apos;t see our reply within 48 hours, check your
-            spam or junk folder before reaching out again.
+          <p className="rounded-lg border border-border bg-sapphire-100 px-3 py-2.5 text-xs leading-relaxed text-text-secondary">
+            <span className="font-medium text-text-secondary">Please note:</span> We reply to the
+            email above. Check spam or junk if you don&apos;t hear back within 48 hours.
           </p>
 
-          <Button
-            type="submit"
-            disabled={formState === "submitting"}
-            className="h-11 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-card hover:bg-primary-hover"
-          >
+          <button type="submit" disabled={formState === "submitting"} className="btn-primary w-full min-h-[44px]">
             {formState === "submitting" ? (
               <span className="inline-flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -289,26 +268,25 @@ export function ContactSupportWidget() {
             ) : (
               "Send message"
             )}
-          </Button>
+          </button>
         </form>
 
-        <div className="rounded-xl border border-border bg-surface-nested px-4 py-3.5">
-          <div className="flex min-w-0 items-start gap-3">
-            <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
-            <div className="min-w-0 space-y-1">
-              <p className="text-xs leading-relaxed text-text-secondary">
-                If the form doesn&apos;t work, email us directly:
-              </p>
-              <a
-                href={`mailto:${SUPPORT_EMAIL}`}
-                className="block break-all text-sm font-semibold leading-snug text-sky-700 underline-offset-2 hover:underline"
-              >
-                {SUPPORT_EMAIL}
-              </a>
-            </div>
+        <div className="flex gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5 shadow-sm">
+          <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
+          <div className="min-w-0">
+            <p className="text-xs leading-snug text-text-secondary">
+              Form not working? Copy our support email:
+            </p>
+            <button
+              type="button"
+              onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
+              className="mt-1 block break-all text-left text-sm font-medium text-sapphire-700 hover:underline"
+            >
+              {SUPPORT_EMAIL}
+            </button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

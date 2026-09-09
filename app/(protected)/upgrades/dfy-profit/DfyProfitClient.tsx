@@ -312,6 +312,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       )}
 
       <DfyResultPanel
+        niche={context.niche || niche}
         videos={videos}
         article={article}
         posts={posts}

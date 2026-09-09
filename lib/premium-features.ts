@@ -42,6 +42,18 @@ export type PremiumFeature = {
  */
 export const PREMIUM_FEATURES: PremiumFeature[] = [
   {
+    href: "/upgrades/dfy-profit",
+    label: PREMIUM_FEATURE_LABELS.dfyProfit,
+    description: "One link, one niche, a complete promo kit in one run.",
+    icon: Package,
+  },
+  {
+    href: "/upgrades/high-ticket-payouts",
+    label: PREMIUM_FEATURE_LABELS.highTicketPayouts,
+    description: "100 ready-to-publish authority articles built around your offer.",
+    icon: BookOpen,
+  },
+  {
     href: "/upgrades/dfy-vault",
     label: PREMIUM_FEATURE_LABELS.dfyVault,
     description: "Ready-made templates so you can skip the hard part.",
@@ -60,27 +72,15 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     icon: Zap,
   },
   {
-    href: "/upgrades/protector",
-    label: PREMIUM_FEATURE_LABELS.protector,
-    description: "Keep your account and links safe and healthy.",
-    icon: ShieldCheck,
-  },
-  {
     href: "/upgrades/license-rights",
     label: PREMIUM_FEATURE_LABELS.licenseRights,
     description: "Request reseller license rights — our team activates the edition.",
     icon: FileText,
   },
   {
-    href: "/upgrades/high-ticket-payouts",
-    label: PREMIUM_FEATURE_LABELS.highTicketPayouts,
-    description: "100 ready-to-publish authority articles built around your offer.",
-    icon: BookOpen,
-  },
-  {
-    href: "/upgrades/dfy-profit",
-    label: PREMIUM_FEATURE_LABELS.dfyProfit,
-    description: "One link, one niche, a complete promo kit in one run.",
-    icon: Package,
+    href: "/upgrades/protector",
+    label: PREMIUM_FEATURE_LABELS.protector,
+    description: "Keep your account and links safe and healthy.",
+    icon: ShieldCheck,
   },
 ]

@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Brain, CheckCircle2 } from "lucide-react"
+import { CheckCircle2 } from "lucide-react"
+import { BrandLogo } from "@/components/brand-logo"
 import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function ResetPasswordPage() {
@@ -80,29 +81,27 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md">
         <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
+            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
+              <BrandLogo variant="wordmark" width={240} priority />
             </div>
-            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">
+            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">
               Choose New Password
             </CardTitle>
-            <CardDescription className="text-sm text-[#486581] text-center font-medium">
+            <CardDescription className="text-sm text-ink-3 text-center font-medium">
               Enter a new password for your {PRODUCT_NAME} account
             </CardDescription>
           </CardHeader>
           <CardContent>
             {sessionValid === null ? (
-              <p className="text-center text-sm text-[#486581] font-medium">Verifying reset link...</p>
+              <p className="text-center text-sm text-ink-3 font-medium">Verifying reset link...</p>
             ) : success ? (
               <div className="space-y-4 text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#DDF7EC]">
                   <CheckCircle2 className="h-6 w-6 text-[#16875C]" />
                 </div>
                 <div className="space-y-2">
-                  <p className="text-base font-semibold text-[#102A43]">Password updated</p>
-                  <p className="text-sm text-[#486581]">Redirecting you to the dashboard...</p>
+                  <p className="text-base font-semibold text-ink">Password updated</p>
+                  <p className="text-sm text-ink-3">Redirecting you to the dashboard...</p>
                 </div>
               </div>
             ) : !sessionValid ? (
@@ -119,7 +118,7 @@ export default function ResetPasswordPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-[#102A43]">
+                  <Label htmlFor="password" className="text-sm font-medium text-ink">
                     New Password
                   </Label>
                   <Input
@@ -134,7 +133,7 @@ export default function ResetPasswordPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-[#102A43]">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-ink">
                     Confirm Password
                   </Label>
                   <Input
@@ -154,7 +153,7 @@ export default function ResetPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
+                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? "Updating password..." : "Update Password"}

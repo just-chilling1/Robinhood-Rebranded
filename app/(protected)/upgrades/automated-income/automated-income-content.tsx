@@ -2084,6 +2084,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       />
 
       <PremiumVideoTutorial
+        premiumKey="socialPayouts"
         vimeoId={getPremiumTrainingVimeoId("socialPayouts")}
         title={`${PREMIUM_FEATURE_LABELS.automatedIncome} Training`}
         description="Watch this quick tutorial to learn how to submit your link to these 100+ traffic sources and get automated traffic forever!"
@@ -2185,7 +2186,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             className={
               selectedNiche === niche
                 ? "bg-ink text-white hover:bg-ink/90 font-semibold"
-                : "border-[var(--ds-line)] text-ink hover:bg-surface-nested font-semibold"
+                : "border-[var(--ds-line-strong)] text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700 font-semibold"
             }
             size="lg"
           >
@@ -2205,104 +2206,125 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       ) : null}
 
       {!generating && (
-      <>
-      {/* Progress Tracker */}
-      <div ref={sourcesResultsRef}>
-      <Card className="border border-[var(--ds-line)] bg-card">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-semibold text-ink">Your progress</p>
-              <p className="text-sm text-text-secondary">
-                {completedSources.size} of {filteredSources.length} sources completed
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-semibold text-[#147551]">
-                {Math.round((completedSources.size / filteredSources.length) * 100)}%
-              </p>
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Complete</p>
-            </div>
+      <div ref={sourcesResultsRef} className="space-y-8">
+      <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
+        <div className="flex flex-col sm:flex-row">
+          <div className="flex items-center gap-3 bg-[#147551] px-5 py-4 text-white sm:w-[180px] sm:flex-col sm:items-start sm:justify-center">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#147551]">
+              <TrendingUp className="h-4 w-4" aria-hidden />
+            </span>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/90">Your progress</p>
           </div>
-          <div className="mt-4 h-2 w-full rounded-full bg-surface-nested">
+          <div className="flex flex-1 flex-col justify-center gap-4 p-5 sm:p-6">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-lg font-semibold text-ink">
+                  {completedSources.size} of {filteredSources.length} sources
+                </p>
+                <p className="mt-0.5 text-sm text-text-secondary">Mark a source complete after you submit.</p>
+              </div>
+              <p className="text-2xl font-semibold tabular-nums text-[#147551]">
+                {filteredSources.length
+                  ? Math.round((completedSources.size / filteredSources.length) * 100)
+                  : 0}
+                <span className="ml-1 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                  complete
+                </span>
+              </p>
+            </div>
             <div
-              className="h-2 rounded-full bg-[#147551] transition-all"
-              style={{ width: `${(completedSources.size / filteredSources.length) * 100}%` }}
-            />
+              className="h-3 w-full overflow-hidden rounded-full bg-[var(--ds-line)]"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={
+                filteredSources.length
+                  ? Math.round((completedSources.size / filteredSources.length) * 100)
+                  : 0
+              }
+            >
+              <div
+                className="h-full rounded-full bg-[#147551] transition-all duration-500"
+                style={{
+                  width: `${
+                    filteredSources.length
+                      ? Math.max(
+                          completedSources.size > 0 ? 4 : 0,
+                          (completedSources.size / filteredSources.length) * 100,
+                        )
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
 
-      {/* Traffic Sources Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {filteredSources.map((source) => {
           const isCompleted = completedSources.has(source.id)
           return (
             <Card
               key={source.id}
-              className={`cursor-pointer border border-[var(--ds-line)] bg-card transition-colors hover:border-ink/30 ${
+              className={`cursor-pointer border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)] transition-colors hover:border-ink/30 ${
                 isCompleted ? "opacity-60" : ""
               }`}
               onClick={() => setSelectedSource(source)}
             >
-              <CardContent className="p-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      <span className="px-3 py-1 bg-[#DDF7EC] text-[#16875C] text-sm font-bold rounded-full">
-                        {source.category}
-                      </span>
-                      <span className="px-3 py-1 bg-[#EEF4FF] text-[#1E40AF] text-sm font-bold rounded-full">
-                        {source.difficulty}
-                      </span>
-                      {isCompleted && (
-                        <span className="px-3 py-1 bg-[#DDF7EC] text-[#16875C] text-sm font-bold rounded-full flex items-center gap-1">
-                          <CheckCircle2 className="w-4 h-4" />
-                          Completed
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="text-2xl font-black text-ink mb-3">{source.name}</h3>
-                    <div className="space-y-2 mb-4">
-                      <p className="text-[#16875C] font-bold flex items-center gap-2">
-                        <Users className="w-5 h-5" />
-                        Traffic: {source.trafficPotential}
-                      </p>
-                      <p className="text-[#1E40AF] font-bold flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
-                        Time: {source.timeToComplete}
-                      </p>
-                    </div>
-                  </div>
+              <CardContent className="p-6">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                    {source.category}
+                  </span>
+                  <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-semibold text-sapphire-700">
+                    {source.difficulty}
+                  </span>
+                  {isCompleted && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Completed
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-xl font-semibold text-ink">{source.name}</h3>
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                  <p className="inline-flex items-center gap-1.5 font-semibold text-[#147551]">
+                    <Users className="h-4 w-4" aria-hidden />
+                    {source.trafficPotential}
+                  </p>
+                  <p className="inline-flex items-center gap-1.5 font-semibold text-ink">
+                    <Clock className="h-4 w-4 text-sapphire-700" aria-hidden />
+                    {source.timeToComplete}
+                  </p>
                 </div>
 
-                {/* Submission description — visible without opening instructions */}
                 <div
-                  className="mb-4 rounded-xl border border-[#DDF7EC] bg-[#16875C]/[0.07] p-4"
+                  className="mt-4 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-4"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <p className="text-base font-black text-ink">📝 Use This Description When Submitting:</p>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-ink">Use this description when submitting</p>
                     <Button
                       size="sm"
                       onClick={(e) => handleCopyDescription(e, source)}
-                      className={`h-9 px-3 font-black rounded-lg flex-shrink-0 ${
+                      className={`h-9 shrink-0 rounded-lg px-3 font-semibold text-white ${
                         copiedSourceId === source.id
-                          ? "bg-green-500 hover:bg-green-500"
-                          : "bg-[#16875C] hover:bg-[#16875C]"
-                      } text-white`}
+                          ? "bg-[#147551] hover:bg-[#147551]"
+                          : "bg-[#147551] hover:bg-[#0f5c3e]"
+                      }`}
                     >
-                      {copiedSourceId === source.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedSourceId === source.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                   </div>
-                  <p className="text-base font-semibold leading-relaxed text-text-secondary break-words">
+                  <p className="break-words text-sm leading-relaxed text-ink">
                     {getPopulatedDescription(source)}
                   </p>
                 </div>
 
-                <Button className="w-full bg-[#16875C] hover:bg-[#16875C] text-white font-black text-lg" size="lg">
-                  <ExternalLink className="w-5 h-5 mr-2" />
-                  View Instructions
+                <Button className="mt-4 h-12 w-full rounded-xl bg-[#147551] text-base font-semibold text-white hover:bg-[#0f5c3e]">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  View instructions
                 </Button>
               </CardContent>
             </Card>
@@ -2310,82 +2332,126 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         })}
       </div>
       </div>
-      </>
       )}
 
-      {/* Source Detail Modal */}
       <Dialog open={!!selectedSource} onOpenChange={() => setSelectedSource(null)}>
-        <DialogContent className="max-w-4xl max-h-[90dvh] overflow-y-auto glass-strong border-2 border-[#DDF7EC]">
-          <DialogHeader>
-            <DialogTitle className="text-3xl font-black text-ink">{selectedSource?.name}</DialogTitle>
-            <DialogDescription className="text-lg font-semibold text-text-secondary">
-              Traffic Potential: {selectedSource?.trafficPotential} | Time: {selectedSource?.timeToComplete}
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden border border-[var(--ds-line)] bg-card p-0 sm:max-w-2xl">
+          <DialogHeader className="space-y-3 border-b border-[var(--ds-line)] px-6 py-5 pr-12 text-left">
+            <div className="flex flex-wrap items-center gap-2">
+              {selectedSource?.category ? (
+                <span className="rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                  {selectedSource.category}
+                </span>
+              ) : null}
+              {selectedSource?.difficulty ? (
+                <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-semibold text-sapphire-700">
+                  {selectedSource.difficulty}
+                </span>
+              ) : null}
+              {selectedSource && completedSources.has(selectedSource.id) ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Completed
+                </span>
+              ) : null}
+            </div>
+            <DialogTitle className="text-xl font-semibold text-ink sm:text-2xl">
+              {selectedSource?.name}
+            </DialogTitle>
+            <DialogDescription asChild>
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                <span className="inline-flex items-center gap-1.5 font-semibold text-[#147551]">
+                  <Users className="h-4 w-4" aria-hidden />
+                  {selectedSource?.trafficPotential}
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
+                  <Clock className="h-4 w-4 text-sapphire-700" aria-hidden />
+                  {selectedSource?.timeToComplete}
+                </span>
+              </div>
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6">
-            <div className="flex gap-3">
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-5">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 asChild
-                className="flex-1 bg-[#16875C] hover:bg-[#16875C] text-white font-black text-lg"
-                size="lg"
+                className="h-12 flex-1 rounded-xl bg-[#147551] text-base font-semibold text-white hover:bg-[#0f5c3e]"
               >
                 <a href={selectedSource?.url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-5 h-5 mr-2" />
-                  Go To Site
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Go to site
                 </a>
               </Button>
               <Button
                 onClick={() => selectedSource && handleMarkComplete(selectedSource.id)}
                 variant="outline"
-                className="border-[#DDF7EC] text-[#16875C] hover:bg-[#DDF7EC] font-black"
-                size="lg"
+                className="h-12 rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700 sm:min-w-[11rem]"
                 disabled={selectedSource ? completedSources.has(selectedSource.id) : false}
               >
-                <CheckCircle2 className="w-5 h-5 mr-2" />
-                {selectedSource && completedSources.has(selectedSource.id) ? "Completed" : "Mark Complete"}
+                <CheckCircle2 className="mr-2 h-4 w-4 text-[#147551]" />
+                {selectedSource && completedSources.has(selectedSource.id) ? "Completed" : "Mark complete"}
               </Button>
             </div>
 
-            <div className="bg-[#DDF7EC] rounded-xl p-6 border border-[#DDF7EC]">
-              <h4 className="text-2xl font-black text-ink mb-4">📋 Step-By-Step Instructions:</h4>
-              <ol className="space-y-4">
+            <div className="rounded-2xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-5">
+              <h4 className="text-base font-semibold text-ink">Step-by-step instructions</h4>
+              <ol className="mt-4 space-y-3">
                 {selectedSource?.instructions.map((instruction, index) => (
-                  <li key={index} className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#16875C] flex items-center justify-center text-white font-black">
+                  <li
+                    key={index}
+                    className="flex gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white p-3.5"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#147551] text-xs font-semibold text-white">
                       {index + 1}
                     </span>
-                    <p className="text-lg text-text-secondary font-semibold leading-relaxed pt-1">{instruction}</p>
+                    <p className="pt-0.5 text-sm leading-relaxed text-ink">{instruction}</p>
                   </li>
                 ))}
               </ol>
             </div>
 
-            <div className="glass rounded-xl p-6 border border-[#DDF7EC]">
-              <h4 className="text-xl font-black text-ink mb-4">📝 Use This Description When Submitting:</h4>
-              <div className="bg-background/70 rounded-lg p-4 border border-[#DDF7EC]">
-                <p className="text-text-secondary font-mono text-base leading-relaxed">
-                  {pageUrl ? populatedDescription : selectedSource?.submissionDescription}
-                </p>
-              </div>
+            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/80 p-5">
+              <h4 className="text-base font-semibold text-ink">Use this description when submitting</h4>
+              <p className="mt-3 whitespace-pre-wrap break-words rounded-xl border border-[var(--ds-line)] bg-card p-4 text-sm leading-relaxed text-ink">
+                {pageUrl ? populatedDescription : selectedSource?.submissionDescription}
+              </p>
               <Button
                 onClick={() => {
-                  navigator.clipboard.writeText(populatedDescription || selectedSource?.submissionDescription || "")
+                  if (!selectedSource) return
+                  navigator.clipboard.writeText(
+                    populatedDescription || selectedSource.submissionDescription,
+                  )
+                  setCopiedSourceId(selectedSource.id)
+                  setTimeout(() => setCopiedSourceId(null), 1500)
                 }}
-                variant="outline"
-                className="mt-4 border-[#DDF7EC] text-[#16875C] hover:bg-[#DDF7EC] font-bold"
+                className={`mt-4 h-11 w-full rounded-xl font-semibold text-white sm:w-auto ${
+                  selectedSource && copiedSourceId === selectedSource.id
+                    ? "bg-[#147551] hover:bg-[#147551]"
+                    : "bg-[#147551] hover:bg-[#0f5c3e]"
+                }`}
               >
-                Copy Description
+                {selectedSource && copiedSourceId === selectedSource.id ? (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy description
+                  </>
+                )}
               </Button>
             </div>
 
-            {!pageUrl && (
-              <div className="bg-yellow-500/10 rounded-xl p-6 border border-yellow-500/30">
-                <p className="text-[#B7791F] font-bold text-lg">
-                  💡 Tip: Enter your page URL above to automatically populate it in all descriptions!
+            {!pageUrl ? (
+              <div className="rounded-xl border border-[#F5D998] bg-[#FFF3D6] px-4 py-3">
+                <p className="text-sm leading-relaxed text-[#7A4F0C]">
+                  Save your page URL above first so this description includes your live link.
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
         </DialogContent>
       </Dialog>

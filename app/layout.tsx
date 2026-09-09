@@ -6,7 +6,7 @@ import { display, sans } from "@/lib/fonts"
 import "./globals.css"
 
 export const viewport: Viewport = {
-  themeColor: "#eef3f8",
+  themeColor: "#d9e4f2",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

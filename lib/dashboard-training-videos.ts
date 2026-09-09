@@ -1,5 +1,6 @@
 /** Dashboard Track A videos (1–3). */
 import { PRODUCT_NAME } from "@/lib/brand"
+import type { VideoThumbnailSlug } from "@/lib/video-thumbnails"
 
 export type DashboardTrainingVideo = {
   id: string
@@ -8,6 +9,7 @@ export type DashboardTrainingVideo = {
   duration: string
   step: 1 | 2 | 3
   priority?: boolean
+  thumbnailSlug: VideoThumbnailSlug
 }
 
 export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
@@ -19,6 +21,7 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
     duration: "11 min",
     step: 1,
     priority: true,
+    thumbnailSlug: "watch-this-first",
   },
   {
     id: "1212736532",
@@ -27,6 +30,7 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
       `Where the money comes from, who pays you, and what every word inside ${PRODUCT_NAME} actually means — in plain language.`,
     duration: "14 min",
     step: 2,
+    thumbnailSlug: "how-the-money-flows",
   },
   {
     id: "1214125517",
@@ -35,6 +39,7 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
       "A quick walkthrough of where everything lives in the app — so you never feel lost when you start working.",
     duration: "4 min",
     step: 3,
+    thumbnailSlug: "your-5-minute-tour",
   },
 ]
 

@@ -22,6 +22,9 @@ import {
   Gem,
   Link2,
   Tag,
+  Play,
+  MessageSquare,
+  ChevronDown,
 } from "lucide-react"
 import { fetchDFYLibrary, searchDFYVideos, type DFYVideo } from "@/app/actions/fetch-dfy-library"
 import { GenerationProgress } from "@/components/generation-progress"
@@ -54,10 +57,16 @@ const UNLIMITED_STEPS = [
 ] as const
 
 const primaryCtaClass =
-  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-colors hover:bg-primary-hover"
+  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:bg-primary-hover hover:shadow-[var(--ds-shadow-sapphire-hover)]"
 
 const outlineCtaClass =
-  "rounded-xl border border-[var(--ds-line)] bg-card font-semibold text-ink transition-colors hover:border-ink hover:bg-surface-nested"
+  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
+
+function viralBarClass(score: number) {
+  if (score >= 85) return "bg-gold-grad"
+  if (score >= 60) return "bg-gradient-to-r from-[#60a5fa] to-[#2563eb]"
+  return "bg-[#94a3b8]"
+}
 
 type FieldKey = "productName" | "productLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
@@ -97,6 +106,9 @@ export default function DFYVaultClient() {
   }, [liveSearching])
 
   const [copiedComment, setCopiedComment] = useState<string | null>(null)
+  const [openCommentsByVideoId, setOpenCommentsByVideoId] = useState<
+    Record<string, boolean>
+  >({})
 
   useEffect(() => {
     loadLibrary()
@@ -234,7 +246,13 @@ export default function DFYVaultClient() {
     )
   }
 
-  const displayedVideos = filteredVideos.length > 0 ? filteredVideos : (liveResults ?? [])
+  const displayedVideosRaw = filteredVideos.length > 0 ? filteredVideos : (liveResults ?? [])
+  const seenVideoIds = new Set<string>()
+  const displayedVideos = displayedVideosRaw.filter((video) => {
+    if (seenVideoIds.has(video.videoId)) return false
+    seenVideoIds.add(video.videoId)
+    return true
+  })
   const libraryCountLabel =
     videos.length > 0
       ? `${videos.length} pre-loaded viral videos + 5 comments each.`
@@ -249,6 +267,7 @@ export default function DFYVaultClient() {
       />
 
       <PremiumVideoTutorial
+        premiumKey="accelerator"
         vimeoId={getPremiumTrainingVimeoId("accelerator")}
         title={`${PREMIUM_FEATURE_LABELS.dfyVault} Training`}
         description="Watch how to browse pre-loaded viral videos, select your product once, and copy ready-made comments — all in under two minutes."
@@ -504,101 +523,204 @@ export default function DFYVaultClient() {
               </Card>
             )}
 
-            <div ref={searchResultsRef} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {displayedVideos.map((video) => (
-                <Card
-                  key={video.videoId}
-                  className="border border-[var(--ds-line)] bg-card p-6 transition-colors hover:border-ink/30"
-                >
-                  <div className="space-y-4">
-                    <div className="flex gap-4">
+            <div ref={searchResultsRef} className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              {displayedVideos.map((video) => {
+                const watchUrl = `https://youtube.com/watch?v=${video.videoId}`
+                const isHot = video.viralScore >= 85
+
+                return (
+                  <article
+                    key={video.videoId}
+                    className={cn(
+                      "glass-card overflow-hidden p-0 transition-[border-color,box-shadow] duration-200 hover:border-[var(--ds-line-sapphire)]",
+                      isHot && "accent-card",
+                    )}
+                  >
+                    <div className="flex gap-4 p-4 sm:gap-5 sm:p-5">
                       {video.thumbnailUrl ? (
                         <a
-                          href={`https://youtube.com/watch?v=${video.videoId}`}
+                          href={watchUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="relative block w-28 shrink-0 overflow-hidden rounded-xl border border-[var(--border)]"
+                          aria-label={`Watch ${video.title} on YouTube`}
+                          className="group relative block aspect-[9/16] w-[5.75rem] shrink-0 self-start overflow-hidden rounded-[12px] bg-ink sm:w-[7rem]"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={video.thumbnailUrl}
                             alt=""
-                            className="aspect-[4/5] h-full w-full object-cover"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                           />
+                          <div className="video-thumb-scrim absolute inset-0" />
+                          <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-ink/80 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                            <Youtube className="h-3 w-3" aria-hidden />
+                            Short
+                          </span>
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sapphire-700 opacity-90 shadow-md transition-transform duration-200 group-hover:scale-110">
+                              <Play className="ml-0.5 h-4 w-4 fill-current" aria-hidden />
+                            </span>
+                          </span>
                         </a>
                       ) : null}
-                      <div className="min-w-0 flex-1">
-                        <h3 className="mb-1 line-clamp-2 text-lg font-black text-ink">{video.title}</h3>
-                        <p className="text-xs font-semibold text-text-secondary">{video.channelTitle}</p>
-                        <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-sapphire-700">
-                          <Gem className="h-3 w-3" />
-                          {video.niche}
+
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-sapphire-200/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sapphire-700">
+                            <Gem className="h-3 w-3" aria-hidden />
+                            {video.niche}
+                          </span>
+                          {isHot ? (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold-200)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#92600f]">
+                              <Flame className="h-3 w-3" aria-hidden />
+                              Hot
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <h3 className="ds-h4 line-clamp-2 text-[1.05rem] leading-snug sm:text-[1.1875rem]">
+                          {video.title}
+                        </h3>
+                        <p className="mt-1 truncate text-sm font-medium text-text-secondary">
+                          {video.channelTitle}
                         </p>
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <Eye className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
-                        <p className="text-sm font-black text-ink">{formatNumber(video.viewCount)}</p>
-                        <p className="text-[10px] font-bold text-text-secondary">Views</p>
-                      </div>
-                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <Flame className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
-                        <p className="text-sm font-black text-ink">{video.viralScore}</p>
-                        <p className="text-[10px] font-bold text-text-secondary">Viral</p>
-                      </div>
-                      <div className="glass rounded-lg border border-[var(--border)] p-2 text-center">
-                        <TrendingUp className="mx-auto mb-1 h-3 w-3 text-sapphire-700" />
-                        <p className="text-sm font-black text-ink">{video.estimatedClicks}</p>
-                        <p className="text-[10px] font-bold text-text-secondary">Est. clicks</p>
-                      </div>
-                    </div>
+                        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                          <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
+                            <Eye className="h-4 w-4 text-sapphire-700" aria-hidden />
+                            {formatNumber(video.viewCount)}
+                            <span className="font-medium text-text-muted">views</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
+                            <TrendingUp className="h-4 w-4 text-sapphire-700" aria-hidden />
+                            {formatNumber(video.estimatedClicks)}
+                            <span className="font-medium text-text-muted">est. clicks</span>
+                          </span>
+                        </div>
 
-                    <div className="space-y-2">
-                      <p className="text-sm font-bold text-ink">5 ready comments</p>
-                      {video.commentTemplates.map((template, index) => {
-                        const preview = template
-                          .replace(/\[PRODUCT\]/g, productName)
-                          .replace(/\[LINK\]/g, productLink)
-
-                        return (
-                          <div
-                            key={index}
-                            className="rounded-lg border border-[var(--ds-line)] bg-surface-nested p-3"
-                          >
-                            <div className="flex items-start gap-3">
-                              <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-ink">{preview}</p>
-                              <Button
-                                onClick={() => handleCopyComment(template, video.videoId, index)}
-                                size="sm"
-                                className={`h-8 flex-shrink-0 rounded-lg px-3 font-bold transition-[transform,box-shadow,background] duration-200 hover:-translate-y-0.5 hover:shadow-md ${
-                                  copiedComment === `${video.videoId}-${index}`
-                                    ? "bg-[#147551] text-white"
-                                    : "bg-ink text-white hover:bg-ink/90"
-                                }`}
-                              >
-                                {copiedComment === `${video.videoId}-${index}` ? (
-                                  <Check className="h-3 w-3" />
-                                ) : (
-                                  <Copy className="h-3 w-3" />
-                                )}
-                              </Button>
-                            </div>
+                        <div className="mt-3">
+                          <div className="mb-1.5 flex items-center justify-between gap-2">
+                            <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-secondary">
+                              <Flame className="h-3.5 w-3.5 text-[#b7791f]" aria-hidden />
+                              Viral score
+                            </p>
+                            <p className="text-xs font-bold tabular-nums text-ink">
+                              {video.viralScore}
+                              <span className="font-medium text-text-muted">/100</span>
+                            </p>
                           </div>
-                        )
-                      })}
+                          <div className="h-1.5 overflow-hidden rounded-full bg-sapphire-200">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-[width] duration-500",
+                                viralBarClass(video.viralScore),
+                              )}
+                              style={{ width: `${Math.min(100, Math.max(0, video.viralScore))}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <Button asChild className={cn("h-12 w-full", primaryCtaClass)}>
-                      <a href={`https://youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
-                        <Youtube className="mr-2 h-4 w-4" />
-                        Open Video
-                      </a>
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+                    <div className="space-y-3 border-t border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] px-4 py-4 sm:px-5 sm:py-5">
+                      <div className="flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenCommentsByVideoId((prev) => ({
+                              ...prev,
+                              [video.videoId]: !prev[video.videoId],
+                            }))
+                          }
+                          aria-expanded={Boolean(openCommentsByVideoId[video.videoId])}
+                          aria-controls={`dfy-comments-${video.videoId}`}
+                          className="flex min-w-0 flex-1 items-center gap-2 rounded-lg text-left transition-colors hover:bg-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sapphire-500 focus-visible:ring-offset-2"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
+                            <MessageSquare className="h-4 w-4" aria-hidden />
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold text-ink sm:text-base">5 ready comments</p>
+                            <p className="truncate text-xs font-medium text-text-secondary">
+                              Personalized with your offer
+                            </p>
+                          </div>
+                          <ChevronDown
+                            className={cn(
+                              "h-5 w-5 shrink-0 text-sapphire-700 transition-transform duration-200",
+                              openCommentsByVideoId[video.videoId] && "rotate-180",
+                            )}
+                            aria-hidden
+                          />
+                        </button>
+                        <Button
+                          asChild
+                          size="sm"
+                          className={cn("h-9 shrink-0 px-3 font-bold", primaryCtaClass)}
+                        >
+                          <a href={watchUrl} target="_blank" rel="noopener noreferrer">
+                            <Youtube className="h-4 w-4 sm:mr-1.5" />
+                            <span className="hidden sm:inline">Open Video</span>
+                          </a>
+                        </Button>
+                      </div>
+
+                      {openCommentsByVideoId[video.videoId] ? (
+                        <div
+                          id={`dfy-comments-${video.videoId}`}
+                          className="space-y-2"
+                        >
+                          {video.commentTemplates.map((template, index) => {
+                            const preview = template
+                              .replace(/\[PRODUCT\]/g, productName)
+                              .replace(/\[LINK\]/g, productLink)
+                            const copied = copiedComment === `${video.videoId}-${index}`
+
+                            return (
+                              <div
+                                key={index}
+                                className="flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-white p-3 transition-colors hover:border-[var(--ds-line-sapphire)] sm:flex-row sm:items-start sm:gap-3 sm:p-3.5"
+                              >
+                                <div className="flex min-w-0 flex-1 items-start gap-2.5">
+                                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
+                                    {index + 1}
+                                  </span>
+                                  <p className="line-clamp-2 min-w-0 flex-1 text-sm font-medium leading-relaxed text-ink">
+                                    {preview}
+                                  </p>
+                                </div>
+                                <Button
+                                  type="button"
+                                  onClick={() => handleCopyComment(template, video.videoId, index)}
+                                  size="sm"
+                                  className={cn(
+                                    "h-9 w-full shrink-0 rounded-lg px-3 font-bold transition-all sm:w-auto",
+                                    copied
+                                      ? "bg-[#16875c] text-white hover:bg-[#16875c]"
+                                      : "bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white hover:from-[#1D4ED8] hover:to-[#1E40AF]",
+                                  )}
+                                >
+                                  {copied ? (
+                                    <>
+                                      <Check className="mr-1 h-3.5 w-3.5" />
+                                      Copied
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Copy className="mr-1 h-3.5 w-3.5" />
+                                      Copy
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                  </article>
+                )
+              })}
             </div>
           </div>
         </>

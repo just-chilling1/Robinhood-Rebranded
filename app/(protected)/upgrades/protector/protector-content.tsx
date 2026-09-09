@@ -190,6 +190,7 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
       />
 
       <PremiumVideoTutorial
+        premiumKey="protector"
         vimeoId={protectorVideoId}
         title={`${PREMIUM_FEATURE_LABELS.protector} Training`}
         description={`Watch this to understand how ${PREMIUM_FEATURE_LABELS.protector} keeps your ${PRODUCT_NAME} account and activity secure.`}

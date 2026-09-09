@@ -79,7 +79,7 @@ export function AuthSupportWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "Close support panel" : "Open support panel"}
-        className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#2563EB] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-[#2563EB]/30 transition-all hover:scale-[1.03] hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
+        className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#2563EB] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-[#2563EB]/30 transition-all hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
       >
         {open ? <X className="h-4 w-4" /> : <Headphones className="h-4 w-4" />}
         <span>{open ? "Close" : "Need help?"}</span>

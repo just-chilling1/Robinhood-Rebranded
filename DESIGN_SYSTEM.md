@@ -8,21 +8,32 @@ Blackbox structural patterns (cards, pills, nav states, premium panels) on this 
 
 | Token | Value | Use |
 |---|---|---|
-| `--ds-canvas` / `--background` | `#f4f6f8` | App canvas |
+| `--ds-canvas` / `--background` | `#d9e4f2` | App canvas |
 | `--ds-surface` / `--card` | `#ffffff` | Raised surfaces |
+| `--surface-nested` / `--muted` | `#e8f0fa` | Nested wells |
+| `--surface-hover` | `#dbeafe` | Ghost / subtle hover fill |
 | `--ds-sapphire-500` / `--primary` | `#2563eb` | CTAs, accents |
-| `--ds-sapphire-700` | `#1d4ed8` | Readable accent text, focus |
-| `--ds-sapphire-200` | `#eef4ff` | Soft wells / chips |
+| `--primary-hover` / `--ds-sapphire-700` | `#1d4ed8` | Hover fill, readable accent text, focus |
+| `--ds-sapphire-200` | `#dbeafe` | Soft wells / chips |
 | `--ds-ink` | `#0f172a` | Primary text |
-| `--ds-ink-2` … `--ds-ink-4` | slate scale | Secondary / muted |
-| `--ds-grad-sapphire` | blue gradient | Primary buttons |
+| `--ds-ink-3` | `#334155` | Secondary / muted |
+| `--ds-line` / `--ds-line-strong` | `#94a8c2` / `#64748b` | Borders |
+| `--ds-grad-sapphire` | `#60a5fa → #2563eb` | Primary buttons |
+| `--ds-grad-sapphire-hover` | `#3b82f6 → #1d4ed8` | Primary button hover |
 | `--ds-grad-ink` | navy→ink gradient | Active nav / ink buttons |
 | Semantic | emerald / red / amber | Status + offer banners only |
 
 **Contrast**
-- Dark slate text on light canvas/white.
+- Dark slate text on tinted sky canvas / white cards.
 - Filled sapphire CTAs use **white** labels.
 - Borders use `--ds-line` / `--ds-line-sapphire`.
+
+**Hover contract** (160ms ease, 1px lift, no brightness-only tricks)
+- Primary: `--ds-grad-sapphire-hover` + stronger sapphire shadow.
+- Outline / secondary: `--primary-light` fill, `--primary` border, `--ds-sapphire-700` text.
+- Ghost: `--surface-hover` fill + ink text.
+- Ink: `--ds-grad-ink-hover` + 1px lift.
+- Respect `prefers-reduced-motion`: keep color changes, drop translate.
 
 ## 2. Typography
 

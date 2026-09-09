@@ -38,4 +38,14 @@ describe("weaveAffiliateLinks", () => {
     const twice = weaveAffiliateLinks(once, URL)
     expect(twice).toBe(once)
   })
+
+  it("rewrites Blackbox #offer placeholders to the affiliate url", () => {
+    const out = weaveAffiliateLinks(
+      '<h2>How to choose</h2><p>Start with <a href="#offer">the starter kit we recommend</a>.</p><div class="cta-box"><p><a href="#offer">Next step</a></p></div>',
+      URL,
+    )
+    expect(out).not.toContain("#offer")
+    expect(out).toContain(`href="${URL}"`)
+    expect(out.split(`href="${URL}"`).length - 1).toBe(2)
+  })
 })

@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useState } from "react"
-import { Brain, Mail } from "lucide-react"
+import { Mail } from "lucide-react"
+import { BrandLogo } from "@/components/brand-logo"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -43,28 +44,26 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
+            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
+              <BrandLogo variant="wordmark" width={240} priority />
             </div>
-            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">
+            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">
               Reset Password
             </CardTitle>
-            <CardDescription className="text-sm text-[#486581] text-center font-medium">
+            <CardDescription className="text-sm text-ink-3 text-center font-medium">
               We&apos;ll email you a secure reset link
             </CardDescription>
           </CardHeader>
           <CardContent>
             {success ? (
               <div className="space-y-4 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#486581]/20">
-                  <Mail className="h-6 w-6 text-[#486581]" />
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-light">
+                  <Mail className="h-6 w-6 text-ink-3" />
                 </div>
                 <div className="space-y-2">
-                  <p className="text-base font-semibold text-[#102A43]">Check your email</p>
-                  <p className="text-sm text-[#486581] leading-relaxed">
-                    If an account exists for <span className="font-semibold text-[#102A43]">{email}</span>, you&apos;ll
+                  <p className="text-base font-semibold text-ink">Check your email</p>
+                  <p className="text-sm text-ink-3 leading-relaxed">
+                    If an account exists for <span className="font-semibold text-ink">{email}</span>, you&apos;ll
                     receive a password reset link shortly.
                   </p>
                 </div>
@@ -75,7 +74,7 @@ export default function ForgotPasswordPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-[#102A43]">
+                  <Label htmlFor="email" className="text-sm font-medium text-ink">
                     Email Address
                   </Label>
                   <Input
@@ -95,7 +94,7 @@ export default function ForgotPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
+                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? "Sending reset link..." : "Send Reset Link"}

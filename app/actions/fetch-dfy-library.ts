@@ -87,6 +87,18 @@ function mapRawToDFYVideo(video: RawVideo, niche: string): DFYVideo | null {
   }
 }
 
+/** Prefer the higher-view copy when the same Short lands in multiple niches. */
+function dedupeByVideoId(videos: DFYVideo[]): DFYVideo[] {
+  const byVideoId = new Map<string, DFYVideo>()
+  for (const video of videos) {
+    const existing = byVideoId.get(video.videoId)
+    if (!existing || video.viewCount > existing.viewCount) {
+      byVideoId.set(video.videoId, video)
+    }
+  }
+  return Array.from(byVideoId.values())
+}
+
 /** Search Shorts via the official YouTube Data API (primary source). */
 async function searchWithYouTubeApi(query: string): Promise<RawVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY
@@ -209,27 +221,37 @@ export async function searchDFYVideos(query: string): Promise<DFYVideo[]> {
 
 export async function fetchDFYLibrary(): Promise<DFYVideo[]> {
   if (libraryCache && Date.now() - libraryCache.fetchedAt < LIBRARY_CACHE_TTL_MS && libraryCache.videos.length > 0) {
-    return libraryCache.videos
+    const deduped = dedupeByVideoId(libraryCache.videos).sort((a, b) => b.viralScore - a.viralScore)
+    libraryCache = { videos: deduped, fetchedAt: libraryCache.fetchedAt }
+    return deduped
   }
 
-  const allVideos: DFYVideo[] = []
+  const byVideoId = new Map<string, DFYVideo>()
 
   try {
     for (const niche of NICHES) {
       try {
         const raw = await searchShorts(niche)
-        const nicheVideos = raw
-          .slice(0, 35)
-          .map((video) => mapRawToDFYVideo(video, niche))
-          .filter((v): v is DFYVideo => v !== null)
+        let added = 0
 
-        allVideos.push(...nicheVideos)
-        console.log(`[DFY] Loaded ${nicheVideos.length} videos for "${niche}"`)
+        for (const video of raw.slice(0, 35)) {
+          const mapped = mapRawToDFYVideo(video, niche)
+          if (!mapped) continue
+
+          const existing = byVideoId.get(mapped.videoId)
+          if (!existing || mapped.viewCount > existing.viewCount) {
+            byVideoId.set(mapped.videoId, mapped)
+            if (!existing) added += 1
+          }
+        }
+
+        console.log(`[DFY] Loaded ${added} new videos for "${niche}" (${byVideoId.size} unique total)`)
       } catch (nicheError) {
         console.error(`[DFY] Error fetching ${niche}:`, nicheError)
       }
     }
 
+    const allVideos = Array.from(byVideoId.values())
     console.log(`[DFY] Total library size: ${allVideos.length} videos`)
 
     // Sort by viral score (best opportunities first)

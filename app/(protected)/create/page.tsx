@@ -13,13 +13,8 @@ import {
   TrendingUp,
   Search,
   Zap,
-  Eye,
   Flame,
-  Youtube,
   Loader2,
-  ExternalLink,
-  Copy,
-  Check,
   AlertTriangle,
   RotateCw,
   ArrowRight,
@@ -28,30 +23,27 @@ import {
   MessageSquare,
   Rocket,
   Clock,
+  Sparkles,
+  Pencil,
+  ExternalLink,
 } from "lucide-react"
+import { GoldRushVideoCard } from "@/components/gold-rush-video-card"
 import { listAffiliateLinks, type AffiliateLink } from "@/app/actions/affiliate-links"
-import { fetchVideoOpportunities, type VideoOpportunity } from "@/app/actions/fetch-video-opportunities"
+import { fetchVideoOpportunities } from "@/app/actions/fetch-video-opportunities"
+import type { VideoOpportunity } from "@/lib/video-opportunity"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 import { GenerationProgress } from "@/components/generation-progress"
-import { EarningsBanner } from "@/components/earnings-banner"
 import { PageHeader } from "@/components/page-header"
 import { SavedLinksPicker } from "@/components/saved-links-picker"
-import { StepIndicator, type WizardStep } from "@/components/step-indicator"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import { useScrollToResults, useScrollToId } from "@/lib/use-scroll-to-results"
 import { cn } from "@/lib/utils"
 
-const GOLD_RUSH_STEPS: WizardStep[] = [
-  { number: 1, title: "Your Offer", description: "Product + affiliate link" },
-  { number: 2, title: "Find Videos", description: "Viral Shorts to comment on" },
-  { number: 3, title: "Get Comments", description: "Copy, post, earn" },
-]
-
 const primaryCtaClass =
-  "rounded-xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] font-black text-white shadow-lg shadow-[#2563EB]/30 transition-[transform,box-shadow,filter,background] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:from-[#1D4ED8] hover:to-[#1E40AF] hover:shadow-2xl hover:shadow-[#2563EB]/50 hover:brightness-110 active:translate-y-0 active:scale-[0.99]"
+  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)] active:translate-y-0"
 
 const outlineCtaClass =
-  "glass rounded-xl border-2 border-[var(--border)] font-bold text-[#102A43] shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-200 hover:-translate-y-1 hover:scale-[1.03] hover:border-[#2563EB] hover:bg-[#2563EB]/10 hover:text-[#1D4ED8] hover:shadow-xl hover:shadow-[#2563EB]/25 active:translate-y-0 active:scale-[0.99]"
+  "glass rounded-xl border-2 border-[var(--ds-line-strong)] font-bold text-ink shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover active:translate-y-0"
 
 type FieldKey = "productName" | "productDescription" | "affiliateLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
@@ -104,8 +96,6 @@ export default function GoldRushPage() {
     clearScrollToComments
   )
 
-  const commentsGenerated = Object.values(generatedCommentsMap).some((list) => list.length > 0)
-  const wizardStep = step === "product" ? 1 : commentsGenerated ? 3 : 2
   const filledCount = [productName, productDescription, affiliateLink].filter((value) => value.trim()).length
 
   const clearFieldError = (key: FieldKey) => {
@@ -211,12 +201,6 @@ export default function GoldRushPage() {
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
-    return num.toString()
-  }
-
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <PageHeader
@@ -224,8 +208,6 @@ export default function GoldRushPage() {
         title="Gold Rush Generator"
         subtitle="Find viral videos, generate money-making comments, explode your traffic."
       />
-
-      <StepIndicator currentStep={wizardStep} steps={GOLD_RUSH_STEPS} />
 
       {error && (
         <Alert variant="destructive" className="glass-strong border-2 border-[#C53030]/50 text-[#C53030]">
@@ -402,59 +384,100 @@ export default function GoldRushPage() {
 
       {step === "videos" && (
         <>
-          <Card className="glass-strong border-2 border-[var(--border-strong)] p-6">
-            <div className="space-y-6">
-              <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                <div className="min-w-0">
-                  <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#2563EB]">Promoting</p>
-                  <h2 className="text-xl font-black text-[#102A43] sm:text-2xl">{productName}</h2>
-                  <p className="max-w-full truncate text-sm font-semibold text-[#486581] sm:max-w-lg">{affiliateLink}</p>
+          <Card className="glass-card overflow-hidden p-0">
+            <div className="flex flex-col gap-4 border-b border-[var(--ds-line)] px-5 py-5 sm:flex-row sm:items-start sm:justify-between sm:px-6">
+              <div className="flex min-w-0 items-start gap-3">
+                <div className="dashboard-section-icon">
+                  <Zap className="h-5 w-5" aria-hidden />
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setStep("product")}
-                  className="glass shrink-0 border-2 border-[var(--border)] font-bold text-[#102A43]"
-                >
-                  Change Product
-                </Button>
+                <div className="min-w-0">
+                  <p className="page-eyebrow mb-1">Promoting</p>
+                  <h2 className="ds-h2 truncate text-[1.375rem] sm:text-[1.625rem]">{productName}</h2>
+                  {affiliateLink ? (
+                    <a
+                      href={affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1.5 flex max-w-full items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-sapphire-700 sm:max-w-lg"
+                    >
+                      <Link2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      <span className="truncate">{affiliateLink}</span>
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-70" aria-hidden />
+                    </a>
+                  ) : null}
+                </div>
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep("product")}
+                className="h-10 shrink-0 rounded-xl border border-[var(--ds-line-strong)] bg-white px-4 text-sm font-semibold text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700"
+              >
+                <Pencil className="mr-2 h-4 w-4" aria-hidden />
+                Change Product
+              </Button>
+            </div>
 
-              <Tabs value={searchMode} onValueChange={(v) => setSearchMode(v as "trending" | "niche")} className="w-full">
-                <TabsList className="glass grid h-14 w-full grid-cols-2 border-2 border-[var(--border)]">
+            <div className="space-y-5 p-5 sm:p-6">
+              <Tabs value={searchMode} onValueChange={(v) => setSearchMode(v as "trending" | "niche")} className="w-full gap-5">
+                <TabsList className="grid h-12 w-full grid-cols-2 rounded-xl border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] p-1 sm:h-14">
                   <TabsTrigger
                     value="trending"
-                    className="text-lg font-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#2563EB]/30 data-[state=active]:to-[#2563EB]/30"
+                    className="rounded-lg text-sm font-semibold text-[#14213d] shadow-none data-[state=active]:bg-white data-[state=active]:text-sapphire-700 data-[state=active]:shadow-sm sm:text-base"
                   >
-                    <TrendingUp className="mr-2 h-5 w-5" />
-                    Hot in Your Niche
+                    <TrendingUp className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
+                    <span className="sm:hidden">Hot Niche</span>
+                    <span className="hidden sm:inline">Hot in Your Niche</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="niche"
-                    className="text-lg font-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#2563EB]/30 data-[state=active]:to-[#2563EB]/30"
+                    className="rounded-lg text-sm font-semibold text-[#14213d] shadow-none data-[state=active]:bg-white data-[state=active]:text-sapphire-700 data-[state=active]:shadow-sm sm:text-base"
                   >
-                    <Search className="mr-2 h-5 w-5" />
-                    Search by Niche
+                    <Search className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
+                    <span className="sm:hidden">Search</span>
+                    <span className="hidden sm:inline">Search by Niche</span>
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="trending" className="mt-6 space-y-4">
-                  <p className="text-sm font-semibold text-[#486581]">
-                    Finds high-view Shorts related to <span className="text-[#102A43]">{productName}</span>
-                  </p>
+                <TabsContent value="trending" className="mt-0 space-y-4">
+                  <div>
+                    <p className="text-sm font-medium leading-relaxed text-text-secondary">
+                      Finds high-view Shorts related to{" "}
+                      <span className="font-semibold text-[#14213d]">{productName}</span>
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ds-line)] bg-white px-2.5 py-1 text-[12px] font-medium text-text-secondary">
+                        <Flame className="h-3.5 w-3.5 text-[#b7791f]" aria-hidden />
+                        High-view Shorts
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ds-line)] bg-white px-2.5 py-1 text-[12px] font-medium text-text-secondary">
+                        <Sparkles className="h-3.5 w-3.5 text-sapphire-700" aria-hidden />
+                        Matched to your offer
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ds-line)] bg-white px-2.5 py-1 text-[12px] font-medium text-text-secondary">
+                        <TrendingUp className="h-3.5 w-3.5 text-sapphire-700" aria-hidden />
+                        Sorted by views
+                      </span>
+                    </div>
+                  </div>
                   {loadingVideos ? (
                     <GenerationProgress label="AI finding videos for your niche..." />
-                  ) : searched ? (
-                    <EarningsBanner />
                   ) : null}
                   <Button
+                    type="button"
                     onClick={handleFindVideos}
                     disabled={loadingVideos}
-                    className={cn("h-16 w-full text-xl", primaryCtaClass)}
+                    className={cn("h-14 w-full text-lg sm:h-16 sm:text-xl", primaryCtaClass)}
                   >
                     {loadingVideos ? (
                       <>
                         <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                         AI finding videos for your niche...
+                      </>
+                    ) : searched ? (
+                      <>
+                        <RotateCw className="mr-2 h-6 w-6" />
+                        Find New Videos
                       </>
                     ) : (
                       <>
@@ -465,30 +488,43 @@ export default function GoldRushPage() {
                   </Button>
                 </TabsContent>
 
-                <TabsContent value="niche" className="mt-6 space-y-4">
+                <TabsContent value="niche" className="mt-0 space-y-4">
                   <div>
-                    <Label className="mb-2 block text-lg font-bold text-[#102A43]">Search for videos about...</Label>
-                    <Input
-                      value={nicheKeyword}
-                      onChange={(e) => setNicheKeyword(e.target.value)}
-                      placeholder="e.g., weight loss, crypto trading, dropshipping"
-                      className="h-14 text-lg"
-                    />
+                    <Label htmlFor="niche-keyword" className="mb-2 block text-sm font-semibold text-[#14213d]">
+                      Search for videos about
+                    </Label>
+                    <div className="relative">
+                      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted" aria-hidden />
+                      <Input
+                        id="niche-keyword"
+                        value={nicheKeyword}
+                        onChange={(e) => setNicheKeyword(e.target.value)}
+                        placeholder="e.g., weight loss, crypto trading, dropshipping"
+                        className="h-12 pl-11 text-base sm:h-14 sm:text-lg"
+                      />
+                    </div>
+                    <p className="mt-2 text-sm font-medium text-text-secondary">
+                      Use a topic people already watch — then we surface the Shorts getting views.
+                    </p>
                   </div>
                   {loadingVideos ? (
                     <GenerationProgress label="AI finding videos for your niche..." />
-                  ) : searched ? (
-                    <EarningsBanner />
                   ) : null}
                   <Button
+                    type="button"
                     onClick={handleFindVideos}
                     disabled={loadingVideos || !nicheKeyword.trim()}
-                    className={cn("h-16 w-full text-xl", primaryCtaClass)}
+                    className={cn("h-14 w-full text-lg sm:h-16 sm:text-xl", primaryCtaClass)}
                   >
                     {loadingVideos ? (
                       <>
                         <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                         AI finding videos for your niche...
+                      </>
+                    ) : searched ? (
+                      <>
+                        <RotateCw className="mr-2 h-6 w-6" />
+                        Search Again
                       </>
                     ) : (
                       <>
@@ -504,176 +540,46 @@ export default function GoldRushPage() {
 
           {videos.length > 0 && (
             <div ref={videoResultsRef} className="space-y-4">
-              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                <h3 className="text-2xl font-black text-[#102A43] sm:text-3xl">
-                  {videos.length} videos to comment on
-                </h3>
-                <p className="font-bold text-[#486581]">AI-matched to your product · sorted by views</p>
+              <div className="glass-card flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div className="flex items-start gap-3">
+                  <div className="dashboard-section-icon">
+                    <Flame className="h-5 w-5" aria-hidden />
+                  </div>
+                  <div>
+                    <h3 className="ds-h2 text-[1.5rem] sm:text-[1.625rem]">
+                      {videos.length} videos to comment on
+                    </h3>
+                    <p className="mt-0.5 text-sm font-medium text-text-secondary">
+                      Pick a Short, generate comments, and post your link
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="badge-warning inline-flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                    AI-matched to your product
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] px-3 py-1 text-[13px] font-medium text-text-secondary">
+                    <TrendingUp className="h-3.5 w-3.5" aria-hidden />
+                    Sorted by views
+                  </span>
+                </div>
               </div>
 
-              {videos.map((video) => {
-                const comments = generatedCommentsMap[video.videoId]
-                const hasComments = comments && comments.length > 0
-
-                return (
-                  <Card
-                    key={video.videoId}
-                    className={`glass-strong border-2 p-6 transition-all ${
-                      hasComments
-                        ? "border-[#1D4ED8]/50 shadow-xl shadow-[#1D4ED8]/20"
-                        : "border-[var(--border)] hover:border-[var(--border-strong)]"
-                    }`}
-                  >
-                    <div className="space-y-6">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                        {video.thumbnailUrl ? (
-                          <a
-                            href={`https://youtube.com/watch?v=${video.videoId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="relative block shrink-0 overflow-hidden rounded-xl border border-[var(--border)] sm:w-44"
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={video.thumbnailUrl}
-                              alt=""
-                              className="aspect-video h-full w-full object-cover sm:aspect-[4/5]"
-                            />
-                            <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded bg-black/80 px-2 py-1 text-xs font-black text-white">
-                              <Youtube className="h-3 w-3" />
-                              SHORT
-                            </span>
-                          </a>
-                        ) : null}
-
-                        <div className="min-w-0 flex-1 space-y-4">
-                          <div>
-                            {!video.thumbnailUrl ? (
-                              <div className="mb-2 inline-flex items-center gap-1 rounded bg-black/80 px-2 py-1 text-xs font-black text-white">
-                                <Youtube className="h-3 w-3" />
-                                SHORT
-                              </div>
-                            ) : null}
-                            <h4 className="mb-1 line-clamp-2 text-xl font-black text-[#102A43]">{video.title}</h4>
-                            <p className="text-sm font-semibold text-[#486581]">{video.channelTitle}</p>
-                          </div>
-
-                          <div className="grid grid-cols-3 gap-3">
-                            <div className="glass rounded-lg border-2 border-[var(--border)] p-3">
-                              <Eye className="mb-1 h-4 w-4 text-[#2563EB]" />
-                              <p className="text-lg font-black text-[#102A43]">{formatNumber(video.viewCount)}</p>
-                              <p className="text-xs font-bold text-[#486581]">Views</p>
-                            </div>
-                            <div className="glass rounded-lg border-2 border-[var(--border)] p-3">
-                              <Flame className="mb-1 h-4 w-4 text-[#2563EB]" />
-                              <p className="text-lg font-black text-[#102A43]">{video.viralScore}/100</p>
-                              <p className="flex items-center gap-1 text-xs font-bold text-[#486581]">
-                                Viral Score
-                                <InfoHint label="How likely this video is to keep getting lots of views. A higher number means more people may see your comment." />
-                              </p>
-                            </div>
-                            <div className="glass rounded-lg border-2 border-[var(--border)] p-3">
-                              <TrendingUp className="mb-1 h-4 w-4 text-[#2563EB]" />
-                              <p className="text-lg font-black text-[#102A43]">{formatNumber(video.estimatedClicks)}</p>
-                              <p className="flex items-center gap-1 text-xs font-bold text-[#486581]">
-                                Est. Clicks
-                                <InfoHint label="A rough guess of how many people could click your link if you comment on this video." />
-                              </p>
-                            </div>
-                          </div>
-
-                          {generatingFor === video.videoId ? (
-                            <GenerationProgress label="AI writing your money-making comments..." />
-                          ) : hasComments ? (
-                            <EarningsBanner />
-                          ) : null}
-
-                          <div className="flex gap-3">
-                            <Button
-                              onClick={() => handleGenerateComments(video)}
-                              disabled={generatingFor === video.videoId}
-                              className="h-14 flex-1 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-lg font-black text-white hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
-                            >
-                              {generatingFor === video.videoId ? (
-                                <>
-                                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                  Generating...
-                                </>
-                              ) : (
-                                <>
-                                  <Zap className="mr-2 h-5 w-5" />
-                                  Generate Comments
-                                </>
-                              )}
-                            </Button>
-                            <Button
-                              asChild
-                              variant="outline"
-                              className="glass h-14 border-2 border-[var(--border)] px-6 font-bold text-[#102A43]"
-                            >
-                              <a href={`https://youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-5 w-5" />
-                              </a>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {hasComments && (
-                        <div id={`comments-${video.videoId}`} className="space-y-4 border-t-2 border-[#1D4ED8]/20 pt-6">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-2xl font-black text-[#1D4ED8]">Your generated comments</h3>
-                            <Button
-                              asChild
-                              size="sm"
-                              className="h-10 rounded-lg bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-4 font-black hover:from-[#1D4ED8] hover:to-[#1E40AF]"
-                            >
-                              <a href={`https://youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
-                                <Youtube className="mr-2 h-4 w-4" />
-                                Open Video
-                              </a>
-                            </Button>
-                          </div>
-
-                          <div className="space-y-3">
-                            {comments.map((comment, index) => (
-                              <div
-                                key={index}
-                                className="glass rounded-xl border-2 border-[var(--border)] p-4 transition-all hover:border-[#1D4ED8]/50"
-                              >
-                                <div className="flex items-start justify-between gap-4">
-                                  <p className="flex-1 text-base font-medium leading-relaxed text-[#102A43]">{comment}</p>
-                                  <Button
-                                    onClick={() => handleCopyComment(comment, video.videoId, index)}
-                                    size="sm"
-                                    className={`h-10 flex-shrink-0 rounded-lg px-4 font-black transition-all ${
-                                      copiedIndex === `${video.videoId}-${index}`
-                                        ? "bg-[#1D4ED8] text-[#102A43] hover:bg-[#1D4ED8]"
-                                        : "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white hover:from-[#1D4ED8] hover:to-[#1D4ED8]"
-                                    }`}
-                                  >
-                                    {copiedIndex === `${video.videoId}-${index}` ? (
-                                      <>
-                                        <Check className="mr-1 h-4 w-4" />
-                                        Copied
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Copy className="mr-1 h-4 w-4" />
-                                        Copy
-                                      </>
-                                    )}
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Card>
-                )
-              })}
+              {videos.map((video, index) => (
+                <GoldRushVideoCard
+                  key={video.videoId}
+                  video={video}
+                  rank={index + 1}
+                  comments={generatedCommentsMap[video.videoId]}
+                  generating={generatingFor === video.videoId}
+                  copiedIndex={copiedIndex}
+                  onGenerate={() => handleGenerateComments(video)}
+                  onCopyComment={(comment, commentIndex) =>
+                    handleCopyComment(comment, video.videoId, commentIndex)
+                  }
+                />
+              ))}
             </div>
           )}
 

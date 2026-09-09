@@ -3,10 +3,17 @@
 import { useState } from "react"
 import { Clock, Play, Sparkles } from "lucide-react"
 import { VideoOverlay } from "@/components/video-overlay"
+import { getVideoThumbnail, type VideoThumbnailSlug } from "@/lib/video-thumbnails"
 import { buildVimeoEmbedUrl } from "@/lib/vimeo"
+import {
+  getPremiumTrainingThumbnail,
+  type PremiumTrainingKey,
+} from "@/lib/premium-training-videos"
 
 interface PremiumVideoTutorialProps {
   vimeoId?: string
+  premiumKey?: PremiumTrainingKey
+  thumbnailSlug?: VideoThumbnailSlug
   title: string
   description: string
   iframeTitle: string
@@ -15,6 +22,8 @@ interface PremiumVideoTutorialProps {
 
 export function PremiumVideoTutorial({
   vimeoId = "",
+  premiumKey,
+  thumbnailSlug,
   title,
   description,
   iframeTitle,
@@ -22,6 +31,10 @@ export function PremiumVideoTutorial({
 }: PremiumVideoTutorialProps) {
   const [open, setOpen] = useState(false)
   const hasVideo = Boolean(vimeoId.trim())
+  const poster =
+    thumbnailSrc ??
+    (premiumKey ? getPremiumTrainingThumbnail(premiumKey) : null) ??
+    getVideoThumbnail({ slug: thumbnailSlug, vimeoId })
 
   const handlePlay = () => {
     if (hasVideo) setOpen(true)
@@ -40,10 +53,10 @@ export function PremiumVideoTutorial({
                 aria-label={hasVideo ? `Play ${iframeTitle}` : `${iframeTitle} — coming soon`}
                 className="absolute inset-0 block w-full cursor-pointer text-left disabled:cursor-default"
               >
-                {thumbnailSrc ? (
+                {poster ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={thumbnailSrc}
+                    src={poster}
                     alt=""
                     loading="lazy"
                     decoding="async"
@@ -61,7 +74,7 @@ export function PremiumVideoTutorial({
                     />
                   </div>
                 )}
-                {thumbnailSrc ? (
+                {poster ? (
                   <div className="video-thumb-scrim absolute inset-0" />
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-t from-sapphire-900/35 via-transparent to-white/10" />

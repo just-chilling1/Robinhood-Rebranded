@@ -11,6 +11,7 @@ import {
   Link2,
   Loader2,
   Plus,
+  Tag,
   Trash2,
 } from "lucide-react"
 
@@ -37,6 +38,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { InfoHint } from "@/components/ui/info-hint"
+import { cn } from "@/lib/utils"
 
 const EMPTY_STEPS = [
   { n: 1, title: "Save a money link", body: "Paste your DigiStore, ClickBank, or other affiliate URL." },
@@ -285,51 +287,101 @@ export default function LinkVaultClient() {
         <div className="space-y-5">
           <HowToUseStrip />
           <div className="space-y-5">
-            {links.map((link, index) => (
+            {links.map((link, index) => {
+              const copied = copiedId === link.id
+
+              return (
               <Fragment key={link.id}>
-                <article className="page-section-card transition-shadow hover:shadow-hover">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200">
-                      <Link2 className="h-5 w-5 text-sapphire-700" />
+                <article
+                  className={cn(
+                    "accent-card overflow-hidden rounded-2xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-surface)]",
+                    "shadow-[0_8px_24px_-10px_rgba(52,120,246,0.28)] transition-[border-color,box-shadow] duration-200",
+                    "hover:border-sapphire-500/40 hover:shadow-[0_12px_28px_-10px_rgba(52,120,246,0.38)]",
+                  )}
+                >
+                  <div className="bg-gradient-to-br from-[var(--ds-sapphire-100)] via-white to-[var(--ds-sapphire-100)]/40 p-5 sm:p-6">
+                    <div className="flex items-start gap-3.5">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#60a5fa] to-[#1d4ed8] text-white shadow-[var(--ds-shadow-sapphire)]">
+                        <Link2 className="h-5 w-5" aria-hidden />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h2 className="ds-h3 truncate text-[1.25rem] sm:text-[1.375rem]">{link.offer_name}</h2>
+                          <span className="inline-flex items-center rounded-full bg-ink px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                            Money link
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm font-medium text-ink-3">
+                          Added {new Date(link.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="ds-h3 truncate">{link.offer_name}</h2>
-                      <p className="mt-1 text-sm font-medium text-ink-3">
-                        Added {new Date(link.created_at).toLocaleDateString()}
+
+                    {(link.niche || link.notes) ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {link.niche ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ds-line-sapphire)] bg-white/90 px-3 py-1 text-xs font-bold text-sapphire-700">
+                            <Tag className="h-3 w-3" aria-hidden />
+                            {link.niche}
+                          </span>
+                        ) : null}
+                        {link.notes ? (
+                          <span className="inline-flex items-center rounded-full border border-[var(--ds-line)] bg-white/70 px-3 py-1 text-xs font-semibold text-ink-4">
+                            Has notes
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    <div className="mt-4 rounded-xl border border-[var(--ds-line-sapphire)] bg-white p-2.5 shadow-sm sm:p-3">
+                      <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-wider text-sapphire-700">
+                        Affiliate URL
                       </p>
+                      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+                        <p className="min-w-0 flex-1 truncate rounded-lg bg-[var(--ds-surface-sub)] px-3 py-2.5 font-mono text-sm text-ink">
+                          {link.affiliate_url}
+                        </p>
+                        <Button
+                          size="sm"
+                          onClick={() => copyLink(link.affiliate_url, link.id)}
+                          className={cn(
+                            "h-10 shrink-0 rounded-lg px-4 font-bold shadow-sm sm:min-w-[7.5rem]",
+                            copied
+                              ? "bg-[#16875c] text-white hover:bg-[#16875c]"
+                              : "bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white hover:from-[#1D4ED8] hover:to-[#1E40AF]",
+                          )}
+                        >
+                          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          {copied ? "Copied" : "Copy link"}
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    {link.niche ? <StatChip label={link.niche} /> : null}
-                    {link.notes ? <StatChip label="Has notes" /> : null}
-                  </div>
-
-                  <div className="flex items-center gap-3 rounded-xl border-2 border-[#2563EB]/45 bg-[var(--ds-surface-sub)] p-3">
-                    <p className="min-w-0 flex-1 truncate font-mono text-sm text-[#102A43]">{link.affiliate_url}</p>
+                  <div className="flex flex-wrap items-center gap-1 border-t border-[var(--ds-line-sapphire)] bg-[var(--ds-surface-sub)] px-3 py-2 sm:px-4">
                     <Button
+                      variant="ghost"
                       size="sm"
-                      onClick={() => copyLink(link.affiliate_url, link.id)}
-                      className={copiedId === link.id ? "bg-[#1D4ED8]" : undefined}
+                      onClick={() => window.open(link.affiliate_url, "_blank", "noopener,noreferrer")}
+                      className="h-9 font-semibold text-ink hover:bg-white hover:text-sapphire-700"
                     >
-                      {copiedId === link.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                      {copiedId === link.id ? "Copied" : "Copy"}
-                    </Button>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" onClick={() => window.open(link.affiliate_url, "_blank", "noopener,noreferrer")}>
                       <ExternalLink className="h-4 w-4" />
                       Open
                     </Button>
-                    <Button variant="outline" onClick={() => openEdit(link)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openEdit(link)}
+                      className="h-9 font-semibold text-ink hover:bg-white hover:text-sapphire-700"
+                    >
                       <Edit2 className="h-4 w-4" />
                       Edit
                     </Button>
                     <Button
-                      variant="outline"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setDeleteId(link.id)}
-                      className="border-[#C53030]/30 text-[#C53030] hover:bg-[#C53030]/10 hover:text-[#C53030]"
+                      className="h-9 font-semibold text-[#C53030] hover:bg-[#C53030]/10 hover:text-[#C53030]"
                     >
                       <Trash2 className="h-4 w-4" />
                       Delete
@@ -338,7 +390,8 @@ export default function LinkVaultClient() {
                 </article>
                 {(index + 1) % 2 === 0 ? <EarningsBanner size="compact" /> : null}
               </Fragment>
-            ))}
+              )
+            })}
           </div>
         </div>
       ) : null}
@@ -439,13 +492,5 @@ function HowToUseStrip() {
         ))}
       </ol>
     </section>
-  )
-}
-
-function StatChip({ label }: { label: string }) {
-  return (
-    <div className="inline-flex items-center rounded-full border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] px-3 py-1.5">
-      <span className="text-xs font-semibold text-ink-4">{label}</span>
-    </div>
   )
 }

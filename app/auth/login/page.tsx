@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Brain } from "lucide-react"
+import { BrandLogo } from "@/components/brand-logo"
 import { PRODUCT_NAME } from "@/lib/brand"
 
 export default function LoginPage() {
@@ -53,20 +53,18 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <Card className="glass-strong glow-blue border border-[var(--border)]">
           <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-14 h-14 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-[var(--shadow-md)]">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
+            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
+              <BrandLogo variant="wordmark" width={240} priority />
             </div>
-            <CardTitle className="text-2xl font-bold text-[#102A43] text-center tracking-tight">Access {PRODUCT_NAME}</CardTitle>
-            <CardDescription className="text-sm text-[#486581] text-center font-medium">
+            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">Access {PRODUCT_NAME}</CardTitle>
+            <CardDescription className="text-sm text-ink-3 text-center font-medium">
               Neural Engagement Platform
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-[#102A43]">
+                <Label htmlFor="email" className="text-sm font-medium text-ink">
                   Email Address
                 </Label>
                 <Input
@@ -81,7 +79,7 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <Label htmlFor="password" className="text-sm font-medium text-[#102A43]">
+                  <Label htmlFor="password" className="text-sm font-medium text-ink">
                     Password
                   </Label>
                   <Link
@@ -112,11 +110,11 @@ export default function LoginPage() {
                   <p className="text-sm text-destructive font-medium">{error}</p>
                 </div>
               )}
-              <Button type="submit" className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300" disabled={isLoading}>
+              <Button type="submit" className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300" disabled={isLoading}>
                 {isLoading ? "Authenticating..." : "Enter Platform"}
               </Button>
               <div className="text-center pt-1">
-                <p className="text-sm text-[#486581]">
+                <p className="text-sm text-ink-3">
                   New user?{" "}
                   <Link href="/auth/sign-up" className="text-[#1E40AF] hover:text-[#1D4ED8] font-semibold transition-colors">
                     Create Account

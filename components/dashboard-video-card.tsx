@@ -18,7 +18,7 @@ type Props = {
 export function DashboardVideoCard({ video }: Props) {
   const [playing, setPlaying] = useState(false)
   const canPlay = isPlayableVimeoId(video.id)
-  const thumbnail = getVideoThumbnail(video.id)
+  const thumbnail = getVideoThumbnail({ slug: video.thumbnailSlug, vimeoId: video.id })
 
   return (
     <>

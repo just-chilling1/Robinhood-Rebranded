@@ -74,7 +74,7 @@ export function BottomNav() {
               key={tab.url}
               href={tab.url}
               className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
-                isActive ? "text-sapphire-700" : "text-ink-3 active:text-ink"
+                isActive ? "text-sapphire-700" : "text-ink-3 hover:bg-surface-hover hover:text-ink active:text-ink"
               }`}
             >
               {isActive && (
@@ -91,7 +91,7 @@ export function BottomNav() {
             <button
               type="button"
               className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
-                moreActive ? "text-sapphire-700" : "text-ink-3 active:text-ink"
+                moreActive ? "text-sapphire-700" : "text-ink-3 hover:bg-surface-hover hover:text-ink active:text-ink"
               }`}
             >
               {moreActive && (
