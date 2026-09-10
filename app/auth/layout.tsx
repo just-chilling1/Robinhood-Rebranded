@@ -1,11 +1,6 @@
 import type React from "react"
-import { AuthSupportWidget } from "@/components/auth-support-widget"
+import { AuthRouteFrame } from "@/components/layout/AuthRouteFrame"
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      {children}
-      <AuthSupportWidget />
-    </>
-  )
+export default function AuthRouteLayout({ children }: { children: React.ReactNode }) {
+  return <AuthRouteFrame>{children}</AuthRouteFrame>
 }

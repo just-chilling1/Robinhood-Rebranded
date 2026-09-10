@@ -4,9 +4,10 @@ import { useState } from "react"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { BannerSize } from "@/components/earnings-banner"
+import { WELCOME_OFFER_URL } from "@/config/offers.config"
 
 /** Q-LAPS offer — same link as the old WelcomePopup (do not change). */
-const CTA_URL = "https://jvz4.com/c/3547097/442443/"
+const CTA_URL = WELCOME_OFFER_URL
 
 /**
  * Same shell as EarningsBanner, but with the former WelcomePopup copy.
@@ -23,7 +24,7 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
   return (
     <div
       className={cn(
-        "earnings-banner-card relative w-full overflow-hidden border-[3px] border-[#b7791f] bg-gold-surface before:hidden",
+        "earnings-banner-card relative w-full overflow-hidden before:hidden",
         prominent ? "mb-0" : "mb-4",
         compact ? "rounded-xl" : "rounded-2xl",
       )}
@@ -42,7 +43,7 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Close banner"
-          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-[#486581] transition-colors hover:bg-white/50 hover:text-[#102A43]"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/50 hover:text-ink"
         >
           <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
         </button>
@@ -62,7 +63,7 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
 
         <h2
           className={cn(
-            "font-heading mx-auto font-black uppercase leading-tight text-[#102A43]",
+            "font-heading mx-auto font-black uppercase leading-tight text-ink",
             compact
               ? "mb-2 max-w-2xl text-sm md:text-base"
               : prominent
@@ -71,14 +72,14 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
           )}
         >
           Limited Free Training — Learn How To Make{" "}
-          <span className="earnings-banner-accent text-[#92600f]">$1,000&ndash;$5,000</span> Per Day
+          <span className="earnings-banner-accent">$1,000&ndash;$5,000</span> Per Day
         </h2>
 
         {(prominent || !compact) && (
           <>
             <p
               className={cn(
-                "mx-auto font-bold leading-snug text-[#486581]",
+                "mx-auto font-bold leading-snug text-ink-4",
                 prominent
                   ? "mb-4 max-w-2xl text-base md:text-lg"
                   : "mb-6 max-w-3xl text-lg md:text-2xl",
@@ -88,17 +89,17 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
             </p>
 
             {!prominent && (
-              <ul className="mx-auto mb-8 max-w-xl space-y-2 text-left text-base font-semibold text-[#486581] md:text-lg">
+              <ul className="mx-auto mb-8 max-w-xl space-y-2 text-left text-base font-semibold text-ink-4 md:text-lg">
                 <li className="flex gap-2">
-                  <span className="text-[#B7791F]">★</span>
+                  <span className="text-[var(--gold-700)]">★</span>
                   Fully automated commission system revealed
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-[#B7791F]">★</span>
+                  <span className="text-[var(--gold-700)]">★</span>
                   No tech skills or experience needed
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-[#B7791F]">★</span>
+                  <span className="text-[var(--gold-700)]">★</span>
                   Works in just 20 minutes per day
                 </li>
               </ul>
@@ -133,7 +134,7 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
               Warning: Only a few free spots remaining
             </p>
             {!prominent && (
-              <p className="mt-2 text-xs text-[#486581]">100% Free — No credit card required</p>
+              <p className="mt-2 text-xs text-ink-4">100% Free — No credit card required</p>
             )}
           </>
         )}

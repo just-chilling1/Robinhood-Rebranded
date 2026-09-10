@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Check, Crown, Zap, Rocket, ShieldCheck, FileText, BookOpen, Package } from "lucide-react"
 import Link from "next/link"
-import { PageHeader } from "@/components/page-header"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PREMIUM_FEATURE_LABELS, getUpgradeLevelLabel } from "@/lib/premium-features"
 
 const upgrades = [
@@ -124,53 +123,55 @@ export default async function UpgradesPage() {
   const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      <PageHeader
-        eyebrow="Premium"
-        title="Your Premium Content"
-        subtitle="Access your exclusive training materials, templates, and tools"
-      />
-
+    <PremiumPageLayout
+      title="Your Premium Content"
+      subtitle="Access your exclusive training materials, templates, and tools"
+      animate={false}
+    >
       {profile?.upgrade_level !== "free" && (
-        <div className="rounded-2xl border border-[var(--ds-line)] bg-ink px-5 py-4 text-white sm:px-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">Current plan</p>
-          <p className="mt-1 text-lg font-semibold">
-            {getUpgradeLevelLabel(profile?.upgrade_level)}
-          </p>
-        </div>
+        <section className="glass-card overflow-hidden p-0">
+          <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
+            <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
+              Current plan
+            </p>
+            <p className="mt-1 font-medium text-ink">
+              {getUpgradeLevelLabel(profile?.upgrade_level)}
+            </p>
+          </div>
+        </section>
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {upgrades.map((upgrade) => {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
 
           return (
-            <Card key={upgrade.id} className="flex flex-col border-[var(--ds-line)] bg-card">
-              <CardHeader className="pb-4">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-white">
-                  <Icon className="h-6 w-6" />
+            <article key={upgrade.id} className="glass-card flex flex-col overflow-hidden p-0">
+              <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sapphire-100 text-sapphire-700">
+                  <Icon className="h-6 w-6" strokeWidth={1.75} />
                 </div>
-                <CardTitle className="text-xl font-semibold text-ink">{upgrade.name}</CardTitle>
-                <p className="text-sm text-text-secondary">{upgrade.tagline}</p>
-              </CardHeader>
-              <CardContent className="flex flex-1 flex-col">
+                <h2 className="text-xl font-medium text-ink">{upgrade.name}</h2>
+                <p className="mt-1 text-sm text-ink-3">{upgrade.tagline}</p>
+              </div>
+              <div className="flex flex-1 flex-col p-5 md:p-6">
                 <div className="mb-6 flex-1 space-y-2.5">
                   {upgrade.features.map((feature) => (
                     <div key={feature} className="flex items-start gap-3">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" />
                       <p className="text-sm leading-relaxed text-ink">{feature}</p>
                     </div>
                   ))}
                 </div>
-                <Button asChild className="h-11 w-full bg-ink font-semibold text-white hover:bg-ink/90">
+                <Button asChild className="h-11 w-full">
                   <Link href={upgrade.href}>{isCurrentPlan ? "Open this feature" : "View details"}</Link>
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </article>
           )
         })}
       </div>
-    </div>
+    </PremiumPageLayout>
   )
 }

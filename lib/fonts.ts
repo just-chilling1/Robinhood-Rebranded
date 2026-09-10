@@ -1,14 +1,16 @@
-import { Newsreader, Source_Sans_3 } from "next/font/google"
+import { Inter, Playfair_Display } from "next/font/google"
 
-export const sans = Source_Sans_3({
+/** Wifi Code UI stack — Inter (body) + Playfair Display (headings). */
+export const sans = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
   display: "swap",
-  variable: "--font-sans-loaded",
 })
 
-export const display = Newsreader({
+export const display = Playfair_Display({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-playfair",
   display: "swap",
-  variable: "--font-display-loaded",
-  style: ["normal", "italic"],
 })

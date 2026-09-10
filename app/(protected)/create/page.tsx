@@ -35,15 +35,21 @@ import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
 import { GenerationProgress } from "@/components/generation-progress"
 import { PageHeader } from "@/components/page-header"
 import { SavedLinksPicker } from "@/components/saved-links-picker"
+import { AffiliateLinkGuide } from "@/components/affiliate-link-guide"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import { useScrollToResults, useScrollToId } from "@/lib/use-scroll-to-results"
 import { cn } from "@/lib/utils"
 
 const primaryCtaClass =
-  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)] active:translate-y-0"
+  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
 
 const outlineCtaClass =
   "glass rounded-xl border-2 border-[var(--ds-line-strong)] font-bold text-ink shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover active:translate-y-0"
+
+const fieldLabelClass =
+  "mb-2 font-sans text-[13px] font-semibold tracking-tight text-ink"
+
+const uiTitleClass = "!font-sans font-semibold tracking-tight text-ink"
 
 type FieldKey = "productName" | "productDescription" | "affiliateLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
@@ -206,7 +212,8 @@ export default function GoldRushPage() {
       <PageHeader
         eyebrow="Gold Rush"
         title="Gold Rush Generator"
-        subtitle="Find viral videos, generate money-making comments, explode your traffic."
+        titleClassName={uiTitleClass}
+        subtitle="Find viral videos and generate comments that already include your affiliate link."
       />
 
       {error && (
@@ -217,124 +224,12 @@ export default function GoldRushPage() {
       )}
 
       {step === "product" && (
-        <div className="grid items-start gap-6 xl:grid-cols-5">
-          <Card className="glass-strong border-2 border-[var(--border-strong)] p-6 sm:p-8 xl:col-span-3">
-            <form className="space-y-6" onSubmit={handleProductSubmit} noValidate>
-              <div className="flex items-start justify-between gap-4 border-b-2 border-[#2563EB]/45 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[var(--border-strong)] bg-gradient-to-br from-[#2563EB]/20 to-[#2563EB]/10 sm:h-14 sm:w-14">
-                    <Zap className="h-6 w-6 text-[#2563EB] sm:h-7 sm:w-7" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-[#102A43] sm:text-3xl">Add your affiliate link</h2>
-                    <p className="font-semibold text-[#486581]">What are you promoting today?</p>
-                  </div>
-                </div>
-                <p className="shrink-0 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/8 px-2.5 py-1 text-[11px] font-black text-[#2563EB] sm:px-3 sm:text-xs">
-                  {filledCount}/3 ready
-                </p>
-              </div>
-
-              <div className="space-y-5">
-                <div>
-                  <Label htmlFor="product-name" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
-                    Product/Offer Name
-                    <InfoHint label="The product or service you're sharing — like a weight-loss program, a course, or an app." />
-                  </Label>
-                  <Input
-                    id="product-name"
-                    value={productName}
-                    onChange={(e) => {
-                      setProductName(e.target.value)
-                      setSelectedSavedId(null)
-                      clearFieldError("productName")
-                    }}
-                    placeholder="e.g., Weight Loss System, Crypto Course"
-                    aria-invalid={Boolean(fieldErrors.productName)}
-                    className="h-14 text-lg"
-                  />
-                  {fieldErrors.productName ? (
-                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productName}</p>
-                  ) : null}
-                </div>
-
-                <div>
-                  <Label htmlFor="product-description" className="mb-2 block text-lg font-bold text-[#102A43]">
-                    What does your product do?
-                  </Label>
-                  <Textarea
-                    id="product-description"
-                    value={productDescription}
-                    onChange={(e) => {
-                      setProductDescription(e.target.value)
-                      clearFieldError("productDescription")
-                    }}
-                    placeholder="e.g., Teaches people how to lose weight with keto diet in 90 days without gym"
-                    aria-invalid={Boolean(fieldErrors.productDescription)}
-                    className="min-h-28 resize-none text-lg"
-                  />
-                  {fieldErrors.productDescription ? (
-                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.productDescription}</p>
-                  ) : (
-                    <p className="mt-2 flex items-start gap-2 text-sm font-semibold text-[#486581]">
-                      <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-[#B7791F]" />
-                      The more details, the better comments AI can create
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="affiliate-link" className="mb-2 flex items-center gap-2 text-lg font-bold text-[#102A43]">
-                    Your Affiliate Link
-                    <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it. You can get a free link from sites like DigiStore24 or ClickBank." />
-                  </Label>
-                  <div className="space-y-3">
-                    <SavedLinksPicker
-                      links={savedLinks}
-                      selectedId={selectedSavedId}
-                      onSelect={(link) => {
-                        setSelectedSavedId(link.id)
-                        setProductName(link.offer_name)
-                        setAffiliateLink(link.affiliate_url)
-                        clearFieldError("productName")
-                        clearFieldError("affiliateLink")
-                      }}
-                    />
-                    <Input
-                      id="affiliate-link"
-                      type="url"
-                      value={affiliateLink}
-                      onChange={(e) => {
-                        setAffiliateLink(e.target.value)
-                        setSelectedSavedId(null)
-                        clearFieldError("affiliateLink")
-                      }}
-                      placeholder="https://digistore24.com/..."
-                      aria-invalid={Boolean(fieldErrors.affiliateLink)}
-                      className="h-14 text-lg"
-                    />
-                  </div>
-                  {fieldErrors.affiliateLink ? (
-                    <p className="mt-2 text-sm font-semibold text-[#C53030]">{fieldErrors.affiliateLink}</p>
-                  ) : null}
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className={cn("h-16 w-full text-xl", primaryCtaClass)}
-              >
-                Find Viral Opportunities
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </form>
-          </Card>
-
-          <aside className="space-y-4 xl:col-span-2">
-            <Card className="glass-strong border border-[var(--border)] p-6">
+        <div className="space-y-6">
+          <div className="grid items-stretch gap-4 md:grid-cols-2">
+            <Card className="glass-strong border border-[var(--ds-line)] p-6">
               <div className="mb-5 flex items-center gap-2">
-                <Clock className="h-5 w-5 text-[#2563EB]" />
-                <h3 className="text-lg font-black text-[#102A43]">How it works</h3>
+                <Clock className="h-5 w-5 text-sapphire-700" />
+                <h3 className={cn(uiTitleClass, "text-base sm:text-lg")}>How it works</h3>
               </div>
               <ol className="space-y-4">
                 {[
@@ -355,30 +250,166 @@ export default function GoldRushPage() {
                   },
                 ].map((item) => (
                   <li key={item.title} className="flex gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[#2563EB]/8">
-                      <item.icon className="h-5 w-5 text-[#2563EB]" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line)] bg-sapphire-100">
+                      <item.icon className="h-5 w-5 text-sapphire-700" />
                     </div>
                     <div>
-                      <p className="font-black text-[#102A43]">{item.title}</p>
-                      <p className="text-sm font-semibold leading-relaxed text-[#486581]">{item.body}</p>
+                      <p className="font-sans text-sm font-semibold tracking-tight text-ink">{item.title}</p>
+                      <p className="text-sm font-medium leading-relaxed text-text-secondary">{item.body}</p>
                     </div>
                   </li>
                 ))}
               </ol>
             </Card>
 
-            <Card className="border border-[#2563EB]/20 bg-gradient-to-br from-[#2563EB]/8 to-transparent p-6">
+            <Card className="border border-[var(--ds-line-sapphire)] bg-gradient-to-br from-[var(--ds-sapphire-100)] to-white p-6">
               <div className="mb-3 flex items-center gap-2">
-                <Rocket className="h-5 w-5 text-[#2563EB]" />
-                <h3 className="text-lg font-black text-[#102A43]">What you walk away with</h3>
+                <Rocket className="h-5 w-5 text-sapphire-700" />
+                <h3 className={cn(uiTitleClass, "text-base sm:text-lg")}>What you walk away with</h3>
               </div>
-              <ul className="space-y-2 text-sm font-semibold text-[#486581]">
+              <ul className="space-y-2 text-sm font-medium text-text-secondary">
                 <li>Videos already getting traffic in your niche</li>
                 <li>Comments written to sound like a real viewer</li>
                 <li>Your affiliate link baked in — copy and post</li>
               </ul>
             </Card>
-          </aside>
+          </div>
+
+          <Card className="glass-strong border border-[var(--ds-line)] p-6 sm:p-8">
+            <form className="space-y-6" onSubmit={handleProductSubmit} noValidate>
+              <div className="flex items-start justify-between gap-4 border-b border-[var(--ds-line)] pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700 sm:h-12 sm:w-12">
+                    <Zap className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </div>
+                  <div>
+                    <h2 className={cn(uiTitleClass, "text-xl sm:text-2xl")}>What are you promoting?</h2>
+                    <p className="mt-0.5 text-sm font-medium text-text-secondary">Name the offer, then drop in your money link.</p>
+                  </div>
+                </div>
+                <p className="shrink-0 rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-100 px-2.5 py-1 font-sans text-[11px] font-semibold text-sapphire-700 sm:px-3 sm:text-xs">
+                  {filledCount}/3 ready
+                </p>
+              </div>
+
+              <div className="space-y-5">
+                <div>
+                  <Label htmlFor="product-name" className={cn(fieldLabelClass, "flex items-center gap-2")}>
+                    Product / offer name
+                    <InfoHint label="The product or service you're sharing — like a weight-loss program, a course, or an app." />
+                  </Label>
+                  <Input
+                    id="product-name"
+                    value={productName}
+                    onChange={(e) => {
+                      setProductName(e.target.value)
+                      setSelectedSavedId(null)
+                      clearFieldError("productName")
+                    }}
+                    placeholder="e.g., Weight Loss System, Crypto Course"
+                    aria-invalid={Boolean(fieldErrors.productName)}
+                    className="h-12 font-sans text-base"
+                  />
+                  {fieldErrors.productName ? (
+                    <p className="mt-2 text-sm font-medium text-[#C53030]">{fieldErrors.productName}</p>
+                  ) : null}
+                </div>
+
+                <div>
+                  <Label htmlFor="product-description" className={cn(fieldLabelClass, "block")}>
+                    What does your product do?
+                  </Label>
+                  <Textarea
+                    id="product-description"
+                    value={productDescription}
+                    onChange={(e) => {
+                      setProductDescription(e.target.value)
+                      clearFieldError("productDescription")
+                    }}
+                    placeholder="e.g., Teaches people how to lose weight with keto diet in 90 days without gym"
+                    aria-invalid={Boolean(fieldErrors.productDescription)}
+                    className="min-h-28 resize-none font-sans text-base"
+                  />
+                  {fieldErrors.productDescription ? (
+                    <p className="mt-2 text-sm font-medium text-[#C53030]">{fieldErrors.productDescription}</p>
+                  ) : (
+                    <p className="mt-2 flex items-start gap-2 text-sm font-medium text-text-secondary">
+                      <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-[#B7791F]" />
+                      The more details, the better comments AI can create
+                    </p>
+                  )}
+                </div>
+
+                <div
+                  className={cn(
+                    "rounded-2xl border-2 p-4 sm:p-5",
+                    fieldErrors.affiliateLink
+                      ? "border-[#C53030]/40 bg-[#C53030]/5"
+                      : "border-[color-mix(in_srgb,var(--ds-sapphire-500)_38%,var(--ds-line))] bg-gradient-to-br from-[var(--ds-sapphire-100)] to-white shadow-[0_10px_28px_-16px_rgba(13,148,136,0.55)]",
+                  )}
+                >
+                  <div className="mb-4 flex items-start gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-grad-sapphire text-white shadow-sapphire">
+                      <Link2 className="h-5 w-5" aria-hidden />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <Label htmlFor="affiliate-link" className="mb-1 flex flex-wrap items-center gap-2 font-sans text-base font-semibold tracking-tight text-ink">
+                        Your affiliate link
+                        <span className="rounded-full bg-white px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-sapphire-700 ring-1 ring-[var(--ds-line-sapphire)]">
+                          Required
+                        </span>
+                        <InfoHint label="Your personal sharing link. You earn a commission when someone buys through it. You can get a free link from sites like DigiStore24 or ClickBank." />
+                      </Label>
+                      <p className="text-sm font-medium leading-relaxed text-text-secondary">
+                        This is the money link baked into every comment. Pick a saved one or paste a new URL.
+                      </p>
+                    </div>
+                  </div>
+                  <AffiliateLinkGuide className="mb-4" />
+                  <div className="space-y-3">
+                    <SavedLinksPicker
+                      links={savedLinks}
+                      selectedId={selectedSavedId}
+                      onSelect={(link) => {
+                        setSelectedSavedId(link.id)
+                        setProductName(link.offer_name)
+                        setAffiliateLink(link.affiliate_url)
+                        clearFieldError("productName")
+                        clearFieldError("affiliateLink")
+                      }}
+                    />
+                    <div className="relative">
+                      <Link2 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-sapphire-700" aria-hidden />
+                      <Input
+                        id="affiliate-link"
+                        type="url"
+                        value={affiliateLink}
+                        onChange={(e) => {
+                          setAffiliateLink(e.target.value)
+                          setSelectedSavedId(null)
+                          clearFieldError("affiliateLink")
+                        }}
+                        placeholder="https://digistore24.com/..."
+                        aria-invalid={Boolean(fieldErrors.affiliateLink)}
+                        className="h-14 border-[color-mix(in_srgb,var(--ds-sapphire-500)_28%,var(--ds-line))] bg-white pl-11 font-sans text-base"
+                      />
+                    </div>
+                  </div>
+                  {fieldErrors.affiliateLink ? (
+                    <p className="mt-2 text-sm font-medium text-[#C53030]">{fieldErrors.affiliateLink}</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className={cn("h-16 w-full text-xl", primaryCtaClass)}
+              >
+                Find Viral Opportunities
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </form>
+          </Card>
         </div>
       )}
 
@@ -392,7 +423,7 @@ export default function GoldRushPage() {
                 </div>
                 <div className="min-w-0">
                   <p className="page-eyebrow mb-1">Promoting</p>
-                  <h2 className="ds-h2 truncate text-[1.375rem] sm:text-[1.625rem]">{productName}</h2>
+                  <h2 className={cn(uiTitleClass, "truncate text-[1.375rem] sm:text-[1.625rem]")}>{productName}</h2>
                   {affiliateLink ? (
                     <a
                       href={affiliateLink}
@@ -490,7 +521,7 @@ export default function GoldRushPage() {
 
                 <TabsContent value="niche" className="mt-0 space-y-4">
                   <div>
-                    <Label htmlFor="niche-keyword" className="mb-2 block text-sm font-semibold text-[#14213d]">
+                    <Label htmlFor="niche-keyword" className={cn(fieldLabelClass, "block")}>
                       Search for videos about
                     </Label>
                     <div className="relative">
@@ -546,7 +577,7 @@ export default function GoldRushPage() {
                     <Flame className="h-5 w-5" aria-hidden />
                   </div>
                   <div>
-                    <h3 className="ds-h2 text-[1.5rem] sm:text-[1.625rem]">
+                    <h3 className={cn(uiTitleClass, "text-[1.5rem] sm:text-[1.625rem]")}>
                       {videos.length} videos to comment on
                     </h3>
                     <p className="mt-0.5 text-sm font-medium text-text-secondary">
@@ -588,8 +619,8 @@ export default function GoldRushPage() {
               <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-[var(--border)] bg-[#2563EB]/10">
                 <Search className="h-8 w-8 text-[#2563EB]" />
               </div>
-              <h3 className="mb-2 text-2xl font-black text-[#102A43]">No videos found</h3>
-              <p className="mx-auto mb-6 max-w-md font-semibold text-[#486581]">
+              <h3 className={cn(uiTitleClass, "mb-2 text-2xl")}>No videos found</h3>
+              <p className="mx-auto mb-6 max-w-md text-sm font-medium text-text-secondary">
                 We couldn&apos;t find Shorts about your product right now. Try the &quot;Search by Niche&quot; tab with a
                 keyword like &quot;crypto trading&quot; or &quot;bitcoin investing&quot;.
               </p>

@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   User,
 } from "lucide-react"
-import { PageHeader } from "@/components/page-header"
+import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { PRODUCT_NAME } from "@/lib/brand"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
@@ -29,10 +30,10 @@ interface ProtectorContentProps {
   data: ProtectorViewModel
 }
 
-const SUCCESS = "#147551"
-const SUCCESS_BG = "#DDF7EC"
-const WARNING = "#7A4F0C"
-const WARNING_BG = "#FFF3D6"
+const SUCCESS = "var(--ds-sapphire-500)"
+const SUCCESS_BG = "var(--ds-offer-green-100)"
+const WARNING = "var(--warning)"
+const WARNING_BG = "var(--warning-light)"
 
 const PROTECTION_LAYERS = [
   {
@@ -113,7 +114,7 @@ function StatusChip({
         "inline-flex shrink-0 items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wide",
         ok
           ? "border-transparent text-white"
-          : "border-[#F5D998] text-[#7A4F0C]",
+          : "border-warning/30 text-warning",
       )}
       style={{ backgroundColor: ok ? SUCCESS : WARNING_BG }}
     >
@@ -136,7 +137,7 @@ function AccountRow({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line)] bg-surface-nested/60 px-3 py-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
         <Icon className="h-4 w-4" aria-hidden />
       </div>
       <div className="min-w-0">
@@ -144,8 +145,8 @@ function AccountRow({
         <p
           className={cn(
             "truncate text-sm font-semibold",
-            tone === "success" && "text-[#147551]",
-            tone === "warning" && "text-[#7A4F0C]",
+            tone === "success" && "text-sapphire-700",
+            tone === "warning" && "text-warning",
             tone === "ink" && "text-ink",
           )}
         >
@@ -163,32 +164,29 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
   const displayName = account.fullName || account.email
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <PageHeader
-        eyebrow="Security"
-        title={PREMIUM_FEATURE_LABELS.protector}
-        subtitle={
-          <>
-            Your {PRODUCT_NAME} account security overview. Live status for {displayName}.
-          </>
-        }
-        actions={
-          isEmailVerified ? (
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#147551] px-4 py-2.5 text-white shadow-[0_4px_14px_-6px_rgba(20,117,81,0.45)]">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-              <span className="text-xs font-bold uppercase tracking-wider">All systems secure</span>
-            </div>
-          ) : (
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#F5D998] bg-[#FFF3D6] px-4 py-2.5">
-              <span className="h-2 w-2 rounded-full bg-[#7A4F0C]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#7A4F0C]">
-                Verification pending
-              </span>
-            </div>
-          )
-        }
-      />
-
+    <PremiumPageLayout
+      title={PREMIUM_FEATURE_LABELS.protector}
+      subtitle={
+        <>
+          Your {PRODUCT_NAME} account security overview. Live status for {displayName}.
+        </>
+      }
+      actions={
+        isEmailVerified ? (
+          <div className="inline-flex items-center gap-2 rounded-full bg-grad-sapphire px-4 py-2.5 text-white shadow-sapphire">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+            <span className="text-xs font-medium uppercase tracking-wider">All systems secure</span>
+          </div>
+        ) : (
+          <div className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning-light px-4 py-2.5">
+            <span className="h-2 w-2 rounded-full bg-warning" />
+            <span className="text-xs font-medium uppercase tracking-wider text-warning">
+              Verification pending
+            </span>
+          </div>
+        )
+      }
+    >
       <PremiumVideoTutorial
         premiumKey="protector"
         vimeoId={protectorVideoId}
@@ -197,60 +195,20 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
         iframeTitle={`${PREMIUM_FEATURE_LABELS.protector} training video`}
       />
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[240px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-ink">
-              <ShieldCheck size={22} aria-hidden />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">
-                Live monitoring
-              </p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-white">
-                {isEmailVerified ? "Protected account" : "Finish verification"}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-1 flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            <div className="space-y-1.5">
-              <p className="text-sm font-semibold text-ink">Account security desk</p>
-              <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-                {PRODUCT_NAME} watches sign-in, session, and platform health for {displayName}. This
-                page is the live readout — nothing here is a scan you have to run.
-              </p>
-            </div>
-            <span
-              className="inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-xs font-semibold text-white sm:self-center"
-              style={{ backgroundColor: isEmailVerified ? SUCCESS : WARNING }}
-            >
-              <Shield size={13} aria-hidden />
-              {isEmailVerified ? "Email verified" : "Verify email"}
-            </span>
-          </div>
-        </div>
-      </section>
+      <PremiumFeatureBanner
+        icon={ShieldCheck}
+        kicker="Live monitoring"
+        title={isEmailVerified ? "Protected account" : "Finish verification"}
+        description={
+          <>
+            {PRODUCT_NAME} watches sign-in, session, and platform health for {displayName}. This page
+            is the live readout — nothing here is a scan you have to run.
+          </>
+        }
+        chip={isEmailVerified ? "Email verified" : "Verify email"}
+      />
 
-      <section className="space-y-4">
-        <div>
-          <p className="page-eyebrow mb-2">Coverage</p>
-          <h2 className="text-xl font-medium text-ink">What stays protected</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {PROTECTION_LAYERS.map((layer) => (
-            <div
-              key={layer.num}
-              className="rounded-xl border border-[var(--ds-line)] bg-card p-5 sm:p-6"
-            >
-              <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
-                {layer.num}
-              </span>
-              <h3 className="text-base font-semibold text-ink">{layer.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{layer.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PremiumSteps title="What stays protected" steps={PROTECTION_LAYERS} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[
@@ -269,7 +227,7 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
         ].map((metric) => (
           <div
             key={metric.label}
-            className="rounded-2xl border border-[var(--ds-line)] bg-card p-5"
+            className="glass-card p-5"
           >
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
               {metric.label}
@@ -285,14 +243,14 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-[var(--ds-line)] bg-card p-5 sm:p-6 lg:col-span-2">
+        <div className="glass-card p-5 sm:p-6 lg:col-span-2">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
               <ShieldCheck size={18} aria-hidden />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-ink">Security checks</h2>
-              <p className="text-sm text-text-secondary">Live status for this session</p>
+              <h2 className="text-lg font-medium text-ink">Security checks</h2>
+              <p className="text-sm text-ink-3">Live status for this session</p>
             </div>
           </div>
           <div className="space-y-3">
@@ -327,14 +285,14 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-[var(--ds-line)] bg-card p-5 sm:p-6">
+          <div className="glass-card p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
                 <User size={18} aria-hidden />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-ink">Account info</h2>
-                <p className="text-sm text-text-secondary">Who this session belongs to</p>
+                <h2 className="text-lg font-medium text-ink">Account info</h2>
+                <p className="text-sm text-ink-3">Who this session belongs to</p>
               </div>
             </div>
             <div className="space-y-2.5">
@@ -361,14 +319,14 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[var(--ds-line)] bg-card p-5 sm:p-6">
+          <div className="glass-card p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
                 <Activity size={18} aria-hidden />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-ink">Recent activity</h2>
-                <p className="text-sm text-text-secondary">Latest account events</p>
+                <h2 className="text-lg font-medium text-ink">Recent activity</h2>
+                <p className="text-sm text-ink-3">Latest account events</p>
               </div>
             </div>
             <div className="space-y-3">
@@ -396,6 +354,6 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
           </div>
         </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   )
 }

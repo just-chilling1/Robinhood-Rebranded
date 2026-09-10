@@ -41,20 +41,20 @@ export function OnboardingFlow() {
     <div className="fixed inset-0 z-[200] flex min-h-screen bg-background">
       <aside className="hidden w-72 flex-shrink-0 flex-col border-r border-[var(--border)] bg-card p-8 lg:flex">
         <OnboardingLogo size="md" />
-        <p className="mt-4 text-xl font-extrabold text-[#102A43]">{cfg.productName}</p>
-        <p className="text-sm text-[#486581]">{cfg.productTagline}</p>
+        <p className="mt-4 text-xl font-extrabold text-ink">{cfg.productName}</p>
+        <p className="text-sm text-ink-4">{cfg.productTagline}</p>
         <ul className="mt-10 space-y-3">
           {cfg.activation.sidebarStatus.map((item, i) => (
             <li
               key={item.label}
               className={`rounded-xl border p-4 transition-all duration-500 ${
                 activationStep > i
-                  ? "border-[#DDF7EC] bg-[#DDF7EC] translate-x-0 opacity-100"
+                  ? "border-[var(--ds-offer-green-100)] bg-[var(--ds-offer-green-100)] translate-x-0 opacity-100"
                   : "border-border bg-surface-nested opacity-60"
               }`}
             >
-              <p className="text-xs font-medium text-[#486581]">{item.label}</p>
-              <p className="text-sm font-bold text-[#16875C]">{item.status}</p>
+              <p className="text-xs font-medium text-ink-4">{item.label}</p>
+              <p className="text-sm font-bold text-sapphire-700">{item.status}</p>
             </li>
           ))}
         </ul>
@@ -65,8 +65,8 @@ export function OnboardingFlow() {
           <div className="mb-8 flex justify-center lg:hidden">
             <OnboardingLogo size="md" />
           </div>
-          <h1 className="text-3xl font-black text-[#102A43] sm:text-4xl">{cfg.activation.headline}</h1>
-          <p className="mt-3 text-lg text-[#486581]">{cfg.activation.subheadline}</p>
+          <h1 className="text-3xl font-black text-ink sm:text-4xl">{cfg.activation.headline}</h1>
+          <p className="mt-3 text-lg text-ink-4">{cfg.activation.subheadline}</p>
 
           <Input
             value={firstName}
@@ -79,18 +79,18 @@ export function OnboardingFlow() {
           />
 
           <div className="mt-8 rounded-2xl border border-[var(--border)] bg-card p-6 shadow-sm">
-            <p className="mb-4 text-sm font-bold text-[#102A43]">{cfg.activation.infoTitle}</p>
+            <p className="mb-4 text-sm font-bold text-ink">{cfg.activation.infoTitle}</p>
             <ol className="space-y-3">
               {cfg.activation.infoSteps.map((s, i) => (
                 <li
                   key={s}
                   className={`flex items-start gap-3 text-sm transition-all duration-500 ${
-                    activationStep > i ? "text-[#102A43] opacity-100" : "text-[#486581] opacity-50"
+                    activationStep > i ? "text-ink opacity-100" : "text-ink-4 opacity-50"
                   }`}
                 >
                   <span
                     className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                      activationStep > i ? "bg-[#16875C] text-white" : "bg-[#ECF6FB] text-[#829AB1]"
+                      activationStep > i ? "bg-sapphire-500 text-white" : "bg-sapphire-100 text-white-5"
                     }`}
                   >
                     {activationStep > i ? "✓" : i + 1}
@@ -113,7 +113,7 @@ export function OnboardingFlow() {
             type="button"
             onClick={handleActivate}
             disabled={!firstName.trim() || submitting}
-            className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-xl font-extrabold text-white shadow-lg shadow-[#2563EB]/30 hover:from-[#1D4ED8] hover:to-[#1D4ED8] disabled:opacity-50 transition-all hover:-translate-y-0.5"
+            className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-primary to-primary text-xl font-extrabold text-white shadow-lg shadow-primary/30 hover:from-primary-hover hover:to-primary-hover disabled:opacity-50 transition-all hover:-translate-y-0.5"
           >
             {submitting ? "Activating…" : cfg.activation.ctaLabel}
           </Button>

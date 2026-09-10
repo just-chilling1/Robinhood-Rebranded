@@ -4,14 +4,12 @@ import type React from "react"
 
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { BrandLogo } from "@/components/brand-logo"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { brand } from "@/config/brand.config"
 
 export default function LoginPage() {
   const [callbackError, setCallbackError] = useState(false)
@@ -49,82 +47,71 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md">
-        <Card className="glass-strong glow-blue border border-[var(--border)]">
-          <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
-              <BrandLogo variant="wordmark" width={240} priority />
-            </div>
-            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">Access {PRODUCT_NAME}</CardTitle>
-            <CardDescription className="text-sm text-ink-3 text-center font-medium">
-              Neural Engagement Platform
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-ink">
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <Label htmlFor="password" className="text-sm font-medium text-ink">
-                    Password
-                  </Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-xs text-[#1E40AF] hover:text-[#1D4ED8] font-medium transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
-                />
-              </div>
-              {callbackError && (
-                <div className="p-3 rounded-lg bg-destructive/15 border border-destructive/30">
-                  <p className="text-sm text-destructive font-medium">
-                    Your sign-in link expired or is invalid. Please try again or request a new password reset.
-                  </p>
-                </div>
-              )}
-              {error && (
-                <div className="p-3 rounded-lg bg-destructive/15 border border-destructive/30">
-                  <p className="text-sm text-destructive font-medium">{error}</p>
-                </div>
-              )}
-              <Button type="submit" className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300" disabled={isLoading}>
-                {isLoading ? "Authenticating..." : "Enter Platform"}
-              </Button>
-              <div className="text-center pt-1">
-                <p className="text-sm text-ink-3">
-                  New user?{" "}
-                  <Link href="/auth/sign-up" className="text-[#1E40AF] hover:text-[#1D4ED8] font-semibold transition-colors">
-                    Create Account
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+    <div className="flex w-full flex-col gap-4">
+      <div className="text-center">
+        <h1 className="ds-h2 text-ink">Access {brand.productName}</h1>
+        <p className="mt-1 text-sm font-medium text-ink-3">{brand.tagline}</p>
       </div>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium text-ink">
+            Email Address
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="your@email.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input-base h-12"
+          />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="password" className="text-sm font-medium text-ink">
+              Password
+            </Label>
+            <Link
+              href="/auth/forgot-password"
+              className="text-xs font-medium text-sapphire-700 transition-colors hover:text-primary"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="input-base h-12"
+          />
+        </div>
+        {callbackError && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
+            <p className="text-sm font-medium text-destructive">
+              Your sign-in link expired or is invalid. Please try again or request a new password reset.
+            </p>
+          </div>
+        )}
+        {error && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
+            <p className="text-sm font-medium text-destructive">{error}</p>
+          </div>
+        )}
+        <Button type="submit" className="btn-primary h-12 w-full font-semibold" disabled={isLoading}>
+          {isLoading ? "Authenticating..." : "Enter Platform"}
+        </Button>
+        <div className="pt-1 text-center">
+          <p className="text-sm text-ink-3">
+            New user?{" "}
+            <Link href="/auth/sign-up" className="font-semibold text-sapphire-700 transition-colors hover:text-primary">
+              Create Account
+            </Link>
+          </p>
+        </div>
+      </form>
     </div>
   )
 }

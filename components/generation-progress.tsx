@@ -34,10 +34,10 @@ export function GenerationProgress({
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--ds-r-md)] border border-[var(--ds-line-sapphire)] bg-sapphire-200">
-            <Loader2 className="h-5 w-5 animate-spin text-[#2563EB]" />
+            <Loader2 className="h-5 w-5 animate-spin text-sapphire-500" />
           </div>
           <div className="min-w-0">
-            <p className="text-base font-bold text-[#102A43] md:text-lg">{label}</p>
+            <p className="text-base font-bold text-ink md:text-lg">{label}</p>
             <p className="mt-1 text-sm text-text-secondary">This usually takes a few seconds.</p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { brand } from "@/config/brand.config"
 import { cn } from "@/lib/utils"
 
 type BrandLogoVariant = "icon" | "wordmark"
@@ -14,10 +14,6 @@ interface BrandLogoProps {
   priority?: boolean
 }
 
-const ICON_SRC = "/logo-icon.png"
-/** Cache-bust so logo swaps show up immediately after asset replacement. */
-const WORDMARK_SRC = "/logo.png?v=20260909b"
-
 export function BrandLogo({
   variant = "icon",
   size = 40,
@@ -29,8 +25,8 @@ export function BrandLogo({
     const height = Math.round(width * (342 / 1024))
     return (
       <Image
-        src={WORDMARK_SRC}
-        alt={PRODUCT_NAME}
+        src={brand.logo.src}
+        alt={brand.logo.alt}
         width={width}
         height={height}
         priority={priority}
@@ -42,8 +38,8 @@ export function BrandLogo({
 
   return (
     <Image
-      src={ICON_SRC}
-      alt={PRODUCT_NAME}
+      src={brand.logo.iconSrc}
+      alt={brand.logo.alt}
       width={size}
       height={size}
       priority={priority}

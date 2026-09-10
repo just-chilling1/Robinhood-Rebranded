@@ -5,13 +5,11 @@ import type React from "react"
 import { createClient } from "@/lib/supabase/client"
 import { getAuthCallbackUrl } from "@/lib/auth/site-url"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useState } from "react"
 import { Mail } from "lucide-react"
-import { BrandLogo } from "@/components/brand-logo"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -40,78 +38,62 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md">
-        <Card className="glass-strong glow-blue border border-[var(--border)]">
-          <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
-              <BrandLogo variant="wordmark" width={240} priority />
-            </div>
-            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">
-              Reset Password
-            </CardTitle>
-            <CardDescription className="text-sm text-ink-3 text-center font-medium">
-              We&apos;ll email you a secure reset link
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {success ? (
-              <div className="space-y-4 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-light">
-                  <Mail className="h-6 w-6 text-ink-3" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-base font-semibold text-ink">Check your email</p>
-                  <p className="text-sm text-ink-3 leading-relaxed">
-                    If an account exists for <span className="font-semibold text-ink">{email}</span>, you&apos;ll
-                    receive a password reset link shortly.
-                  </p>
-                </div>
-                <Button asChild className="w-full h-10 font-semibold rounded-lg bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white">
-                  <Link href="/auth/login">Back to Login</Link>
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-ink">
-                    Email Address
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
-                  />
-                </div>
-                {error && (
-                  <div className="p-3 rounded-lg bg-destructive/15 border border-destructive/30">
-                    <p className="text-sm text-destructive font-medium">{error}</p>
-                  </div>
-                )}
-                <Button
-                  type="submit"
-                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Sending reset link..." : "Send Reset Link"}
-                </Button>
-                <div className="text-center pt-1">
-                  <Link
-                    href="/auth/login"
-                    className="text-sm text-[#1E40AF] hover:text-[#1D4ED8] font-semibold transition-colors"
-                  >
-                    Back to Login
-                  </Link>
-                </div>
-              </form>
-            )}
-          </CardContent>
-        </Card>
+    <div className="flex w-full flex-col gap-4">
+      <div className="text-center">
+        <h1 className="ds-h2 text-ink">Reset Password</h1>
+        <p className="mt-1 text-sm font-medium text-ink-3">We&apos;ll email you a secure reset link</p>
       </div>
+
+      {success ? (
+        <div className="space-y-4 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-light">
+            <Mail className="h-6 w-6 text-ink-3" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-base font-semibold text-ink">Check your email</p>
+            <p className="text-sm leading-relaxed text-ink-3">
+              If an account exists for <span className="font-semibold text-ink">{email}</span>, you&apos;ll
+              receive a password reset link shortly.
+            </p>
+          </div>
+          <Button asChild className="btn-primary h-12 w-full font-semibold">
+            <Link href="/auth/login">Back to Login</Link>
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium text-ink">
+              Email Address
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="your@email.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-base h-12"
+            />
+          </div>
+          {error && (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
+              <p className="text-sm font-medium text-destructive">{error}</p>
+            </div>
+          )}
+          <Button type="submit" className="btn-primary h-12 w-full font-semibold" disabled={isLoading}>
+            {isLoading ? "Sending reset link..." : "Send Reset Link"}
+          </Button>
+          <div className="pt-1 text-center">
+            <Link
+              href="/auth/login"
+              className="text-sm font-semibold text-sapphire-700 transition-colors hover:text-primary"
+            >
+              Back to Login
+            </Link>
+          </div>
+        </form>
+      )}
     </div>
   )
 }

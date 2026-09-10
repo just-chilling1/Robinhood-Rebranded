@@ -42,8 +42,8 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#2563EB] animate-spin mx-auto mb-4" />
-          <p className="text-xl text-[#486581]">Unlocking your upgrade...</p>
+          <Loader2 className="w-16 h-16 text-sapphire-500 animate-spin mx-auto mb-4" />
+          <p className="text-xl text-ink-4">Unlocking your upgrade...</p>
         </div>
       </div>
     )
@@ -56,12 +56,12 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">❌</span>
           </div>
-          <h1 className="text-2xl font-bold text-[#102A43] mb-2">Unlock Failed</h1>
-          <p className="text-[#486581] mb-6">
+          <h1 className="text-2xl font-bold text-ink mb-2">Unlock Failed</h1>
+          <p className="text-ink-4 mb-6">
             We couldn't unlock your upgrade. Please make sure you're logged in and try again.
           </p>
           <Link href="/dashboard">
-            <Button className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold">
+            <Button className="w-full bg-primary hover:bg-primary-hover text-white font-bold">
               Go to Dashboard
             </Button>
           </Link>
@@ -78,33 +78,33 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
         {/* Success Icon */}
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#2563EB] to-[#2563EB] rounded-full flex items-center justify-center animate-pulse">
+            <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary rounded-full flex items-center justify-center animate-pulse">
               <CheckCircle2 className="w-12 h-12 text-white" />
             </div>
-            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-[#2563EB] animate-bounce" />
+            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-sapphire-500 animate-bounce" />
           </div>
         </div>
 
         {/* Success Message */}
-        <h1 className="text-4xl font-bold text-center text-[#102A43] mb-3">🎉 Congratulations!</h1>
-        <p className="text-xl text-center text-[#1E40AF] mb-6">
+        <h1 className="text-4xl font-bold text-center text-ink mb-3">🎉 Congratulations!</h1>
+        <p className="text-xl text-center text-sapphire-700 mb-6">
           You've unlocked <span className="font-bold">{upgradeName}</span>!
         </p>
 
         {/* Upgrade Value */}
         <div className="bg-card rounded-2xl p-6 mb-6 border border-[var(--border)]">
           <div className="text-center mb-4">
-            <span className="text-[#486581] text-sm">Upgrade Value</span>
-            <p className="text-5xl font-bold text-[#16875C]">{upgradeValue}</p>
+            <span className="text-ink-4 text-sm">Upgrade Value</span>
+            <p className="text-5xl font-bold text-sapphire-700">{upgradeValue}</p>
           </div>
 
           {/* Features */}
           <div className="space-y-3">
-            <p className="text-[#486581] font-semibold mb-3">What You Just Unlocked:</p>
+            <p className="text-ink-4 font-semibold mb-3">What You Just Unlocked:</p>
             {features.map((feature, index) => (
               <div key={index} className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#16875C] flex-shrink-0 mt-0.5" />
-                <span className="text-[#486581]">{feature}</span>
+                <CheckCircle2 className="w-5 h-5 text-sapphire-700 flex-shrink-0 mt-0.5" />
+                <span className="text-ink-4">{feature}</span>
               </div>
             ))}
           </div>
@@ -113,7 +113,7 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
         {/* CTA Buttons */}
         <div className="space-y-3">
           <Link href="/dashboard" className="block">
-            <Button className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-lg py-6 rounded-xl shadow-[var(--shadow-md)]">
+            <Button className="w-full bg-primary hover:bg-primary-hover text-white font-bold text-lg py-6 rounded-xl shadow-[var(--shadow-md)]">
               Go to Dashboard
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -122,7 +122,7 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
           <Link href="/training" className="block">
             <Button
               variant="outline"
-              className="w-full border-[var(--border)] text-[#1E40AF] hover:bg-[#EEF4FF] font-semibold py-6 rounded-xl bg-card"
+              className="w-full border-[var(--border)] text-sapphire-700 hover:bg-sapphire-100 font-semibold py-6 rounded-xl bg-card"
             >
               Access Training
             </Button>
@@ -130,7 +130,7 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
         </div>
 
         {/* Footer Message */}
-        <p className="text-center text-[#486581] text-sm mt-6">
+        <p className="text-center text-ink-4 text-sm mt-6">
           Your account has been upgraded. All premium features are now available!
         </p>
       </div>

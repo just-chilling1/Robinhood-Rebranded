@@ -5,7 +5,9 @@ import { createPortal } from "react-dom"
 import { ArrowRight, Check, X } from "lucide-react"
 import { buildVimeoEmbedUrl } from "@/lib/vimeo"
 
-const WITHDRAW_URL = "https://jvz1.com/c/3547097/442055/"
+import { VIDEO_WITHDRAW_URL } from "@/config/offers.config"
+
+const WITHDRAW_URL = VIDEO_WITHDRAW_URL
 
 /** Turn a YouTube or Vimeo link into an embeddable, autoplaying URL. */
 export function toEmbedUrl(url: string): string | null {

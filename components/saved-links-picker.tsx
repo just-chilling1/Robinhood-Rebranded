@@ -1,32 +1,46 @@
 "use client"
 
 import Link from "next/link"
+import { Bookmark, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { AffiliateLink } from "@/app/actions/affiliate-links"
 
-export function SavedLinksPicker({
-  links,
-  selectedId,
-  onSelect,
-}: {
-  links: AffiliateLink[]
+export type SavedLinkOption = {
+  id: string
+  offer_name: string
+  affiliate_url: string
+}
+
+type SavedLinksPickerProps = {
+  links: SavedLinkOption[]
   selectedId: string | null
-  onSelect: (link: AffiliateLink) => void
-}) {
+  onSelect: (link: SavedLinkOption) => void
+}
+
+function shortUrl(url: string) {
+  return url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+}
+
+export function SavedLinksPicker({ links, selectedId, onSelect }: SavedLinksPickerProps) {
   if (links.length === 0) return null
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-bold text-[#102A43]">Use a saved link</p>
+    <div className="rounded-xl border-2 border-[color-mix(in_srgb,var(--ds-sapphire-500)_28%,var(--ds-line))] bg-white p-3 sm:p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="inline-flex items-center gap-2 font-sans text-sm font-semibold tracking-tight text-ink">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
+            <Bookmark className="h-3.5 w-3.5" aria-hidden />
+          </span>
+          Use a saved link
+        </p>
         <Link
           href="/share"
-          className="text-sm font-semibold text-[#2563EB] underline-offset-4 hover:underline"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--ds-line-strong)] bg-white px-3 font-sans text-xs font-semibold text-sapphire-700 transition-colors hover:border-sapphire-700 hover:bg-sapphire-100"
         >
           Manage in Link Vault
+          <ExternalLink className="h-3 w-3" aria-hidden />
         </Link>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {links.map((link) => {
           const selected = selectedId === link.id
           return (
@@ -35,18 +49,26 @@ export function SavedLinksPicker({
               type="button"
               onClick={() => onSelect(link)}
               className={cn(
-                "max-w-full rounded-full border px-3 py-1.5 text-left text-sm font-semibold transition-colors",
+                "rounded-xl border-2 px-3.5 py-2.5 text-left font-sans transition-colors",
                 selected
-                  ? "border-[#2563EB] bg-[#2563EB] text-white"
-                  : "border-[var(--border)] bg-[var(--ds-surface-sub)] text-[#102A43] hover:border-[#2563EB]",
+                  ? "border-sapphire-700 bg-grad-sapphire text-white shadow-sapphire"
+                  : "border-[var(--ds-line-strong)] bg-[var(--ds-surface-sub)] text-ink hover:border-sapphire-700 hover:bg-sapphire-100",
               )}
             >
-              <span className="block truncate">{link.offer_name}</span>
+              <span className="block truncate text-sm font-semibold">{link.offer_name}</span>
+              <span
+                className={cn(
+                  "mt-0.5 block truncate text-[12px] font-medium",
+                  selected ? "text-white/80" : "text-text-secondary",
+                )}
+              >
+                {shortUrl(link.affiliate_url)}
+              </span>
             </button>
           )
         })}
       </div>
-      <p className="text-xs font-semibold text-[#486581]">Or paste a new link below</p>
+      <p className="mt-3 font-sans text-xs font-medium text-text-secondary">Or paste a new link below</p>
     </div>
   )
 }

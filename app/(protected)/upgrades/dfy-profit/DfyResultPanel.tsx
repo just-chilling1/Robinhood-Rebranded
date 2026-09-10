@@ -17,10 +17,10 @@ import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/df
 import { cn } from "@/lib/utils"
 
 const primaryCtaClass =
-  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:bg-primary-hover hover:shadow-[var(--ds-shadow-sapphire-hover)]"
+  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
 
 const outlineCtaClass =
-  "rounded-xl border-2 border-[var(--ds-line-strong)] bg-white font-semibold text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
+  "rounded-xl border-2 border-[var(--ds-line-strong)] bg-white font-medium !text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 hover:shadow-hover"
 
 const POST_ACCENTS = [
   {
@@ -29,13 +29,13 @@ const POST_ACCENTS = [
     card: "bg-sapphire-100",
   },
   {
-    bar: "border-l-ink",
-    chip: "bg-ink text-white",
+    bar: "border-l-[var(--ds-line-sapphire)]",
+    chip: "bg-grad-sapphire text-white",
     card: "bg-[var(--ds-canvas)]",
   },
   {
-    bar: "border-l-[#147551]",
-    chip: "bg-[var(--ds-offer-green-200)] text-[#147551]",
+    bar: "border-l-[var(--ds-sapphire-500)]",
+    chip: "bg-[var(--ds-offer-green-200)] text-sapphire-700",
     card: "bg-[var(--ds-offer-green-100)]",
   },
 ] as const
@@ -94,7 +94,7 @@ function KitSection({
         <ChevronDown className="h-4 w-4 shrink-0 text-ink transition-transform group-open:rotate-180" />
         <span className="min-w-0 flex-1 text-sm font-semibold text-ink">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-ink px-2.5 py-0.5 text-[13px] font-semibold tabular-nums text-white">
+          <span className="shrink-0 rounded-full bg-grad-sapphire px-2.5 py-0.5 text-[13px] font-medium tabular-nums text-white">
             {count}
           </span>
         )}
@@ -133,7 +133,7 @@ function CopyButton({
       onClick={onClick}
       className={cn(
         size === "sm" ? "h-10 px-4 text-sm" : "h-11 px-4",
-        copied ? "rounded-xl bg-[#147551] font-semibold text-white hover:bg-[#147551]" : primaryCtaClass,
+        copied ? "rounded-xl bg-sapphire-500 font-semibold text-white hover:bg-sapphire-500" : primaryCtaClass,
       )}
     >
       {copied ? <Check className="mr-1.5 h-4 w-4" /> : <Copy className="mr-1.5 h-4 w-4" />}
@@ -190,7 +190,7 @@ export function DfyResultPanel({
         tone="video"
       >
         <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-sapphire)] bg-white px-3 py-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-white">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
             <Youtube className="h-[18px] w-[18px]" />
           </div>
           <p className="text-sm font-medium text-ink">
@@ -207,7 +207,7 @@ export function DfyResultPanel({
                 key={video.videoId}
                 className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-sapphire)] bg-card shadow-[var(--ds-shadow-card)]"
               >
-                <div className="flex gap-3 bg-ink p-4 text-white">
+                <div className="flex gap-3 bg-sapphire-100 p-4 text-ink">
                   {video.thumbnailUrl ? (
                     <a
                       href={video.videoUrl}
@@ -225,10 +225,10 @@ export function DfyResultPanel({
                     </a>
                   ) : null}
                   <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/75">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-sapphire-700">
                       {video.channelTitle}
                     </p>
-                    <p className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-white">
+                    <p className="mt-1 line-clamp-2 text-sm font-medium leading-snug text-ink">
                       {video.title}
                     </p>
                     <a
@@ -275,8 +275,8 @@ export function DfyResultPanel({
 
       {isGeneratingArticle || retryingArticle ? (
         <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
-          <div className="flex items-center gap-3 bg-ink px-5 py-4 text-white md:px-6">
-            <FileText className="h-5 w-5 shrink-0 text-white/80" aria-hidden />
+          <div className="flex items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 px-5 py-4 text-ink md:px-6">
+            <FileText className="h-5 w-5 shrink-0 text-sapphire-700" aria-hidden />
             <p className="text-sm font-semibold">Writing your authority article…</p>
           </div>
           <p className="inline-flex items-center gap-2 px-5 py-6 text-sm font-medium text-ink">
@@ -305,17 +305,17 @@ export function DfyResultPanel({
               {article.saveWarning}
             </p>
           ) : null}
-          <div className="flex items-start justify-between gap-3 border-b border-[var(--ds-line)] bg-ink px-5 py-4 text-white md:px-6">
+          <div className="flex items-start justify-between gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 px-5 py-4 text-ink md:px-6">
             <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">
+              <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
                 {niche || "Authority article"}
               </p>
-              <h3 className="mt-1 text-lg font-semibold leading-snug text-white">{article.title}</h3>
+              <h3 className="mt-1 text-lg font-medium leading-snug text-ink">{article.title}</h3>
               {article.excerpt ? (
-                <p className="mt-2 text-sm leading-relaxed text-white/80">{article.excerpt}</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-3">{article.excerpt}</p>
               ) : null}
             </div>
-            <FileText className="mt-1 h-5 w-5 shrink-0 text-white/80" aria-hidden />
+            <FileText className="mt-1 h-5 w-5 shrink-0 text-sapphire-700" aria-hidden />
           </div>
           <div
             className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
@@ -364,7 +364,7 @@ export function DfyResultPanel({
               className={cn(
                 "h-11 px-4",
                 copiedId === "article-html"
-                  ? "rounded-xl bg-[#147551] font-semibold text-white hover:bg-[#147551]"
+                  ? "rounded-xl bg-sapphire-500 font-semibold text-white hover:bg-sapphire-500"
                   : primaryCtaClass,
               )}
             >
@@ -386,7 +386,7 @@ export function DfyResultPanel({
         tone="social"
       >
         <div className="flex items-start gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white px-3 py-3">
-          <Megaphone className="mt-0.5 h-[18px] w-[18px] shrink-0 text-[#147551]" />
+          <Megaphone className="mt-0.5 h-[18px] w-[18px] shrink-0 text-sapphire-700" />
           <p className="text-sm font-medium text-ink">
             {posts.length > 0
               ? `${posts.length} ready-to-copy variants`

@@ -79,11 +79,17 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
 
   return (
     <div className="space-y-3">
-      <div className={stacked ? "flex flex-col gap-2" : "flex items-center gap-2"}>
+      <div
+        className={
+          stacked
+            ? "flex flex-col gap-2"
+            : "flex flex-col gap-2 sm:flex-row sm:items-center"
+        }
+      >
         <Button
           type="button"
           onClick={handleToggleComments}
-          className="h-10 w-full rounded-xl border-2 border-transparent bg-[#2563EB] text-sm font-bold text-white shadow-none hover:border-[#2563EB] hover:bg-white hover:text-[#1D4ED8] hover:shadow-none"
+          className="h-11 w-full rounded-xl border-2 border-transparent text-sm font-semibold text-white shadow-none sm:flex-1"
         >
           {expanded ? <ChevronUp className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
           {expanded ? "Hide Comments" : "View Comments"}
@@ -93,7 +99,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
           <Button
             asChild
             variant="outline"
-            className="h-10 min-w-0 flex-1 rounded-xl border-2 border-[var(--ds-line-strong)] px-3 text-sm font-semibold shadow-none hover:border-[#2563EB] hover:bg-[#2563EB]/12 hover:text-[#1D4ED8] hover:shadow-none"
+            className="h-11 min-w-0 flex-1 rounded-xl border-2 border-[var(--ds-line-strong)] bg-white px-4 text-sm font-semibold shadow-none hover:border-sapphire-700 hover:bg-sapphire-100 hover:text-sapphire-700 hover:shadow-none sm:min-w-[9.5rem] sm:flex-none"
           >
             <a href={videoUrl || affiliateLink} target="_blank" rel="noopener noreferrer">
               <Youtube className="h-4 w-4" />
@@ -107,7 +113,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
             onClick={() => setConfirmOpen(true)}
             disabled={loading}
             aria-label="Delete pack"
-            className="h-10 w-10 shrink-0 rounded-xl border-2 border-[#C53030]/30 px-0 text-[#C53030] shadow-none hover:border-[#C53030] hover:bg-[#C53030]/15 hover:text-[#9B2C2C] hover:shadow-none"
+            className="h-11 w-11 shrink-0 rounded-xl border-2 border-[#C53030]/30 px-0 text-[#C53030] shadow-none hover:border-[#C53030] hover:bg-[#C53030]/15 hover:text-[#9B2C2C] hover:shadow-none"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -117,7 +123,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
       {expanded && (
         <div className="space-y-2.5 rounded-xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] p-3 sm:p-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-[#14213d]">
+            <p className="text-sm font-semibold text-ink">
               {comments.length} comment{comments.length === 1 ? "" : "s"} — copy and paste on the video
             </p>
             <Button
@@ -144,7 +150,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[10px] font-bold text-sapphire-700">
                     {idx + 1}
                   </span>
-                  <p className="min-w-0 flex-1 text-sm leading-relaxed text-[#14213d]">{comment}</p>
+                  <p className="min-w-0 flex-1 text-sm leading-relaxed text-ink">{comment}</p>
                 </div>
                 <Button
                   type="button"
@@ -162,13 +168,13 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
       )}
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="glass-strong border-2 border-[#C53030]/40 text-[#102A43] sm:max-w-md">
+        <DialogContent className="glass-strong border-2 border-[#C53030]/40 text-ink sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl font-black text-[#102A43]">
+            <DialogTitle className="flex items-center gap-2 text-xl font-black text-ink">
               <AlertTriangle className="w-5 h-5 text-[#C53030]" />
               Delete this pack?
             </DialogTitle>
-            <DialogDescription className="text-[#486581]">
+            <DialogDescription className="text-ink-4">
               This will permanently remove this comment pack. This can&apos;t be undone.
             </DialogDescription>
           </DialogHeader>
@@ -177,7 +183,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
               variant="outline"
               onClick={() => setConfirmOpen(false)}
               disabled={loading}
-              className="glass border-2 border-[var(--border)] text-[#102A43] font-bold rounded-xl"
+              className="glass border-2 border-[var(--border)] text-ink font-bold rounded-xl"
             >
               Keep It
             </Button>

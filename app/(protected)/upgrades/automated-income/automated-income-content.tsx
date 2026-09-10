@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,8 +9,12 @@ import { TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Copy, Check } fro
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
-import { PageHeader } from "@/components/page-header"
-import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import {
+  PremiumControlCard,
+  PremiumFeatureBanner,
+  PremiumSteps,
+} from "@/components/premium-feature-chrome"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
@@ -2076,13 +2079,10 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
     : ""
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 pb-12">
-      <PageHeader
-        eyebrow="Premium"
-        title={PREMIUM_FEATURE_LABELS.automatedIncome}
-        subtitle="Submit your page to 100+ traffic sources once. They keep sending visitors after you walk away."
-      />
-
+    <PremiumPageLayout
+      title={PREMIUM_FEATURE_LABELS.automatedIncome}
+      subtitle="Submit your page to 100+ traffic sources once. They keep sending visitors after you walk away."
+    >
       <PremiumVideoTutorial
         premiumKey="socialPayouts"
         vimeoId={getPremiumTrainingVimeoId("socialPayouts")}
@@ -2120,18 +2120,21 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
         ]}
       />
 
-      <div className="rounded-xl border border-[#F5D998] bg-[#FFF3D6] px-5 py-4">
-        <p className="text-sm font-semibold text-[#7A4F0C]">Pro tip</p>
-        <p className="mt-1 text-sm leading-relaxed text-[#7A4F0C]">
+      <div className="rounded-xl border border-warning/30 bg-warning-light px-5 py-4">
+        <p className="text-sm font-semibold text-warning">Pro tip</p>
+        <p className="mt-1 text-sm leading-relaxed text-warning">
           Set aside a block of time and submit to as many sources as you can. More submissions means more automatic
           traffic later.
         </p>
       </div>
 
       {/* Page URL Input */}
-      <Card className="border border-[var(--ds-line)] bg-card">
-        <CardContent className="p-6 sm:p-8">
-          <Label htmlFor="page-url" className="mb-3 block text-sm font-semibold uppercase tracking-wide text-text-secondary">
+      <PremiumControlCard
+        icon={TrendingUp}
+        title="Your page URL"
+        description="This is the page you want to promote. We'll automatically insert it in all the submission descriptions below."
+      >
+          <Label htmlFor="page-url" className="mb-3 block text-sm font-medium uppercase tracking-wide text-ink-3">
             Your page URL
           </Label>
           <Input
@@ -2142,13 +2145,9 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             onChange={(e) => setPageUrl(e.target.value)}
             className="h-14 border-[var(--ds-line)] bg-card text-ink"
           />
-          <p className="mt-3 text-sm text-text-secondary">
-            This is the page you want to promote. We'll automatically insert it in all the submission descriptions
-            below.
-          </p>
 
           {linkError && (
-            <p className="mt-4 text-lg font-bold text-[#C53030]">{linkError}</p>
+            <p className="mt-4 text-lg font-medium text-[#C53030]">{linkError}</p>
           )}
 
           {savingLink && (
@@ -2169,12 +2168,11 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <Button
             onClick={handleSaveLink}
             disabled={savingLink}
-            className="mt-6 h-12 w-full rounded-xl bg-ink text-base font-semibold text-white hover:bg-ink/90"
+            className="mt-6 h-12 w-full rounded-xl bg-grad-sapphire text-base font-medium text-white shadow-sapphire hover:shadow-sapphire"
           >
             {savingLink ? "Saving Your Link..." : linkSaved ? "Link Saved ✓ — Update It Anytime" : "Save My Link →"}
           </Button>
-        </CardContent>
-      </Card>
+      </PremiumControlCard>
 
       {/* Niche Filter */}
       <div className="flex gap-3 flex-wrap">
@@ -2185,8 +2183,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             variant={selectedNiche === niche ? "default" : "outline"}
             className={
               selectedNiche === niche
-                ? "bg-ink text-white hover:bg-ink/90 font-semibold"
-                : "border-[var(--ds-line-strong)] text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700 font-semibold"
+                ? "bg-grad-sapphire text-white font-medium hover:bg-grad-sapphire"
+                : "border-[var(--ds-line-strong)] !text-ink hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 font-medium"
             }
             size="lg"
           >
@@ -2207,89 +2205,88 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
 
       {!generating && (
       <div ref={sourcesResultsRef} className="space-y-8">
-      <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
-        <div className="flex flex-col sm:flex-row">
-          <div className="flex items-center gap-3 bg-[#147551] px-5 py-4 text-white sm:w-[180px] sm:flex-col sm:items-start sm:justify-center">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#147551]">
-              <TrendingUp className="h-4 w-4" aria-hidden />
+      <div className="glass-card overflow-hidden p-0">
+        <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+              <TrendingUp className="h-5 w-5" aria-hidden />
             </span>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/90">Your progress</p>
-          </div>
-          <div className="flex flex-1 flex-col justify-center gap-4 p-5 sm:p-6">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <p className="text-lg font-semibold text-ink">
-                  {completedSources.size} of {filteredSources.length} sources
-                </p>
-                <p className="mt-0.5 text-sm text-text-secondary">Mark a source complete after you submit.</p>
-              </div>
-              <p className="text-2xl font-semibold tabular-nums text-[#147551]">
-                {filteredSources.length
-                  ? Math.round((completedSources.size / filteredSources.length) * 100)
-                  : 0}
-                <span className="ml-1 text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                  complete
-                </span>
+            <div>
+              <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">Your progress</p>
+              <p className="font-medium text-ink">
+                {completedSources.size} of {filteredSources.length} sources
               </p>
-            </div>
-            <div
-              className="h-3 w-full overflow-hidden rounded-full bg-[var(--ds-line)]"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={
-                filteredSources.length
-                  ? Math.round((completedSources.size / filteredSources.length) * 100)
-                  : 0
-              }
-            >
-              <div
-                className="h-full rounded-full bg-[#147551] transition-all duration-500"
-                style={{
-                  width: `${
-                    filteredSources.length
-                      ? Math.max(
-                          completedSources.size > 0 ? 4 : 0,
-                          (completedSources.size / filteredSources.length) * 100,
-                        )
-                      : 0
-                  }%`,
-                }}
-              />
+              <p className="mt-0.5 text-sm text-ink-3">Mark a source complete after you submit.</p>
             </div>
           </div>
         </div>
-      </Card>
+        <div className="flex flex-col gap-4 p-5 sm:p-6">
+          <div className="flex items-end justify-between gap-3">
+            <p className="text-2xl font-medium tabular-nums text-sapphire-700">
+              {filteredSources.length
+                ? Math.round((completedSources.size / filteredSources.length) * 100)
+                : 0}
+              <span className="ml-1 text-xs font-medium uppercase tracking-wide text-ink-3">
+                complete
+              </span>
+            </p>
+          </div>
+          <div
+            className="h-3 w-full overflow-hidden rounded-full bg-[var(--ds-line)]"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={
+              filteredSources.length
+                ? Math.round((completedSources.size / filteredSources.length) * 100)
+                : 0
+            }
+          >
+            <div
+              className="h-full rounded-full bg-sapphire-500 transition-all duration-500"
+              style={{
+                width: `${
+                  filteredSources.length
+                    ? Math.max(
+                        completedSources.size > 0 ? 4 : 0,
+                        (completedSources.size / filteredSources.length) * 100,
+                      )
+                    : 0
+                }%`,
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {filteredSources.map((source) => {
           const isCompleted = completedSources.has(source.id)
           return (
-            <Card
+            <article
               key={source.id}
-              className={`cursor-pointer border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)] transition-colors hover:border-ink/30 ${
+              className={`glass-card cursor-pointer p-6 transition-colors hover:border-[var(--ds-line-sapphire)] ${
                 isCompleted ? "opacity-60" : ""
               }`}
               onClick={() => setSelectedSource(source)}
             >
-              <CardContent className="p-6">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                  <span className="rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-medium text-sapphire-700">
                     {source.category}
                   </span>
-                  <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-semibold text-sapphire-700">
+                  <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-medium text-sapphire-700">
                     {source.difficulty}
                   </span>
                   {isCompleted && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-medium text-sapphire-700">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Completed
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl font-semibold text-ink">{source.name}</h3>
+                <h3 className="text-xl font-medium text-ink">{source.name}</h3>
                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                  <p className="inline-flex items-center gap-1.5 font-semibold text-[#147551]">
+                  <p className="inline-flex items-center gap-1.5 font-semibold text-sapphire-700">
                     <Users className="h-4 w-4" aria-hidden />
                     {source.trafficPotential}
                   </p>
@@ -2310,8 +2307,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                       onClick={(e) => handleCopyDescription(e, source)}
                       className={`h-9 shrink-0 rounded-lg px-3 font-semibold text-white ${
                         copiedSourceId === source.id
-                          ? "bg-[#147551] hover:bg-[#147551]"
-                          : "bg-[#147551] hover:bg-[#0f5c3e]"
+                          ? "bg-sapphire-500 hover:bg-sapphire-500"
+                          : "bg-sapphire-500 hover:bg-sapphire-700"
                       }`}
                     >
                       {copiedSourceId === source.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -2322,12 +2319,11 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                   </p>
                 </div>
 
-                <Button className="mt-4 h-12 w-full rounded-xl bg-[#147551] text-base font-semibold text-white hover:bg-[#0f5c3e]">
+                <Button className="mt-4 h-12 w-full rounded-xl bg-grad-sapphire text-base font-medium text-white hover:shadow-sapphire">
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View instructions
                 </Button>
-              </CardContent>
-            </Card>
+            </article>
           )
         })}
       </div>
@@ -2339,7 +2335,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           <DialogHeader className="space-y-3 border-b border-[var(--ds-line)] px-6 py-5 pr-12 text-left">
             <div className="flex flex-wrap items-center gap-2">
               {selectedSource?.category ? (
-                <span className="rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                <span className="rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-semibold text-sapphire-700">
                   {selectedSource.category}
                 </span>
               ) : null}
@@ -2349,7 +2345,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 </span>
               ) : null}
               {selectedSource && completedSources.has(selectedSource.id) ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#DDF7EC] px-3 py-1 text-xs font-semibold text-[#147551]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-semibold text-sapphire-700">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Completed
                 </span>
@@ -2360,7 +2356,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             </DialogTitle>
             <DialogDescription asChild>
               <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                <span className="inline-flex items-center gap-1.5 font-semibold text-[#147551]">
+                <span className="inline-flex items-center gap-1.5 font-semibold text-sapphire-700">
                   <Users className="h-4 w-4" aria-hidden />
                   {selectedSource?.trafficPotential}
                 </span>
@@ -2376,7 +2372,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 asChild
-                className="h-12 flex-1 rounded-xl bg-[#147551] text-base font-semibold text-white hover:bg-[#0f5c3e]"
+                className="h-12 flex-1 rounded-xl bg-sapphire-500 text-base font-semibold text-white hover:bg-sapphire-700"
               >
                 <a href={selectedSource?.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="mr-2 h-4 w-4" />
@@ -2386,10 +2382,10 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               <Button
                 onClick={() => selectedSource && handleMarkComplete(selectedSource.id)}
                 variant="outline"
-                className="h-12 rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700 sm:min-w-[11rem]"
+                className="h-12 rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold !text-ink hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 sm:min-w-[11rem]"
                 disabled={selectedSource ? completedSources.has(selectedSource.id) : false}
               >
-                <CheckCircle2 className="mr-2 h-4 w-4 text-[#147551]" />
+                <CheckCircle2 className="mr-2 h-4 w-4 text-sapphire-700" />
                 {selectedSource && completedSources.has(selectedSource.id) ? "Completed" : "Mark complete"}
               </Button>
             </div>
@@ -2402,7 +2398,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                     key={index}
                     className="flex gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white p-3.5"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#147551] text-xs font-semibold text-white">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sapphire-500 text-xs font-semibold text-white">
                       {index + 1}
                     </span>
                     <p className="pt-0.5 text-sm leading-relaxed text-ink">{instruction}</p>
@@ -2427,8 +2423,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                 }}
                 className={`mt-4 h-11 w-full rounded-xl font-semibold text-white sm:w-auto ${
                   selectedSource && copiedSourceId === selectedSource.id
-                    ? "bg-[#147551] hover:bg-[#147551]"
-                    : "bg-[#147551] hover:bg-[#0f5c3e]"
+                    ? "bg-sapphire-500 hover:bg-sapphire-500"
+                    : "bg-sapphire-500 hover:bg-sapphire-700"
                 }`}
               >
                 {selectedSource && copiedSourceId === selectedSource.id ? (
@@ -2446,8 +2442,8 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             </div>
 
             {!pageUrl ? (
-              <div className="rounded-xl border border-[#F5D998] bg-[#FFF3D6] px-4 py-3">
-                <p className="text-sm leading-relaxed text-[#7A4F0C]">
+              <div className="rounded-xl border border-warning/30 bg-warning-light px-4 py-3">
+                <p className="text-sm leading-relaxed text-warning">
                   Save your page URL above first so this description includes your live link.
                 </p>
               </div>
@@ -2455,6 +2451,6 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </PremiumPageLayout>
   )
 }

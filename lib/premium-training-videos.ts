@@ -4,6 +4,8 @@ import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getVideoThumbnail, type VideoThumbnailSlug } from "@/lib/video-thumbnails"
 
 export const PREMIUM_TRAINING_VIMEO_IDS = {
+  /** Swap in the real Vimeo ID when the Done-For-You Profit training is uploaded. */
+  dfyProfit: "",
   accelerator: "1214134021",
   recurringStreams: "1214136849",
   socialPayouts: "1214140189",
@@ -23,13 +25,23 @@ export type PremiumTrainingVideo = {
   description: string
   duration: string
   vimeoId: string
-  thumbnailSlug: VideoThumbnailSlug
+  thumbnailSlug?: VideoThumbnailSlug
   feature: string
   badge?: string
 }
 
 /** Flat roster for the Academy premium section — mindset then how-to per feature. */
 export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
+  {
+    slug: "done-for-you-profit",
+    moduleKey: "dfyProfit",
+    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Training`,
+    description:
+      "Watch how to paste one affiliate link, pick a niche, and get 5 comment-ready videos, a hosted authority article, and Facebook posts in one run.",
+    duration: "10 min",
+    vimeoId: PREMIUM_TRAINING_VIMEO_IDS.dfyProfit,
+    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
+  },
   {
     slug: "unlimited-mindset",
     moduleKey: "accelerator",
@@ -177,10 +189,12 @@ export function getPremiumTrainingVimeoId(key: PremiumTrainingKey) {
   return PREMIUM_TRAINING_VIMEO_IDS[key]
 }
 
+export function getPremiumHowToVideo(key: PremiumTrainingKey) {
+  return PREMIUM_TRAINING_VIDEOS.find((entry) => entry.moduleKey === key && !entry.badge)
+}
+
 export function getPremiumTrainingThumbnail(key: PremiumTrainingKey) {
-  const video = PREMIUM_TRAINING_VIDEOS.find(
-    (entry) => entry.moduleKey === key && !entry.badge,
-  )
-  if (!video) return null
+  const video = getPremiumHowToVideo(key)
+  if (!video?.thumbnailSlug) return null
   return getVideoThumbnail({ slug: video.thumbnailSlug })
 }

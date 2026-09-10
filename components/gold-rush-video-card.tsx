@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 const generateCtaClass =
-  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)] active:translate-y-0"
+  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
 
 type Props = {
   video: VideoOpportunity
@@ -53,8 +53,8 @@ function formatPublished(publishedAt: string) {
 
 function viralBarClass(score: number) {
   if (score >= 85) return "bg-gold-grad"
-  if (score >= 60) return "bg-gradient-to-r from-[#60a5fa] to-[#2563eb]"
-  return "bg-[#94a3b8]"
+  if (score >= 60) return "bg-gradient-to-r from-sapphire-300 to-sapphire-500"
+  return "bg-ink-6"
 }
 
 export function GoldRushVideoCard({
@@ -75,7 +75,7 @@ export function GoldRushVideoCard({
       className={cn(
         "glass-card overflow-hidden p-0 transition-[border-color,box-shadow] duration-200 hover:border-[var(--ds-line-sapphire)]",
         rank <= 3 && "accent-card",
-        hasComments && "border-[var(--ds-line-sapphire)] shadow-[0_8px_24px_-8px_rgba(52,120,246,0.35)]",
+        hasComments && "border-[var(--ds-line-sapphire)] shadow-[0_8px_24px_-8px_rgba(13,148,136,0.35)]",
       )}
     >
       <div className="flex gap-4 p-4 sm:gap-5 sm:p-5">
@@ -101,7 +101,7 @@ export function GoldRushVideoCard({
             <span
               className={cn(
                 "absolute bottom-1.5 left-1.5 flex h-6 min-w-6 items-center justify-center rounded-md px-1.5 text-[11px] font-bold tabular-nums shadow-sm sm:bottom-2 sm:left-2 sm:h-7 sm:min-w-7 sm:text-xs",
-                rank === 1 ? "bg-gold-grad text-white" : "bg-white/95 text-[#14213d]",
+                rank === 1 ? "bg-gold-grad text-white" : "bg-white/95 text-ink",
               )}
             >
               {rank}
@@ -118,7 +118,7 @@ export function GoldRushVideoCard({
           {rank === 1 || hasComments || !video.thumbnailUrl ? (
             <div className="mb-1 flex flex-wrap items-center gap-2">
               {rank === 1 ? (
-                <span className="inline-flex items-center rounded-full bg-[var(--gold-200)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#92600f]">
+                <span className="inline-flex items-center rounded-full bg-[var(--gold-200)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sapphire-700">
                   Top pick
                 </span>
               ) : null}
@@ -137,7 +137,7 @@ export function GoldRushVideoCard({
             </div>
           ) : null}
 
-          <h4 className="ds-h4 line-clamp-2 text-[1.05rem] leading-snug sm:text-[1.1875rem]">
+          <h4 className="line-clamp-2 !font-sans text-[1.05rem] font-semibold leading-snug tracking-tight text-ink sm:text-[1.1875rem]">
             {video.title}
           </h4>
           <p className="mt-1 truncate text-sm font-medium text-text-secondary">
@@ -146,12 +146,12 @@ export function GoldRushVideoCard({
           </p>
 
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-            <span className="inline-flex items-center gap-1.5 font-semibold text-[#14213d]">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
               <Eye className="h-4 w-4 text-sapphire-700" aria-hidden />
               {formatNumber(video.viewCount)}
               <span className="font-medium text-text-muted">views</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 font-semibold text-[#14213d]">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
               <TrendingUp className="h-4 w-4 text-sapphire-700" aria-hidden />
               {formatNumber(video.estimatedClicks)}
               <span className="inline-flex items-center gap-1 font-medium text-text-muted">
@@ -167,14 +167,14 @@ export function GoldRushVideoCard({
           <div className="mt-3">
             <div className="mb-1.5 flex items-center justify-between gap-2">
               <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-secondary">
-                <Flame className="h-3.5 w-3.5 text-[#b7791f]" aria-hidden />
+                <Flame className="h-3.5 w-3.5 text-sapphire-700" aria-hidden />
                 Viral score
                 <InfoHint
                   side="bottom"
                   label="How likely this video is to keep getting lots of views. A higher number means more people may see your comment."
                 />
               </p>
-              <p className="text-xs font-bold tabular-nums text-[#14213d]">
+              <p className="text-xs font-bold tabular-nums text-ink">
                 {video.viralScore}
                 <span className="font-medium text-text-muted">/100</span>
               </p>
@@ -215,7 +215,7 @@ export function GoldRushVideoCard({
             <Button
               asChild
               variant="outline"
-              className="glass h-12 w-12 shrink-0 border-2 border-[var(--border)] px-0 font-bold text-[#14213d] sm:h-14 sm:w-auto sm:px-4"
+              className="glass h-12 w-12 shrink-0 border-2 border-[var(--border)] px-0 font-bold text-ink sm:h-14 sm:w-auto sm:px-4"
             >
               <a href={watchUrl} target="_blank" rel="noopener noreferrer" aria-label="Open video on YouTube">
                 <ExternalLink className="h-5 w-5" />
@@ -232,11 +232,11 @@ export function GoldRushVideoCard({
           className="space-y-3 border-t border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] px-4 py-5 sm:px-5"
         >
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-lg font-semibold text-[#14213d] sm:text-xl">Your generated comments</h3>
+            <h3 className="text-lg font-semibold text-ink sm:text-xl">Your generated comments</h3>
             <Button
               asChild
               size="sm"
-              className="h-9 shrink-0 rounded-lg bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-3 font-bold hover:from-[#1D4ED8] hover:to-[#1E40AF]"
+              className="h-9 shrink-0 rounded-lg bg-sapphire-500 px-3 font-bold text-white hover:bg-sapphire-700"
             >
               <a href={watchUrl} target="_blank" rel="noopener noreferrer">
                 <Youtube className="h-4 w-4 sm:mr-1.5" />
@@ -255,7 +255,7 @@ export function GoldRushVideoCard({
                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
                     {index + 1}
                   </span>
-                  <p className="min-w-0 flex-1 text-sm font-medium leading-relaxed text-[#14213d] sm:text-base">
+                  <p className="min-w-0 flex-1 text-sm font-medium leading-relaxed text-ink sm:text-base">
                     {comment}
                   </p>
                 </div>
@@ -266,8 +266,8 @@ export function GoldRushVideoCard({
                   className={cn(
                     "h-9 w-full shrink-0 rounded-lg px-3 font-bold transition-all sm:w-auto",
                     copiedIndex === `${video.videoId}-${index}`
-                      ? "bg-[#16875c] text-white hover:bg-[#16875c]"
-                      : "bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white hover:from-[#1D4ED8] hover:to-[#1D4ED8]",
+                      ? "bg-success text-white hover:bg-success"
+                      : "bg-sapphire-500 text-white hover:bg-sapphire-700",
                   )}
                 >
                   {copiedIndex === `${video.videoId}-${index}` ? (

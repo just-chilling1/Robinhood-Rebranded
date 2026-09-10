@@ -4,15 +4,13 @@ import type React from "react"
 
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { CheckCircle2 } from "lucide-react"
-import { BrandLogo } from "@/components/brand-logo"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { brand } from "@/config/brand.config"
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
@@ -77,92 +75,78 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md">
-        <Card className="glass-strong glow-blue border border-[var(--border)]">
-          <CardHeader className="space-y-3">
-            <div className="flex items-center justify-center mb-2 overflow-hidden rounded-xl">
-              <BrandLogo variant="wordmark" width={240} priority />
-            </div>
-            <CardTitle className="text-2xl font-bold text-ink text-center tracking-tight">
-              Choose New Password
-            </CardTitle>
-            <CardDescription className="text-sm text-ink-3 text-center font-medium">
-              Enter a new password for your {PRODUCT_NAME} account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {sessionValid === null ? (
-              <p className="text-center text-sm text-ink-3 font-medium">Verifying reset link...</p>
-            ) : success ? (
-              <div className="space-y-4 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#DDF7EC]">
-                  <CheckCircle2 className="h-6 w-6 text-[#16875C]" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-base font-semibold text-ink">Password updated</p>
-                  <p className="text-sm text-ink-3">Redirecting you to the dashboard...</p>
-                </div>
-              </div>
-            ) : !sessionValid ? (
-              <div className="space-y-4 text-center">
-                <div className="p-3 rounded-lg bg-destructive/15 border border-destructive/30">
-                  <p className="text-sm text-destructive font-medium">
-                    Your reset link is invalid or has expired. Please request a new one.
-                  </p>
-                </div>
-                <Button asChild className="w-full h-10 font-semibold rounded-lg bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white">
-                  <Link href="/auth/forgot-password">Request New Reset Link</Link>
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-ink">
-                    New Password
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Minimum 6 characters"
-                    required
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-ink">
-                    Confirm Password
-                  </Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    required
-                    minLength={6}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="h-10 border-[1.5px] border-[var(--border-strong)] focus:border-primary rounded-lg"
-                  />
-                </div>
-                {error && (
-                  <div className="p-3 rounded-lg bg-destructive/15 border border-destructive/30">
-                    <p className="text-sm text-destructive font-medium">{error}</p>
-                  </div>
-                )}
-                <Button
-                  type="submit"
-                  className="w-full h-10 font-semibold glow-blue bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:-translate-y-px hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white rounded-lg transition-all duration-300"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Updating password..." : "Update Password"}
-                </Button>
-              </form>
-            )}
-          </CardContent>
-        </Card>
+    <div className="flex w-full flex-col gap-4">
+      <div className="text-center">
+        <h1 className="ds-h2 text-ink">Choose New Password</h1>
+        <p className="mt-1 text-sm font-medium text-ink-3">
+          Enter a new password for your {brand.productName} account
+        </p>
       </div>
+
+      {sessionValid === null ? (
+        <p className="text-center text-sm font-medium text-ink-3">Verifying reset link...</p>
+      ) : success ? (
+        <div className="space-y-4 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ds-offer-green-100)]">
+            <CheckCircle2 className="h-6 w-6 text-sapphire-700" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-base font-semibold text-ink">Password updated</p>
+            <p className="text-sm text-ink-3">Redirecting you to the dashboard...</p>
+          </div>
+        </div>
+      ) : !sessionValid ? (
+        <div className="space-y-4 text-center">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
+            <p className="text-sm font-medium text-destructive">
+              Your reset link is invalid or has expired. Please request a new one.
+            </p>
+          </div>
+          <Button asChild className="btn-primary h-12 w-full font-semibold">
+            <Link href="/auth/forgot-password">Request New Reset Link</Link>
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-medium text-ink">
+              New Password
+            </Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Minimum 6 characters"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-base h-12"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword" className="text-sm font-medium text-ink">
+              Confirm Password
+            </Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              required
+              minLength={6}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="input-base h-12"
+            />
+          </div>
+          {error && (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
+              <p className="text-sm font-medium text-destructive">{error}</p>
+            </div>
+          )}
+          <Button type="submit" className="btn-primary h-12 w-full font-semibold" disabled={isLoading}>
+            {isLoading ? "Updating password..." : "Update Password"}
+          </Button>
+        </form>
+      )}
     </div>
   )
 }

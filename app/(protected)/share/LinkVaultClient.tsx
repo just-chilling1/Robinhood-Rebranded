@@ -172,7 +172,7 @@ export default function LinkVaultClient() {
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="space-y-4 text-center">
           <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-          <p className="text-lg font-bold text-[#486581]">Loading your links...</p>
+          <p className="text-lg font-bold text-ink-4">Loading your links...</p>
         </div>
       </div>
     )
@@ -215,7 +215,7 @@ export default function LinkVaultClient() {
           <h2 className="ds-h3">{editingId ? "Edit your money link" : "Add your money link"}</h2>
           <div className="grid gap-5 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="vault-niche" className="font-bold text-[#102A43]">
+              <Label htmlFor="vault-niche" className="font-bold text-ink">
                 Niche / category
               </Label>
               <Input
@@ -227,7 +227,7 @@ export default function LinkVaultClient() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="vault-offer" className="font-bold text-[#102A43]">
+              <Label htmlFor="vault-offer" className="font-bold text-ink">
                 Offer name
               </Label>
               <Input
@@ -241,7 +241,7 @@ export default function LinkVaultClient() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vault-url" className="font-bold text-[#102A43]">
+            <Label htmlFor="vault-url" className="font-bold text-ink">
               Your affiliate link
             </Label>
             <Input
@@ -255,7 +255,7 @@ export default function LinkVaultClient() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vault-notes" className="font-bold text-[#102A43]">
+            <Label htmlFor="vault-notes" className="font-bold text-ink">
               Notes (optional)
             </Label>
             <Textarea
@@ -295,13 +295,13 @@ export default function LinkVaultClient() {
                 <article
                   className={cn(
                     "accent-card overflow-hidden rounded-2xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-surface)]",
-                    "shadow-[0_8px_24px_-10px_rgba(52,120,246,0.28)] transition-[border-color,box-shadow] duration-200",
-                    "hover:border-sapphire-500/40 hover:shadow-[0_12px_28px_-10px_rgba(52,120,246,0.38)]",
+                    "shadow-[0_8px_24px_-10px_rgba(13,148,136,0.28)] transition-[border-color,box-shadow] duration-200",
+                    "hover:border-sapphire-500/40 hover:shadow-[0_12px_28px_-10px_rgba(13,148,136,0.38)]",
                   )}
                 >
                   <div className="bg-gradient-to-br from-[var(--ds-sapphire-100)] via-white to-[var(--ds-sapphire-100)]/40 p-5 sm:p-6">
                     <div className="flex items-start gap-3.5">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#60a5fa] to-[#1d4ed8] text-white shadow-[var(--ds-shadow-sapphire)]">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sapphire-300 to-[#1d4ed8] text-white shadow-[var(--ds-shadow-sapphire)]">
                         <Link2 className="h-5 w-5" aria-hidden />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -348,7 +348,7 @@ export default function LinkVaultClient() {
                             "h-10 shrink-0 rounded-lg px-4 font-bold shadow-sm sm:min-w-[7.5rem]",
                             copied
                               ? "bg-[#16875c] text-white hover:bg-[#16875c]"
-                              : "bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white hover:from-[#1D4ED8] hover:to-[#1E40AF]",
+                              : "bg-gradient-to-r from-primary to-primary-hover text-white hover:from-primary-hover hover:to-primary-hover",
                           )}
                         >
                           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -398,7 +398,7 @@ export default function LinkVaultClient() {
 
       <section className="rounded-2xl border border-[var(--ds-line)] bg-[var(--ds-surface)] p-4 shadow-card sm:px-5">
         <p className="mb-3 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-wider text-ink-4">
-          <Flame className="h-4 w-4 text-[#2563EB]" />
+          <Flame className="h-4 w-4 text-sapphire-500" />
           Link Vault Pro Tips
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -412,13 +412,13 @@ export default function LinkVaultClient() {
       </section>
 
       <Dialog open={Boolean(deleteId)} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent className="glass-strong border-2 border-[#C53030]/40 text-[#102A43] sm:max-w-md">
+        <DialogContent className="glass-strong border-2 border-[#C53030]/40 text-ink sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl font-black text-[#102A43]">
+            <DialogTitle className="flex items-center gap-2 text-xl font-black text-ink">
               <AlertTriangle className="h-5 w-5 text-[#C53030]" />
               Delete this link?
             </DialogTitle>
-            <DialogDescription className="text-[#486581]">
+            <DialogDescription className="text-ink-4">
               {deletingLink
                 ? `This will remove “${deletingLink.offer_name}” from Link Vault. Gold Rush won’t offer it as a saved link anymore.`
                 : "This will permanently remove this affiliate link."}

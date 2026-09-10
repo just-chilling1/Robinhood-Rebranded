@@ -1,25 +1,26 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { brand } from "@/config/brand.config"
 import { display, sans } from "@/lib/fonts"
+import { AppProviders } from "@/components/layout/AppProviders"
 import "./globals.css"
 
 export const viewport: Viewport = {
-  themeColor: "#d9e4f2",
+  themeColor: brand.colors.page,
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
 }
 
 export const metadata: Metadata = {
-  title: `${PRODUCT_NAME} - AI-Powered YouTube Engagement Tool`,
-  description: "Advanced AI system that finds trending YouTube Shorts and generates high-quality engagement comments for maximum reach.",
+  title: brand.metadata.title,
+  description: brand.metadata.description,
   generator: "v0.app",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: PRODUCT_NAME,
+    title: brand.productName,
   },
   robots: {
     index: false,
@@ -35,8 +36,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${sans.variable} ${display.variable} light`} style={{ colorScheme: "light" }}>
-      <body className="font-sans antialiased">
-        {children}
+      <body className="antialiased selection:bg-sapphire-200">
+        <AppProviders>{children}</AppProviders>
         <Analytics />
       </body>
     </html>

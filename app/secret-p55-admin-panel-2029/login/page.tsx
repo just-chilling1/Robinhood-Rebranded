@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
             )}
 
             <Alert className="bg-[#E1F2FB] border-[var(--border)]">
-              <AlertDescription className="text-[#1E40AF] text-sm">
+              <AlertDescription className="text-sapphire-700 text-sm">
                 ✓ Admin credentials are pre-configured. Simply click the button below to access the admin panel.
               </AlertDescription>
             </Alert>
@@ -64,8 +64,8 @@ export default function AdminLoginPage() {
               {loading ? "Authenticating..." : "🔓 Access Admin Panel"}
             </Button>
 
-            <p className="text-xs text-center text-[#486581] mt-4">
-              Logged in as: <span className="text-[#102A43] font-medium">{email}</span>
+            <p className="text-xs text-center text-ink-4 mt-4">
+              Logged in as: <span className="text-ink font-medium">{email}</span>
             </p>
           </form>
         </CardContent>

@@ -9,7 +9,8 @@ import { DashboardVideoCard } from "@/components/dashboard-video-card"
 import { BonusTrainingCard } from "@/components/bonus-training-card"
 import { BookOpen, Brain, Play } from "lucide-react"
 import { DASHBOARD_TRAINING_VIDEOS } from "@/lib/dashboard-training-videos"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { brand } from "@/config/brand.config"
+import { dashboard } from "@/config/dashboard.config"
 
 /** Never serve a cached dashboard shell (avoids stale UI after deploys). */
 export const dynamic = "force-dynamic"
@@ -38,55 +39,60 @@ export default async function DashboardPage() {
     const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : ""
 
     return (
-      <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-4">
-        <div className="space-y-8 xl:col-span-3">
-          <PageHeader
-            eyebrow="Home"
-            title={<>Welcome to {PRODUCT_NAME}{firstName ? `, ${firstName}` : ""}</>}
-            subtitle="Watch the three videos below in order — then jump into Gold Rush and start earning. The Academy is there whenever you want a deeper walkthrough."
-          />
+      <div className="page-container mx-auto w-full max-w-7xl">
+        <PageHeader
+          eyebrow={dashboard.eyebrow}
+          title={
+            <>
+              Welcome to {brand.productName}
+              {firstName ? `, ${firstName}` : ""}
+            </>
+          }
+          subtitle={dashboard.subtitle}
+        />
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Play className="h-7 w-7 text-slate-600" />
-              <h2 className="ds-h2">Start Here</h2>
+        <div className="grid grid-cols-1 gap-5 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <Play className="h-5 w-5 text-ink-3" strokeWidth={1.75} />
+                <h2 className="ds-h2">Start Here</h2>
+              </div>
+              <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[0]} />
             </div>
-            <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[0]} />
+
+            <BonusTrainingCard />
+
+            <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[1]} />
+
+            <BonusTrainingCard />
+
+            <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[2]} />
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/create"
+                className="btn-primary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-6 text-[15px]"
+              >
+                <Brain className="h-5 w-5" strokeWidth={1.75} />
+                Get Started Now with Gold Rush
+              </Link>
+              <Link
+                href="/training"
+                className="btn-secondary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-6 text-[15px]"
+              >
+                <BookOpen className="h-5 w-5" strokeWidth={1.75} />
+                Know More from the Academy
+              </Link>
+            </div>
           </div>
 
-          <BonusTrainingCard />
-
-          <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[1]} />
-
-          <BonusTrainingCard />
-
-          <DashboardVideoCard video={DASHBOARD_TRAINING_VIDEOS[2]} />
-
-          <div className="flex flex-col gap-3">
-            <Link
-              href="/create"
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-grad-sapphire px-8 text-sm font-bold text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-[0_10px_24px_-6px_rgba(37,99,235,0.65)]"
-            >
-              <Brain className="h-5 w-5" />
-              Get Started Now with Gold Rush
-            </Link>
-            <Link
-              href="/training"
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl border border-border-strong bg-card px-8 text-sm font-bold text-foreground shadow-card transition-[background-color,border-color,color,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700"
-            >
-              <BookOpen className="h-5 w-5" />
-              Know More from the Academy
-            </Link>
-          </div>
+          <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-8 xl:self-start">
+            <ContactSupportWidget />
+            <DashboardTipsWidget />
+            <PremiumUpgradesWidget />
+          </aside>
         </div>
-
-        <aside className="hidden min-w-0 space-y-6 xl:col-span-1 xl:block">
-          <ContactSupportWidget />
-
-          <DashboardTipsWidget />
-
-          <PremiumUpgradesWidget />
-        </aside>
       </div>
     )
   } catch (error) {

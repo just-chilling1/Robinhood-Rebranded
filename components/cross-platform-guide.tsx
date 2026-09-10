@@ -103,7 +103,7 @@ export function CrossPlatformGuide() {
                   "inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors",
                   selected === p.name
                     ? "bg-primary text-white shadow-[var(--ds-shadow-sapphire)]"
-                    : "border border-[var(--ds-line-strong)] bg-card text-ink hover:border-primary hover:bg-primary-light hover:text-sapphire-700",
+                    : "border border-[var(--ds-line-strong)] bg-card !text-ink hover:border-primary hover:bg-primary-light hover:!text-sapphire-700",
                 )}
               >
                 <p.icon size={15} aria-hidden />

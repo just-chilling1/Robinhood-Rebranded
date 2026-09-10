@@ -23,8 +23,12 @@ import {
 } from "lucide-react"
 import type { AffiliateLink } from "@/app/actions/affiliate-links"
 import { GenerationProgress } from "@/components/generation-progress"
-import { PageHeader } from "@/components/page-header"
-import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import {
+  PremiumControlCard,
+  PremiumFeatureBanner,
+  PremiumSteps,
+} from "@/components/premium-feature-chrome"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -55,10 +59,10 @@ const labelClassName =
   "mb-2 block text-xs font-semibold uppercase tracking-wide text-text-secondary"
 
 const primaryCtaClass =
-  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:bg-primary-hover hover:shadow-[var(--ds-shadow-sapphire-hover)]"
+  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
 
 const outlineCtaClass =
-  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
+  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-medium !text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 hover:shadow-hover"
 
 const STEPS = [
   {
@@ -158,7 +162,7 @@ function OfferLinkPicker({
         <span
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-            isPaste ? "bg-[var(--ds-offer-green-100)] text-[#147551]" : "bg-sapphire-200 text-sapphire-700",
+            isPaste ? "bg-[var(--ds-offer-green-100)] text-sapphire-700" : "bg-sapphire-200 text-sapphire-700",
           )}
         >
           {isPaste ? <PencilLine className="h-4 w-4" aria-hidden /> : <Link2 className="h-4 w-4" aria-hidden />}
@@ -251,8 +255,8 @@ function OfferLinkPicker({
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-colors",
                 isPaste
-                  ? "bg-[#147551] text-white"
-                  : "text-[#147551] hover:bg-[var(--ds-offer-green-100)]",
+                  ? "bg-sapphire-500 text-white"
+                  : "text-sapphire-700 hover:bg-[var(--ds-offer-green-100)]",
               )}
             >
               <PencilLine className="h-4 w-4 shrink-0" aria-hidden />
@@ -408,18 +412,11 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
   }, [activeAffiliateUrl])
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="mx-auto max-w-7xl space-y-8 pb-16"
+    <PremiumPageLayout
+      title={PREMIUM_FEATURE_LABELS.highTicketPayouts}
+      subtitle={`${HIGH_TICKET_ARTICLE_TARGET_COUNT} long-form authority articles — pick a Link Vault offer, preview with your affiliate link woven in, and publish on Medium, LinkedIn, Quora, or your own blog.`}
+      animate={false}
     >
-      <PageHeader
-        eyebrow="Premium"
-        title={PREMIUM_FEATURE_LABELS.highTicketPayouts}
-        subtitle={`${HIGH_TICKET_ARTICLE_TARGET_COUNT} long-form authority articles — pick a Link Vault offer, preview with your affiliate link woven in, and publish on Medium, LinkedIn, Quora, or your own blog.`}
-      />
-
       <PremiumVideoTutorial
         premiumKey="highTicketPayouts"
         vimeoId={getPremiumTrainingVimeoId("highTicketPayouts")}
@@ -438,23 +435,11 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
 
       <PremiumSteps title="Three steps to publish" steps={STEPS} />
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[220px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
-              <Link2 size={22} aria-hidden />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">Your offer</p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-white">Select your offer link</p>
-            </div>
-          </div>
-
-          <div className="flex-1 space-y-5 p-5 sm:p-7">
-            <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-              Previews weave this URL into every article CTA. You can switch offers anytime.
-            </p>
-
+      <PremiumControlCard
+        icon={Link2}
+        title="Select your offer link"
+        description="Previews weave this URL into every article CTA. You can switch offers anytime."
+      >
             {links.length === 0 && selectedLinkId !== PASTE_MODE ? (
               <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-surface-nested/70 px-5 py-8 text-center">
                 <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white text-sapphire-700 shadow-sm">
@@ -490,9 +475,9 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                 {selectedVaultLink && selectedLinkId !== PASTE_MODE ? (
                   <p
                     role="status"
-                    className="flex max-w-xl items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-[#147551]"
+                    className="flex max-w-xl items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-sapphire-700"
                   >
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" aria-hidden />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                     <span>
                       Link armed from Link Vault
                       {selectedVaultLink.niche ? ` · ${selectedVaultLink.niche}` : ""}. Previews will
@@ -522,9 +507,9 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                 {pastedLink.trim() ? (
                   <p
                     role="status"
-                    className="mt-3 flex items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-[#147551]"
+                    className="mt-3 flex items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-sapphire-700"
                   >
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" aria-hidden />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                     <span>Link ready — previews will weave this URL into each article.</span>
                   </p>
                 ) : (
@@ -578,9 +563,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                 {error}
               </p>
             ) : null}
-          </div>
-        </div>
-      </section>
+      </PremiumControlCard>
 
       <CrossPlatformGuide />
 
@@ -601,14 +584,14 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="scroll-mt-24 overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
+            className="scroll-mt-24 glass-card overflow-hidden p-0"
           >
-            <div className="flex items-start justify-between gap-3 border-b border-[var(--ds-line)] bg-ink px-5 py-4 text-white md:px-6">
+            <div className="flex items-start justify-between gap-3 bg-grad-sapphire px-5 py-4 text-white md:px-6">
               <div className="min-w-0">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">
+                <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-white/80">
                   {previewArticle.niche}
                 </p>
-                <h2 className="mt-1 text-lg font-semibold leading-snug text-white">{previewArticle.title}</h2>
+                <h2 className="mt-1 text-lg font-medium leading-snug text-white">{previewArticle.title}</h2>
                 <span className="mt-2 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-[12px] font-medium text-white">
                   {formatAngle(previewArticle.angle)}
                 </span>
@@ -616,7 +599,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
               <button
                 type="button"
                 onClick={() => setPreviewId(null)}
-                className="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/15 hover:text-white"
                 aria-label="Close preview"
               >
                 <X size={16} />
@@ -768,6 +751,6 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
           </div>
         ) : null}
       </section>
-    </motion.div>
+    </PremiumPageLayout>
   )
 }

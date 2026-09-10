@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,8 +18,12 @@ import {
 import { cn } from "@/lib/utils"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
-import { PageHeader } from "@/components/page-header"
-import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import {
+  PremiumControlCard,
+  PremiumFeatureBanner,
+  PremiumSteps,
+} from "@/components/premium-feature-chrome"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
@@ -45,10 +48,10 @@ const INSTANT_STEPS = [
 ] as const
 
 const primaryCtaClass =
-  "rounded-xl bg-primary font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:bg-primary-hover hover:shadow-[var(--ds-shadow-sapphire-hover)]"
+  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
 
 const outlineCtaClass =
-  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
+  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-medium text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
 
 const GUIDE_STEPS = [
   {
@@ -1001,13 +1004,10 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 pb-12">
-      <PageHeader
-        eyebrow="Premium"
-        title={`${PREMIUM_FEATURE_LABELS.instantIncome}`}
-        subtitle="Ready-to-post Facebook messages. Add your affiliate link once, copy a draft, and share it where the group rules allow."
-      />
-
+    <PremiumPageLayout
+      title={`${PREMIUM_FEATURE_LABELS.instantIncome}`}
+      subtitle="Ready-to-post Facebook messages. Add your affiliate link once, copy a draft, and share it where the group rules allow."
+    >
       <PremiumVideoTutorial
         premiumKey="recurringStreams"
         vimeoId={getPremiumTrainingVimeoId("recurringStreams")}
@@ -1026,43 +1026,27 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
       <PremiumSteps title="Three steps to post" steps={INSTANT_STEPS} />
 
-      <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[220px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
-              <Facebook size={22} aria-hidden />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">Playbook</p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-white">Post in Facebook groups</p>
-            </div>
-          </div>
-
-          <div className="flex-1 space-y-5 p-5 sm:p-7">
-            <div>
-              <h2 className="text-xl font-semibold text-ink sm:text-2xl">How to find and post in Facebook groups</h2>
-              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                Groups reward members who sound human. Read this once, then generate drafts and edit the first line
-                before you paste.
-              </p>
-            </div>
-
+      <PremiumControlCard
+        icon={Facebook}
+        title="How to find and post in Facebook groups"
+        description="Groups reward members who sound human. Read this once, then generate drafts and edit the first line before you paste."
+      >
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {GUIDE_STEPS.map((step) => {
                 const Icon = step.icon
                 return (
                   <div
                     key={step.num}
-                    className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5"
+                    className="rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-100/50 p-4 sm:p-5"
                   >
                     <div className="mb-3 flex items-center gap-2">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-grad-sapphire text-sm font-medium text-white">
                         {step.num}
                       </span>
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
                         <Icon className="h-4 w-4" aria-hidden />
                       </span>
-                      <h3 className="text-base font-semibold text-ink">{step.title}</h3>
+                      <h3 className="text-base font-medium text-ink">{step.title}</h3>
                     </div>
                     <ul className="space-y-2.5">
                       {step.items.map((item) => (
@@ -1078,51 +1062,34 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             </div>
 
             <div className="rounded-2xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-5">
-              <h3 className="text-base font-semibold text-ink">What to expect</h3>
+              <h3 className="text-base font-medium text-ink">What to expect</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink">
                 Outcomes depend on your niche, offer, group rules, and consistency. Treat these as starting drafts —
                 edit them so they sound like you and match each community&apos;s guidelines.
               </p>
               <ul className="mt-3 space-y-2">
                 <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" aria-hidden />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                   Post in a handful of relevant groups per day, spaced out — never dump the same text everywhere at
                   once.
                 </li>
                 <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" aria-hidden />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                   Reply quickly and helpfully so the thread stays visible without sounding salesy.
                 </li>
                 <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#147551]" aria-hidden />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                   Track hook, group, and time of day so you improve the message — not just the volume.
                 </li>
               </ul>
             </div>
-          </div>
-        </div>
-      </Card>
+      </PremiumControlCard>
 
-      <Card className="overflow-hidden border border-[var(--ds-line)] bg-card p-0">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[220px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
-              <PenLine size={22} aria-hidden />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">Generator</p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-white">Get your posts now</p>
-            </div>
-          </div>
-
-          <div className="flex-1 space-y-6 p-5 sm:p-7">
-            <div>
-              <h2 className="text-xl font-semibold text-ink sm:text-2xl">Personalize your drafts</h2>
-              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                Pick a niche, paste your affiliate link once, and we drop it into every ready-to-post story.
-              </p>
-            </div>
-
+      <PremiumControlCard
+        icon={PenLine}
+        title="Personalize your drafts"
+        description="Pick a niche, paste your affiliate link once, and we drop it into every ready-to-post story."
+      >
             <div className="space-y-3">
               <Label className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
                 Step 1 · Choose your niche
@@ -1151,7 +1118,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
             <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
                   <Link2 className="h-3.5 w-3.5" aria-hidden />
                 </span>
                 Where to get your affiliate link
@@ -1171,19 +1138,19 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               </p>
               <ol className="mt-3 space-y-2">
                 <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[11px] font-semibold text-white">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
                     1
                   </span>
                   Create a free account at digistore24.com (about two minutes).
                 </li>
                 <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[11px] font-semibold text-white">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
                     2
                   </span>
                   Browse your niche and click Promote on a product.
                 </li>
                 <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-[11px] font-semibold text-white">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
                     3
                   </span>
                   Copy your unique link and paste it below.
@@ -1202,7 +1169,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 htmlFor="affiliate-link"
                 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
               >
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-ink text-white">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
                   <Link2 size={12} aria-hidden />
                 </span>
                 Step 2 · Affiliate link
@@ -1238,27 +1205,27 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               {generating ? "Generating your posts…" : `Show me my ${filteredPosts.length} posts`}
               {!generating ? <ArrowRight className="ml-2 h-5 w-5" aria-hidden /> : null}
             </Button>
-          </div>
-        </div>
-      </Card>
+      </PremiumControlCard>
 
       {showPosts && affiliateLink && (
         <div ref={postsResultsRef} className="space-y-6">
-          <div className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card">
-            <div className="flex flex-col sm:flex-row">
-              <div className="flex items-center gap-3 bg-[#147551] px-5 py-4 text-white sm:w-[180px] sm:flex-col sm:items-start sm:justify-center">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#147551]">
-                  <CheckCircle2 className="h-4 w-4" aria-hidden />
+          <div className="glass-card overflow-hidden p-0">
+            <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+                  <CheckCircle2 className="h-5 w-5" aria-hidden />
                 </span>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/90">Ready to copy</p>
-              </div>
-              <div className="flex flex-1 flex-col justify-center p-5">
-                <h2 className="text-lg font-semibold text-ink sm:text-xl">
-                  Your {filteredPosts.length} posts are ready
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                  Copy a draft, rewrite the opening line in your voice, then paste where the group rules allow.
-                </p>
+                <div>
+                  <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
+                    Ready to copy
+                  </p>
+                  <h2 className="font-medium text-ink">
+                    Your {filteredPosts.length} posts are ready
+                  </h2>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-3">
+                    Copy a draft, rewrite the opening line in your voice, then paste where the group rules allow.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -1267,13 +1234,13 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
             {filteredPosts.map((post, index) => (
               <article
                 key={post.id}
-                className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
+                className="glass-card overflow-hidden p-0"
               >
                 <div className="flex flex-wrap items-center gap-2 border-b border-[var(--ds-line)] px-5 py-3">
-                  <span className="rounded-full bg-ink px-3 py-1 text-xs font-semibold text-white">
+                  <span className="rounded-full bg-grad-sapphire px-3 py-1 text-xs font-medium text-white">
                     Post #{index + 1}
                   </span>
-                  <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-3 py-1 text-xs font-semibold text-ink">
+                  <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-3 py-1 text-xs font-medium text-ink">
                     {post.niche}
                   </span>
                 </div>
@@ -1288,7 +1255,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     className={cn(
                       "mt-4 h-12 w-full text-base",
                       copiedId === post.id
-                        ? "rounded-xl bg-[#147551] font-semibold text-white hover:bg-[#147551]"
+                        ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
                         : primaryCtaClass,
                     )}
                     size="lg"
@@ -1311,6 +1278,6 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
           </div>
         </div>
       )}
-    </div>
+    </PremiumPageLayout>
   )
 }

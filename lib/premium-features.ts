@@ -37,8 +37,8 @@ export type PremiumFeature = {
 }
 
 /**
- * Single source of truth for the premium features shown in the
- * sidebar, mobile nav, and the dashboard Premium Upgrades widget.
+ * Premium feature catalog for dashboard widgets (includes descriptions).
+ * Nav hrefs/labels are owned by src/config/navigation.config.ts — keep in sync.
  */
 export const PREMIUM_FEATURES: PremiumFeature[] = [
   {

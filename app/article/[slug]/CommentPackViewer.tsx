@@ -89,7 +89,7 @@ export function CommentPackViewer({
         <Card className="glass-strong border-border">
           <CardHeader className="space-y-3">
             <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-[#1E40AF]" />
+              <Sparkles className="w-6 h-6 text-sapphire-700" />
               Quick Start (30 seconds)
             </CardTitle>
             <div className="grid gap-3 md:grid-cols-2">
@@ -103,7 +103,7 @@ export function CommentPackViewer({
               </div>
               <div className="glass rounded-xl p-4">
                 <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#1E40AF]" />
+                  <ShieldCheck className="w-4 h-4 text-sapphire-700" />
                   Keep it safe
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-1">
@@ -116,7 +116,7 @@ export function CommentPackViewer({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild className="h-12 font-bold glow-blue flex-1 bg-gradient-to-r from-[#2563EB] to-[#2563EB] text-white">
+              <Button asChild className="h-12 font-bold glow-blue flex-1 bg-gradient-to-r from-primary to-primary text-white">
                 <a href={pack.videoUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-5 h-5 mr-2" />
                   Open the Short

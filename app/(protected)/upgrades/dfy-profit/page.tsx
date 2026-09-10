@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { listAffiliateLinks, type AffiliateLink } from "@/app/actions/affiliate-links"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import DfyProfitClient from "./DfyProfitClient"
@@ -16,7 +17,7 @@ export default async function DfyProfitPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
+  if (!user && !isDevAuthBypassEnabled()) {
     redirect("/auth/login")
   }
 

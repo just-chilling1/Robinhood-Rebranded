@@ -9,13 +9,16 @@ import {
   Sparkles,
   Wallet,
 } from "lucide-react"
-import { PageHeader } from "@/components/page-header"
-import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import { PremiumControlCard, PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
+import { PremiumPageLayout } from "@/components/premium-page-layout"
+import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { GenerationProgress } from "@/components/generation-progress"
 import { SavedLinksPicker } from "@/components/saved-links-picker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
+import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 import type { AffiliateLink } from "@/app/actions/affiliate-links"
 import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/dfy-profit/types"
 import { DfyResultPanel } from "./DfyResultPanel"
@@ -189,11 +192,16 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 page-enter">
-      <PageHeader
-        eyebrow="Premium"
-        title="Done-For-You Profit"
-        subtitle="Paste your affiliate link, pick a niche, and get 5 videos to comment on, an authority article, and Facebook posts in one run."
+    <PremiumPageLayout
+      title="Done-For-You Profit"
+      subtitle="Paste your affiliate link, pick a niche, and get 5 videos to comment on, an authority article, and Facebook posts in one run."
+    >
+      <PremiumVideoTutorial
+        premiumKey="dfyProfit"
+        vimeoId={getPremiumTrainingVimeoId("dfyProfit")}
+        title={`${PREMIUM_FEATURE_LABELS.dfyProfit} Training`}
+        description="Watch how to paste your affiliate link, pick a niche, and generate 5 comment-ready videos, a hosted authority article, and Facebook posts in one run."
+        iframeTitle={`${PREMIUM_FEATURE_LABELS.dfyProfit} training video`}
       />
 
       <PremiumFeatureBanner
@@ -204,24 +212,13 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
         chip="Done-for-you"
       />
 
-      <PremiumSteps title="Three steps to a kit" steps={STEPS} />
+      <PremiumSteps title="How to Use This (3 Simple Steps)" steps={STEPS} />
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card">
-        <div className="border-b border-[var(--ds-line)] bg-ink p-5 text-white md:p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-ink">
-              <Wallet className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="font-semibold text-white">Generate your kit</p>
-              <p className="text-sm text-white/70">
-                One click creates 5 comment-ready videos, a hosted authority article, and Facebook posts.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-5 p-5 md:p-6">
+      <PremiumControlCard
+        icon={Wallet}
+        title="Generate your kit"
+        description="One click creates 5 comment-ready videos, a hosted authority article, and Facebook posts."
+      >
           <div className="space-y-2">
             <span className="block text-sm font-medium text-foreground">Affiliate link</span>
             {savedLinks.length > 0 ? (
@@ -272,13 +269,13 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
                     disabled={generating}
                     aria-pressed={selected}
                     onClick={() => setNiche(option)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-50 ${
+                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-medium transition-all disabled:opacity-50 ${
                       selected
-                        ? "bg-ink text-white"
-                        : "border border-[var(--ds-line)] bg-card text-text-secondary hover:border-ink/30 hover:text-ink"
+                        ? "bg-grad-sapphire text-white shadow-sapphire"
+                        : "border border-[var(--ds-line)] bg-card text-ink-3 hover:border-[var(--ds-line-sapphire)] hover:text-ink"
                     }`}
                   >
-                    {selected && <Check className="h-3.5 w-3.5 shrink-0 text-white" strokeWidth={2.75} aria-hidden />}
+                    {selected && <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.75} aria-hidden />}
                     {option}
                   </button>
                 )
@@ -296,13 +293,12 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
             type="button"
             disabled={generating}
             onClick={() => void handleGenerate()}
-            className="inline-flex h-11 items-center gap-2 bg-ink text-white hover:bg-ink/90"
+            className="btn-primary inline-flex h-11 items-center gap-2"
           >
             {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             {generating ? "Generating…" : videos.length > 0 ? "Generate another kit" : "Generate kit"}
           </Button>
-        </div>
-      </section>
+      </PremiumControlCard>
 
       {generating && (
         <GenerationProgress
@@ -330,6 +326,6 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       <p className="pb-4 text-center text-sm text-muted-foreground">
         Hosted articles appear in My Vault. Individual results vary.
       </p>
-    </div>
+    </PremiumPageLayout>
   )
 }

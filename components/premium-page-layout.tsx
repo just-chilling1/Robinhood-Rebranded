@@ -1,0 +1,64 @@
+"use client"
+
+import type { ReactNode } from "react"
+import { motion } from "framer-motion"
+import { clsx } from "clsx"
+import { PageHeader } from "@/components/page-header"
+import { brand } from "@/config/brand.config"
+
+interface PremiumPageLayoutProps {
+  title: ReactNode
+  subtitle?: ReactNode
+  children: ReactNode
+  footer?: ReactNode
+  actions?: ReactNode
+  className?: string
+  animate?: boolean
+}
+
+/** Blackbox premium page shell — page-container + Premium eyebrow + stacked sections. */
+export function PremiumPageLayout({
+  title,
+  subtitle,
+  children,
+  footer,
+  actions,
+  className,
+  animate = true,
+}: PremiumPageLayoutProps) {
+  const content = (
+    <div className={clsx("page-container", className)}>
+      <PageHeader eyebrow="Premium" title={title} subtitle={subtitle} actions={actions} />
+      {children}
+      {footer ?? <PremiumFooter />}
+    </div>
+  )
+
+  if (!animate) return content
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+      {content}
+    </motion.div>
+  )
+}
+
+export function PremiumFooter({ children }: { children?: ReactNode }) {
+  return (
+    <p className="mt-1 text-xs text-ink-4">{children ?? `Powered by ${brand.productName}.`}</p>
+  )
+}
+
+export function PremiumErrorAlert({ message, className }: { message: string; className?: string }) {
+  return (
+    <p
+      role="alert"
+      className={clsx(
+        "flex items-start gap-2 rounded-lg border border-[var(--danger)]/20 bg-[var(--danger)]/10 px-3 py-2.5 text-sm font-medium text-[var(--danger)]",
+        className,
+      )}
+    >
+      {message}
+    </p>
+  )
+}

@@ -11,7 +11,7 @@ export default function BonusTrainingPage() {
           title={
             <>
               Bonus training:{" "}
-              <span className="text-[#1E40AF] font-black">
+              <span className="text-sapphire-700 font-black">
                 grow with {PRODUCT_NAME}
               </span>
             </>
@@ -25,7 +25,7 @@ export default function BonusTrainingPage() {
             href="https://www.jvzoo.com/c/86517/415009"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full bg-gradient-to-r from-[#2563EB] to-[#2563EB] hover:from-[#1D4ED8] hover:to-[#1D4ED8] text-white text-2xl md:text-3xl font-black py-8 px-8 rounded-2xl text-center transition-all duration-300 shadow-2xl shadow-[#2563EB]/30 hover:shadow-[#2563EB]/50 hover:scale-105"
+            className="block w-full bg-gradient-to-r from-primary to-primary hover:from-primary-hover hover:to-primary-hover text-white text-2xl md:text-3xl font-black py-8 px-8 rounded-2xl text-center transition-all duration-300 shadow-2xl shadow-primary/30 hover:shadow-[var(--ds-sapphire-500)]/50 hover:scale-105"
           >
             Click Here To Access Training &gt;&gt;
           </Link>

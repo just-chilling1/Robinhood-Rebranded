@@ -1,6 +1,6 @@
 # Design System
 
-Blackbox structural patterns (cards, pills, nav states, premium panels) on this app’s **sapphire / sky** palette. Tokens live in `app/globals.css`. Do not invent decorative pink/purple hexes or import another app’s affiliate links.
+Blackbox structural patterns (cards, pills, nav states, premium panels) on this app’s **slate / teal** palette. Tokens live in `app/globals.css`. Do not invent decorative pink/purple hexes or import another app’s affiliate links.
 
 ---
 
@@ -8,43 +8,46 @@ Blackbox structural patterns (cards, pills, nav states, premium panels) on this 
 
 | Token | Value | Use |
 |---|---|---|
-| `--ds-canvas` / `--background` | `#d9e4f2` | App canvas |
-| `--ds-surface` / `--card` | `#ffffff` | Raised surfaces |
-| `--surface-nested` / `--muted` | `#e8f0fa` | Nested wells |
-| `--surface-hover` | `#dbeafe` | Ghost / subtle hover fill |
-| `--ds-sapphire-500` / `--primary` | `#2563eb` | CTAs, accents |
-| `--primary-hover` / `--ds-sapphire-700` | `#1d4ed8` | Hover fill, readable accent text, focus |
-| `--ds-sapphire-200` | `#dbeafe` | Soft wells / chips |
-| `--ds-ink` | `#0f172a` | Primary text |
-| `--ds-ink-3` | `#334155` | Secondary / muted |
-| `--ds-line` / `--ds-line-strong` | `#94a8c2` / `#64748b` | Borders |
-| `--ds-grad-sapphire` | `#60a5fa → #2563eb` | Primary buttons |
-| `--ds-grad-sapphire-hover` | `#3b82f6 → #1d4ed8` | Primary button hover |
-| `--ds-grad-ink` | navy→ink gradient | Active nav / ink buttons |
-| Semantic | emerald / red / amber | Status + offer banners only |
+| `--ds-canvas` / `--background` | `#F8FAFC` | App canvas |
+| `--ds-surface` / `--card` | `#FFFFFF` | Raised surfaces |
+| `--ds-surface-sub` / sidebar | `#FFFFFF` | Sidebar / soft wells |
+| `--surface-hover` | `#F1F5F9` | Ghost / subtle hover |
+| `--ds-sapphire-500` | `#0D9488` | Teal CTAs, accents (class names still say sapphire) |
+| `--ds-sapphire-700` / primary readable | `#0F766E` | Accent text, focus |
+| `--ds-sapphire-900` | `#134E4A` | Text on teal CTAs |
+| `--ds-ink` | `#040316` | Primary text |
+| `--ds-ink-3` / `--ds-ink-4` | `#334155` / `#475569` | Secondary / muted |
+| `--ds-line` / `--ds-line-strong` | `rgba(4,3,22,0.08/0.14)` | Borders |
+| `--ds-grad-sapphire` | `#14B8A6 → #0D9488` | Primary buttons |
+| `--ds-grad-ink` | navy gradient | Active nav / ink buttons |
+| Semantic | `#047857` / `#A32D2D` / `#B45309` | Status + offer banners |
 
 **Contrast**
-- Dark slate text on tinted sky canvas / white cards.
-- Filled sapphire CTAs use **white** labels.
-- Borders use `--ds-line` / `--ds-line-sapphire`.
+- Dark ink on slate canvas / white cards.
+- Filled teal CTAs use **white** labels.
+- Borders use soft ink lines.
 
-**Hover contract** (160ms ease, 1px lift, no brightness-only tricks)
-- Primary: `--ds-grad-sapphire-hover` + stronger sapphire shadow.
-- Outline / secondary: `--primary-light` fill, `--primary` border, `--ds-sapphire-700` text.
+**Hover contract** (160ms ease)
+- Primary: `--ds-grad-sapphire-hover` + teal shadow.
+- Outline / secondary: `--primary-light` fill, teal border/text.
 - Ghost: `--surface-hover` fill + ink text.
-- Ink: `--ds-grad-ink-hover` + 1px lift.
+- Ink: `--ds-grad-ink-hover`.
 - Respect `prefers-reduced-motion`: keep color changes, drop translate.
 
 ## 2. Typography
 
-Plus Jakarta Sans (UI + headings).
+Blackbox stack: **Inter** (UI) + **Fraunces** (headings). Metrics match Blackbox.
 
-| Class | Use |
+| Class | Spec |
 |---|---|
-| `.page-eyebrow` | Above every h1 |
-| `.ds-h1` | Page title — one per page via `PageHeader` |
-| `.ds-h2` / `.ds-h3` | Section / card |
-| `.ds-subtitle` | Page subtitle |
+| Body | Inter 16px / 400 / line-height 1.6 |
+| `.page-eyebrow` | 13px / 400 / tracking 0.12em / sapphire-700 (not uppercase) |
+| `.ds-h1` | Fraunces 34px / 400 / 1.2 / -0.012em |
+| `.ds-h2` | Fraunces 24px / 400 / 1.25 |
+| `.ds-h3` / `.ds-h4` | Fraunces 19px / 400 / 1.3 |
+| `.ds-subtitle` | 15px / 1.6 / max 60ch |
+
+`PageHeader`: `mb-4 sm:mb-5`, inner `gap-2`, actions top-aligned on `md`.
 
 ## 3. Components (Blackbox-shaped)
 
@@ -89,4 +92,4 @@ Plus Jakarta Sans (UI + headings).
 - Any affiliate/offer URLs belonging to this app
 - Vimeo IDs / API route logic
 - Cross-app link swaps
-- Brand color direction (sapphire/sky — not Blackbox cream/brass)
+- Brand color direction (slate/teal — not cream/gold)

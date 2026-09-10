@@ -2,7 +2,6 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import {
-  ArrowRight,
   Award,
   BookOpen,
   Check,
@@ -21,10 +20,14 @@ import {
   Tag,
   Unlock,
 } from "lucide-react"
-import { PageHeader } from "@/components/page-header"
+import {
+  PremiumControlCard,
+  PremiumFeatureBanner,
+  PremiumSteps,
+} from "@/components/premium-feature-chrome"
+import { PremiumErrorAlert, PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/client"
 import { PRODUCT_NAME } from "@/lib/brand"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
@@ -83,24 +86,24 @@ function EditionContentCard({ item }: { item: EditionContent }) {
   const Icon = EDITION_ICONS[item.icon]
 
   return (
-    <div className="rounded-xl border border-[var(--ds-line)] bg-card p-4 sm:p-5">
+    <div className="rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100/50 p-4 sm:p-5">
       <div className="flex items-start gap-4">
         <div className="relative shrink-0">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
             <Icon size={20} aria-hidden />
           </div>
-          <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[#F5D998] bg-[#FFF3D6] text-[#7A4F0C]">
+          <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-warning/30 bg-warning-light text-warning">
             <Lock size={10} aria-hidden />
           </div>
         </div>
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-            <span className="rounded-full border border-[#F5D998] bg-[#FFF3D6] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#7A4F0C]">
+            <h3 className="text-sm font-medium text-ink">{item.title}</h3>
+            <span className="rounded-full border border-warning/30 bg-warning-light px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning">
               Locked
             </span>
           </div>
-          <p className="text-xs leading-relaxed text-text-secondary">{item.description}</p>
+          <p className="text-xs leading-relaxed text-ink-3">{item.description}</p>
         </div>
       </div>
     </div>
@@ -119,11 +122,11 @@ function PendingActivationPanel({
   return (
     <div className="space-y-6 rounded-xl border border-[var(--ds-line)] bg-surface-nested p-6 sm:p-8">
       <div className="flex flex-col items-center space-y-4 text-center">
-        <div className="rounded-full bg-[#DDF7EC] p-3">
-          <CheckCircle2 className="h-6 w-6 text-[#147551]" aria-hidden />
+        <div className="rounded-full bg-[var(--ds-offer-green-100)] p-3">
+          <CheckCircle2 className="h-6 w-6 text-sapphire-700" aria-hidden />
         </div>
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#F5D998] bg-[#FFF3D6] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#7A4F0C]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning-light px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-warning">
             <Clock size={12} aria-hidden />
             Awaiting team activation
           </span>
@@ -253,16 +256,16 @@ export function LicenseRightsContent() {
   )
 
   const statusBadge = pending ? (
-    <div className="inline-flex items-center gap-2 rounded-full border border-[#F5D998] bg-[#FFF3D6] px-4 py-2.5">
-      <Clock size={15} className="text-[#7A4F0C]" aria-hidden />
-      <span className="text-xs font-bold uppercase tracking-wider text-[#7A4F0C]">
+    <div className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning-light px-4 py-2.5">
+      <Clock size={15} className="text-warning" aria-hidden />
+      <span className="text-xs font-bold uppercase tracking-wider text-warning">
         Pending review
       </span>
     </div>
   ) : (
-    <div className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-white shadow-[0_4px_14px_-6px_rgba(20,33,61,0.45)]">
+    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-100 px-4 py-2.5 text-sapphire-700">
       <Lock size={15} aria-hidden />
-      <span className="text-xs font-bold uppercase tracking-wider">Activation required</span>
+      <span className="text-xs font-medium uppercase tracking-wider">Activation required</span>
     </div>
   )
 
@@ -271,7 +274,7 @@ export function LicenseRightsContent() {
       label: "Edition status",
       value: pending ? "Pending review" : "Not activated",
       icon: pending ? Clock : Lock,
-      tone: pending ? "text-[#7A4F0C]" : "text-ink",
+      tone: pending ? "text-warning" : "text-ink",
     },
     {
       label: "Ticket subject",
@@ -290,14 +293,11 @@ export function LicenseRightsContent() {
   const licenseVideoId = getPremiumTrainingVimeoId("licenseRights")
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <PageHeader
-        eyebrow="Premium"
-        title={PREMIUM_FEATURE_LABELS.licenseRights}
-        subtitle={`Request activation from our support desk. Your ticket is filed as "${REQUEST_SUBJECT}" and the team unlocks this edition on your account.`}
-        actions={ready ? statusBadge : undefined}
-      />
-
+    <PremiumPageLayout
+      title={PREMIUM_FEATURE_LABELS.licenseRights}
+      subtitle={`Request activation from our support desk. Your ticket is filed as "${REQUEST_SUBJECT}" and the team unlocks this edition on your account.`}
+      actions={ready ? statusBadge : undefined}
+    >
       <PremiumVideoTutorial
         premiumKey="licenseRights"
         vimeoId={licenseVideoId}
@@ -306,241 +306,175 @@ export function LicenseRightsContent() {
         iframeTitle={`${PREMIUM_FEATURE_LABELS.licenseRights} training video`}
       />
 
-      <section className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex items-center gap-4 bg-ink px-5 py-5 text-white sm:px-6 lg:w-[240px] lg:flex-col lg:items-start lg:justify-center lg:py-8">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-ink">
-              <Award size={22} aria-hidden />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">
-                Included edition
-              </p>
-              <p className="mt-1 text-sm font-semibold leading-snug text-white">
-                Full Turnkey Reseller Rights
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-1 flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            <div className="space-y-1.5">
-              <p className="flex items-center gap-2 text-sm font-semibold text-ink">
-                <Sparkles size={15} className="text-sapphire-700" aria-hidden />
-                Premium reseller edition
-              </p>
-              <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-                Sell {PRODUCT_NAME} under your own brand with turnkey assets. Submit one request
-                below — our team handles activation manually.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-white">
-                <Tag size={13} aria-hidden />
-                Subject: {REQUEST_SUBJECT}
-              </span>
-              <a
-                href="#license-request"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white shadow-[var(--ds-shadow-sapphire)] transition-colors hover:bg-primary-hover"
-              >
-                Request access
-                <ArrowRight size={13} aria-hidden />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PremiumFeatureBanner
+        icon={Award}
+        kicker="Included edition"
+        title="Full Turnkey Reseller Rights"
+        description={
+          <>
+            <span className="mb-1 flex items-center gap-2 font-medium text-ink">
+              <Sparkles size={15} className="text-sapphire-700" aria-hidden />
+              Premium reseller edition
+            </span>
+            Sell {PRODUCT_NAME} under your own brand with turnkey assets. Submit one request below —
+            our team handles activation manually.
+          </>
+        }
+        chip={`Subject: ${REQUEST_SUBJECT}`}
+      />
 
-      <section className="space-y-4">
-        <div>
-          <p className="page-eyebrow mb-2">How it works</p>
-          <h2 className="text-xl font-medium text-ink">Three steps to activation</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {ACTIVATION_STEPS.map((step) => (
-            <div
-              key={step.num}
-              className="rounded-xl border border-[var(--ds-line)] bg-card p-5 sm:p-6"
-            >
-              <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
-                {step.num}
-              </span>
-              <h3 className="text-base font-semibold text-ink">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PremiumSteps title="Three steps to activation" steps={ACTIVATION_STEPS} />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {overviewStats.map((stat) => (
-          <Card key={stat.label} className="border-border bg-card">
-            <CardContent className="p-4 sm:p-5">
-              <div className="mb-2 flex items-center gap-2">
-                <stat.icon className={cn("h-4 w-4", stat.tone)} aria-hidden />
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                  {stat.label}
-                </span>
-              </div>
-              <p className="text-lg font-semibold text-ink">{stat.value}</p>
-            </CardContent>
-          </Card>
+          <div key={stat.label} className="glass-card p-4 sm:p-5">
+            <div className="mb-2 flex items-center gap-2">
+              <stat.icon className={cn("h-4 w-4", stat.tone)} aria-hidden />
+              <span className="text-[11px] font-medium uppercase tracking-wider text-ink-4">
+                {stat.label}
+              </span>
+            </div>
+            <p className="text-lg font-medium text-ink">{stat.value}</p>
+          </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
         <div className="scroll-mt-8 xl:col-span-7" id="license-request">
-          <Card className="border-border bg-card">
-            <CardHeader className="pb-2">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="shrink-0 rounded-xl bg-ink p-2.5 text-white">
-                  <FileText className="h-5 w-5" />
-                </div>
+          <PremiumControlCard
+            icon={FileText}
+            title="Request activation"
+            description={`We send your message to support with the title "${REQUEST_SUBJECT}".`}
+          >
+            {!ready ? (
+              <FormSkeleton />
+            ) : pending ? (
+              <PendingActivationPanel
+                email={pending.email}
+                viaMailto={viaMailto}
+                onReset={handleReset}
+              />
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="min-w-0">
-                  <CardTitle className="text-sm font-semibold uppercase tracking-widest text-ink">
-                    Request activation
-                  </CardTitle>
-                  <p className="mt-1 text-sm text-text-secondary">
-                    We send your message to support with the title &quot;{REQUEST_SUBJECT}&quot;.
+                  <label htmlFor="license-rights-email" className={labelClassName}>
+                    Your email
+                  </label>
+                  <input
+                    id="license-rights-email"
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    disabled={formState === "submitting"}
+                    className={fieldClassName}
+                  />
+                </div>
+
+                <div className="min-w-0">
+                  <label htmlFor="license-rights-message" className={labelClassName}>
+                    Your message
+                  </label>
+                  <textarea
+                    id="license-rights-message"
+                    name="message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                    disabled={formState === "submitting"}
+                    rows={6}
+                    className={`${fieldClassName} min-h-[148px] resize-y`}
+                  />
+                </div>
+
+                {formState === "error" && errorMessage ? (
+                  <PremiumErrorAlert message={errorMessage} />
+                ) : null}
+
+                <div className="rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100/70 px-4 py-3">
+                  <p className="text-xs leading-relaxed text-ink-3">
+                    <span className="font-medium text-ink">What happens next:</span> Support
+                    receives your ticket, verifies your purchase, and replies when the reseller
+                    license is ready. Check spam if you don&apos;t hear back within 48 hours.
                   </p>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4 pb-6">
-              {!ready ? (
-                <FormSkeleton />
-              ) : pending ? (
-                <PendingActivationPanel
-                  email={pending.email}
-                  viaMailto={viaMailto}
-                  onReset={handleReset}
-                />
-              ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                  <div className="min-w-0">
-                    <label htmlFor="license-rights-email" className={labelClassName}>
-                      Your email
-                    </label>
-                    <input
-                      id="license-rights-email"
-                      type="email"
-                      name="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                      disabled={formState === "submitting"}
-                      className={fieldClassName}
-                    />
-                  </div>
 
-                  <div className="min-w-0">
-                    <label htmlFor="license-rights-message" className={labelClassName}>
-                      Your message
-                    </label>
-                    <textarea
-                      id="license-rights-message"
-                      name="message"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      required
-                      disabled={formState === "submitting"}
-                      rows={6}
-                      className={`${fieldClassName} min-h-[148px] resize-y`}
-                    />
-                  </div>
+                <Button type="submit" disabled={formState === "submitting"} className="min-h-[46px] w-full">
+                  {formState === "submitting" ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Send License Rights request
+                    </span>
+                  )}
+                </Button>
 
-                  {formState === "error" && errorMessage ? (
-                    <p className="text-sm text-red-600">{errorMessage}</p>
-                  ) : null}
-
-                  <div className="rounded-xl border border-[var(--ds-line)] bg-surface-nested px-4 py-3">
-                    <p className="text-xs leading-relaxed text-text-secondary">
-                      <span className="font-semibold text-ink">What happens next:</span> Support
-                      receives your ticket, verifies your purchase, and replies when the reseller
-                      license is ready. Check spam if you don&apos;t hear back within 48 hours.
+                <div className="flex gap-3 rounded-xl border border-[var(--ds-line)] bg-surface-nested px-3 py-3">
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-ink-3" aria-hidden />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs leading-snug text-ink-3">
+                      Form not working? Copy our support email:
                     </p>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={formState === "submitting"}
-                    className="min-h-[46px] w-full"
-                  >
-                    {formState === "submitting" ? (
-                      <span className="inline-flex items-center justify-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Sending...
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center justify-center gap-2">
-                        <Send className="h-4 w-4" />
-                        Send License Rights request
-                      </span>
-                    )}
-                  </Button>
-
-                  <div className="flex gap-3 rounded-xl border border-[var(--ds-line)] bg-surface-nested px-3 py-3">
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" aria-hidden />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs leading-snug text-text-secondary">
-                        Form not working? Copy our support email:
-                      </p>
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => void handleCopyEmail()}
-                          className="break-all text-left text-sm font-semibold text-sapphire-700 hover:underline"
-                        >
-                          {SUPPORT_EMAIL}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => void handleCopyEmail()}
-                          className="inline-flex items-center gap-1 rounded-md border border-[var(--ds-line)] bg-card px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-text-secondary transition-colors hover:border-sapphire-700 hover:text-sapphire-700"
-                        >
-                          {copiedEmail ? (
-                            <>
-                              <Check size={12} aria-hidden />
-                              Copied
-                            </>
-                          ) : (
-                            <>
-                              <Copy size={12} aria-hidden />
-                              Copy
-                            </>
-                          )}
-                        </button>
-                      </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyEmail()}
+                        className="break-all text-left text-sm font-medium text-sapphire-700 hover:underline"
+                      >
+                        {SUPPORT_EMAIL}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyEmail()}
+                        className="inline-flex items-center gap-1 rounded-md border border-[var(--ds-line)] bg-card px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-ink-3 transition-colors hover:border-sapphire-700 hover:text-sapphire-700"
+                      >
+                        {copiedEmail ? (
+                          <>
+                            <Check size={12} aria-hidden />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12} aria-hidden />
+                            Copy
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
-                </form>
-              )}
-            </CardContent>
-          </Card>
+                </div>
+              </form>
+            )}
+          </PremiumControlCard>
         </div>
 
         <div className="xl:col-span-5">
-          <Card className="h-full border-border bg-card">
-            <CardContent className="p-5 sm:p-6">
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-white">
-                  <Unlock size={18} aria-hidden />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-ink">What you unlock</h2>
-                  <p className="text-sm text-text-secondary">
-                    {EDITION_CONTENTS.length} deliverables included after activation
-                  </p>
-                </div>
+          <section className="glass-card h-full p-5 sm:p-6">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+                <Unlock size={18} aria-hidden />
               </div>
-              <div className="space-y-3">
-                {EDITION_CONTENTS.map((item) => (
-                  <EditionContentCard key={item.id} item={item} />
-                ))}
+              <div>
+                <h2 className="text-lg font-medium text-ink">What you unlock</h2>
+                <p className="text-sm text-ink-3">
+                  {EDITION_CONTENTS.length} deliverables included after activation
+                </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="space-y-3">
+              {EDITION_CONTENTS.map((item) => (
+                <EditionContentCard key={item.id} item={item} />
+              ))}
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   )
 }

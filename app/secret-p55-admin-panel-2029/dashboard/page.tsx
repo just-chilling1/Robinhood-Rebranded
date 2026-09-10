@@ -117,8 +117,8 @@ export default function AdminDashboardPage() {
               <Shield className="h-6 w-6 text-red-500" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#102A43]">{PRODUCT_NAME} Admin Panel</h1>
-              <p className="text-sm text-[#486581]">User Management System</p>
+              <h1 className="text-2xl font-bold text-ink">{PRODUCT_NAME} Admin Panel</h1>
+              <p className="text-sm text-ink-4">User Management System</p>
             </div>
           </div>
           <Button
@@ -135,14 +135,14 @@ export default function AdminDashboardPage() {
         {message && (
           <Alert
             variant={message.type === "error" ? "destructive" : "default"}
-            className={message.type === "success" ? "border-[#DDF7EC] bg-[#DDF7EC]" : ""}
+            className={message.type === "success" ? "border-[var(--ds-offer-green-100)] bg-[var(--ds-offer-green-100)]" : ""}
           >
             {message.type === "error" ? (
               <AlertCircle className="h-4 w-4" />
             ) : (
-              <CheckCircle className="h-4 w-4 text-[#16875C]" />
+              <CheckCircle className="h-4 w-4 text-sapphire-700" />
             )}
-            <AlertDescription className={message.type === "success" ? "text-[#16875C]" : ""}>
+            <AlertDescription className={message.type === "success" ? "text-sapphire-700" : ""}>
               {message.text}
             </AlertDescription>
           </Alert>
@@ -172,7 +172,7 @@ export default function AdminDashboardPage() {
               <Button
                 onClick={handleSearch}
                 disabled={loading || !searchEmail}
-                className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
+                className="bg-primary hover:bg-primary-hover text-white"
               >
                 {loading ? "Searching..." : "Search"}
               </Button>
@@ -192,17 +192,17 @@ export default function AdminDashboardPage() {
             <CardContent className="space-y-6">
               <div className="grid gap-4">
                 <div className="flex items-start gap-3">
-                  <Mail className="h-5 w-5 text-[#486581] mt-0.5" />
+                  <Mail className="h-5 w-5 text-ink-4 mt-0.5" />
                   <div>
-                    <p className="text-sm text-[#486581]">Email Address</p>
+                    <p className="text-sm text-ink-4">Email Address</p>
                     <p className="font-medium">{searchResult.email}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Calendar className="h-5 w-5 text-[#486581] mt-0.5" />
+                  <Calendar className="h-5 w-5 text-ink-4 mt-0.5" />
                   <div>
-                    <p className="text-sm text-[#486581]">Account Created</p>
+                    <p className="text-sm text-ink-4">Account Created</p>
                     <p className="font-medium">{formatDate(searchResult.created_at)}</p>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="border-[var(--border)] bg-card"
                   />
-                  <p className="text-xs text-[#486581]">
+                  <p className="text-xs text-ink-4">
                     This will immediately reset the user's password. No email verification required.
                   </p>
                 </div>
@@ -242,13 +242,13 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Warning Notice */}
-        <Card className="border-[#FFF3D6] bg-[#FFF3D6]">
+        <Card className="border-warning/30 bg-warning-light">
           <CardContent className="pt-6">
             <div className="flex gap-3">
-              <AlertCircle className="h-5 w-5 text-[#B7791F] flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-semibold text-[#B7791F]">Admin Notice</p>
-                <p className="text-sm text-[#486581]">
+                <p className="font-semibold text-warning">Admin Notice</p>
+                <p className="text-sm text-ink-4">
                   This panel provides direct access to user accounts. Use password reset functionality responsibly and
                   only when assisting legitimate support requests. All actions are logged.
                 </p>

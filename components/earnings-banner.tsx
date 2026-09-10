@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { FREE_TRAINING_URL } from "@/config/offers.config"
 
 export type BannerSize = "compact" | "prominent" | "full"
 
@@ -18,7 +19,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
   return (
     <div
       className={cn(
-        "earnings-banner-card relative w-full overflow-hidden border-[3px] border-[#b7791f] bg-gold-surface before:hidden",
+        "earnings-banner-card relative w-full overflow-hidden before:hidden",
         prominent ? "mb-0" : "mb-4",
         compact ? "rounded-xl" : "rounded-2xl",
       )}
@@ -37,7 +38,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Close banner"
-          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-[#486581] transition-colors hover:bg-white/50 hover:text-[#102A43]"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/50 hover:text-ink"
         >
           <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
         </button>
@@ -57,7 +58,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
 
         <h2
           className={cn(
-            "font-heading mx-auto font-black uppercase leading-tight text-[#102A43]",
+            "font-heading mx-auto font-black uppercase leading-tight text-ink",
             compact
               ? "mb-2 max-w-2xl text-sm md:text-base"
               : prominent
@@ -66,14 +67,14 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
           )}
         >
           Wake Up With An Extra{" "}
-          <span className="earnings-banner-accent text-[#92600f]">$1,000&ndash;$5,000</span>{" "}
+          <span className="earnings-banner-accent">$1,000&ndash;$5,000</span>{" "}
           In Your Bank Account Tomorrow
         </h2>
 
         {(prominent || !compact) && (
           <p
             className={cn(
-              "mx-auto font-bold leading-snug text-[#486581]",
+              "mx-auto font-bold leading-snug text-ink-4",
               prominent
                 ? "mb-5 max-w-2xl text-base md:text-lg"
                 : "mb-8 max-w-3xl text-lg md:text-2xl",
@@ -84,7 +85,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
         )}
 
         <Link
-          href="https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea"
+          href={FREE_TRAINING_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
