@@ -4,7 +4,6 @@ import { useState } from "react"
 import {
   Bookmark,
   ChevronDown,
-  ClipboardPaste,
   Copy,
   ExternalLink,
   Search,
@@ -35,8 +34,8 @@ const STEPS = [
     title: "Copy your affiliate link",
   },
   {
-    icon: ClipboardPaste,
-    title: "Paste it in the field below",
+    icon: Bookmark,
+    title: 'Paste it below and click "Save to Your Links"',
   },
 ] as const
 

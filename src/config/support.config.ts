@@ -1,8 +1,11 @@
 import { brand } from "./brand.config"
 import { FREE_TRAINING_URL } from "./offers.config"
 
-// Freshdesk inbox address (do not rename — mailbox is fixed on Freshdesk).
-export const SUPPORT_EMAIL = "Robinhood@neoai.freshdesk.com"
+// Freshdesk inbox — override with NEXT_PUBLIC_SUPPORT_EMAIL or SUPPORT_EMAIL.
+export const SUPPORT_EMAIL =
+  process.env.NEXT_PUBLIC_SUPPORT_EMAIL ||
+  process.env.SUPPORT_EMAIL ||
+  "wificode@neoai.freshdesk.com"
 export const SUPPORT_PORTAL_URL = "https://neoaifreshdesk.freshdesk.com/"
 export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`
 

@@ -22,7 +22,7 @@ export function BrandLogo({
   priority = false,
 }: BrandLogoProps) {
   if (variant === "wordmark") {
-    const height = Math.round(width * (342 / 1024))
+    const height = Math.round(width * (216 / 793))
     return (
       <Image
         src={brand.logo.src}

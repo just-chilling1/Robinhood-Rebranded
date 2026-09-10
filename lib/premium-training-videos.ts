@@ -33,6 +33,18 @@ export type PremiumTrainingVideo = {
 /** Flat roster for the Academy premium section — mindset then how-to per feature. */
 export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
   {
+    slug: "done-for-you-profit-mindset",
+    moduleKey: "dfyProfit",
+    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Mindset`,
+    description:
+      "Why one link and one niche is enough to ship a full promo kit — before you run Done-For-You Profit.",
+    duration: "6 min",
+    vimeoId: "",
+    thumbnailSlug: "done-for-you-profit-mindset",
+    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
+    badge: "Mindset",
+  },
+  {
     slug: "done-for-you-profit",
     moduleKey: "dfyProfit",
     title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Training`,
@@ -40,6 +52,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
       "Watch how to paste one affiliate link, pick a niche, and get 5 comment-ready videos, a hosted authority article, and Facebook posts in one run.",
     duration: "10 min",
     vimeoId: PREMIUM_TRAINING_VIMEO_IDS.dfyProfit,
+    thumbnailSlug: "done-for-you-profit",
     feature: PREMIUM_FEATURE_LABELS.dfyProfit,
   },
   {

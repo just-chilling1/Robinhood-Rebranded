@@ -1,4 +1,5 @@
 import { Gem, Sparkles, Zap, ShieldCheck, FileText, BookOpen, Package, type LucideIcon } from "lucide-react"
+import type { VideoThumbnailSlug } from "@/lib/video-thumbnails"
 
 /** User-facing premium tier names — single source of truth. */
 export const PREMIUM_FEATURE_LABELS = {
@@ -34,6 +35,19 @@ export type PremiumFeature = {
   label: string
   description: string
   icon: LucideIcon
+  /** How-to training poster for cards and feature pages. */
+  thumbnailSlug: VideoThumbnailSlug
+}
+
+/** Maps upgrade page ids to feature thumbnail slugs. */
+export const PREMIUM_UPGRADE_THUMBNAILS: Record<string, VideoThumbnailSlug> = {
+  dfy_profit: "done-for-you-profit",
+  high_ticket_payouts: "high-ticket-payouts",
+  dfy_vault: "unlimited",
+  instant_income: "instant-income",
+  automated_income: "automated-profits",
+  license_rights: "reseller-license-rights",
+  protector: "cyber-protection",
 }
 
 /**
@@ -46,41 +60,48 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     label: PREMIUM_FEATURE_LABELS.dfyProfit,
     description: "One link, one niche, a complete promo kit in one run.",
     icon: Package,
+    thumbnailSlug: "done-for-you-profit",
   },
   {
     href: "/upgrades/high-ticket-payouts",
     label: PREMIUM_FEATURE_LABELS.highTicketPayouts,
     description: "100 ready-to-publish authority articles built around your offer.",
     icon: BookOpen,
+    thumbnailSlug: "high-ticket-payouts",
   },
   {
     href: "/upgrades/dfy-vault",
     label: PREMIUM_FEATURE_LABELS.dfyVault,
     description: "Ready-made templates so you can skip the hard part.",
     icon: Gem,
+    thumbnailSlug: "unlimited",
   },
   {
     href: "/upgrades/instant-income",
     label: PREMIUM_FEATURE_LABELS.instantIncome,
     description: "Training and tools to fast-track your earnings.",
     icon: Sparkles,
+    thumbnailSlug: "instant-income",
   },
   {
     href: "/upgrades/automated-income",
     label: PREMIUM_FEATURE_LABELS.automatedIncome,
     description: "Automation that keeps working after you set it up.",
     icon: Zap,
+    thumbnailSlug: "automated-profits",
   },
   {
     href: "/upgrades/license-rights",
     label: PREMIUM_FEATURE_LABELS.licenseRights,
     description: "Request reseller license rights — our team activates the edition.",
     icon: FileText,
+    thumbnailSlug: "reseller-license-rights",
   },
   {
     href: "/upgrades/protector",
     label: PREMIUM_FEATURE_LABELS.protector,
     description: "Keep your account and links safe and healthy.",
     icon: ShieldCheck,
+    thumbnailSlug: "cyber-protection",
   },
 ]

@@ -9,8 +9,8 @@ export const brand = {
   logo: {
     type: "image" as "icon" | "image",
     icon: "Wifi",
-    src: "/logo.png?v=20260909b",
-    iconSrc: "/logo-icon.png",
+    src: "/logo.png?v=20260910",
+    iconSrc: "/logo-icon.png?v=20260910",
     alt: PRODUCT_NAME,
     wordmark: true,
   },

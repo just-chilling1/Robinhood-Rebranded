@@ -23,6 +23,9 @@ export const VIDEO_THUMBNAIL_PATHS = {
   "high-ticket-payouts-mindset":
     "/thumbnails/wc-thumb-20-high-ticket-payouts-mindset.webp",
   "high-ticket-payouts": "/thumbnails/wc-thumb-21-high-ticket-payouts.webp",
+  "done-for-you-profit-mindset":
+    "/thumbnails/wc-thumb-22-done-for-you-profit-mindset.webp",
+  "done-for-you-profit": "/thumbnails/wc-thumb-23-done-for-you-profit.webp",
 } as const
 
 export type VideoThumbnailSlug = keyof typeof VIDEO_THUMBNAIL_PATHS

@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Check, Crown, Zap, Rocket, ShieldCheck, FileText, BookOpen, Package } from "lucide-react"
 import Link from "next/link"
 import { PremiumPageLayout } from "@/components/premium-page-layout"
-import { PREMIUM_FEATURE_LABELS, getUpgradeLevelLabel } from "@/lib/premium-features"
+import {
+  PREMIUM_FEATURE_LABELS,
+  PREMIUM_UPGRADE_THUMBNAILS,
+  getUpgradeLevelLabel,
+} from "@/lib/premium-features"
+import { PremiumFeatureThumbnail } from "@/components/premium-feature-thumbnail"
 
 const upgrades = [
   {
@@ -146,8 +151,13 @@ export default async function UpgradesPage() {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
 
+          const thumbnailSlug = PREMIUM_UPGRADE_THUMBNAILS[upgrade.id]
+
           return (
             <article key={upgrade.id} className="glass-card flex flex-col overflow-hidden p-0">
+              {thumbnailSlug ? (
+                <PremiumFeatureThumbnail slug={thumbnailSlug} alt={upgrade.name} />
+              ) : null}
               <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sapphire-100 text-sapphire-700">
                   <Icon className="h-6 w-6" strokeWidth={1.75} />

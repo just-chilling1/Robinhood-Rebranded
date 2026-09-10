@@ -26,9 +26,11 @@ import {
   Sparkles,
   Pencil,
   ExternalLink,
+  Bookmark,
+  Check,
 } from "lucide-react"
 import { GoldRushVideoCard } from "@/components/gold-rush-video-card"
-import { listAffiliateLinks, type AffiliateLink } from "@/app/actions/affiliate-links"
+import { createAffiliateLink, listAffiliateLinks, type AffiliateLink } from "@/app/actions/affiliate-links"
 import { fetchVideoOpportunities } from "@/app/actions/fetch-video-opportunities"
 import type { VideoOpportunity } from "@/lib/video-opportunity"
 import generateViralCommentsAction from "@/app/actions/generate-viral-comments"
@@ -54,12 +56,19 @@ const uiTitleClass = "!font-sans font-semibold tracking-tight text-ink"
 type FieldKey = "productName" | "productDescription" | "affiliateLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
 
+function matchingSavedLink(links: AffiliateLink[], url: string) {
+  const target = url.trim().replace(/\/+$/, "").toLowerCase()
+  if (!target) return undefined
+  return links.find((link) => link.affiliate_url.trim().replace(/\/+$/, "").toLowerCase() === target)
+}
+
 export default function GoldRushPage() {
   const [productName, setProductName] = useState("")
   const [productDescription, setProductDescription] = useState("")
   const [affiliateLink, setAffiliateLink] = useState("")
   const [savedLinks, setSavedLinks] = useState<AffiliateLink[]>([])
   const [selectedSavedId, setSelectedSavedId] = useState<string | null>(null)
+  const [savingLink, setSavingLink] = useState(false)
   const [step, setStep] = useState<"product" | "videos">("product")
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
@@ -129,6 +138,48 @@ export default function GoldRushPage() {
       next.affiliateLink = "Use a full link that starts with http:// or https://"
     }
     return next
+  }
+
+  const alreadySavedLink = matchingSavedLink(savedLinks, affiliateLink)
+
+  const handleSaveLink = async () => {
+    const next: FieldErrors = {}
+    if (!productName.trim()) {
+      next.productName = "Add the name of the product or offer you're promoting."
+    }
+    if (!affiliateLink.trim()) {
+      next.affiliateLink = "Paste your affiliate link so it can go inside the comments."
+    } else if (!isValidAffiliateUrl(affiliateLink)) {
+      next.affiliateLink = "Use a full link that starts with http:// or https://"
+    }
+    if (Object.keys(next).length > 0) {
+      setFieldErrors((prev) => ({ ...prev, ...next }))
+      return
+    }
+
+    const existing = matchingSavedLink(savedLinks, affiliateLink)
+    if (existing) {
+      setSelectedSavedId(existing.id)
+      return
+    }
+
+    setSavingLink(true)
+    setError(null)
+    try {
+      const result = await createAffiliateLink({
+        offerName: productName.trim(),
+        affiliateUrl: affiliateLink.trim(),
+      })
+      if (result.success) {
+        setSavedLinks((prev) => [result.link, ...prev.filter((link) => link.id !== result.link.id)])
+        setSelectedSavedId(result.link.id)
+        clearFieldError("affiliateLink")
+      } else {
+        setError(result.error || "Couldn’t save this link. Please try again.")
+      }
+    } finally {
+      setSavingLink(false)
+    }
   }
 
   const handleProductSubmit = (event?: FormEvent) => {
@@ -385,8 +436,10 @@ export default function GoldRushPage() {
                         type="url"
                         value={affiliateLink}
                         onChange={(e) => {
-                          setAffiliateLink(e.target.value)
-                          setSelectedSavedId(null)
+                          const value = e.target.value
+                          setAffiliateLink(value)
+                          const match = matchingSavedLink(savedLinks, value)
+                          setSelectedSavedId(match?.id ?? null)
                           clearFieldError("affiliateLink")
                         }}
                         placeholder="https://digistore24.com/..."
@@ -394,6 +447,27 @@ export default function GoldRushPage() {
                         className="h-14 border-[color-mix(in_srgb,var(--ds-sapphire-500)_28%,var(--ds-line))] bg-white pl-11 font-sans text-base"
                       />
                     </div>
+                    {alreadySavedLink ? (
+                      <p className="inline-flex h-11 items-center gap-2 rounded-xl border-2 border-[color-mix(in_srgb,var(--ds-sapphire-500)_28%,var(--ds-line))] bg-white px-4 font-sans text-sm font-semibold text-sapphire-700">
+                        <Check className="h-4 w-4 shrink-0" aria-hidden />
+                        Saved to Your Links
+                      </p>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => void handleSaveLink()}
+                        disabled={savingLink}
+                        className="h-11 rounded-xl border-2 border-[var(--ds-line-strong)] bg-white px-4 font-sans text-sm font-semibold text-ink hover:border-sapphire-700 hover:bg-sapphire-100 hover:text-sapphire-700"
+                      >
+                        {savingLink ? (
+                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                        ) : (
+                          <Bookmark className="h-4 w-4" aria-hidden />
+                        )}
+                        {savingLink ? "Saving..." : "Save to Your Links"}
+                      </Button>
+                    )}
                   </div>
                   {fieldErrors.affiliateLink ? (
                     <p className="mt-2 text-sm font-medium text-[#C53030]">{fieldErrors.affiliateLink}</p>

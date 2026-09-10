@@ -1,7 +1,7 @@
 "use client"
 
 import { FormEvent, useCallback, useEffect, useState } from "react"
-import { CheckCircle2, Headphones, Loader2, Mail } from "lucide-react"
+import { CheckCircle2, Clock, Headphones, Inbox, Loader2, Mail, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { APP_SUPPORT_NAME, FREE_TRAINING_URL, SUPPORT_EMAIL } from "@/lib/support"
 
@@ -140,55 +140,75 @@ export function ContactSupportWidget() {
   if (formState === "success") {
     return (
       <div className="card-base min-w-0 overflow-hidden">
-        <div className="flex flex-col items-center space-y-4 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-success/20 bg-success-light text-success">
-            <CheckCircle2 className="h-6 w-6" aria-hidden />
+        <div className="flex flex-col items-center text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-success-light text-success shadow-[0_0_0_8px_color-mix(in_srgb,var(--success)_12%,transparent)]">
+            <CheckCircle2 className="h-7 w-7" aria-hidden />
           </div>
-          <h3 className="ds-h3">
-            {sentViaMailto ? "Check your email app" : "Message sent"}
+          <h3 className="ds-h3 mt-4">
+            {sentViaMailto ? "Finish sending in your email app" : "Message sent"}
           </h3>
-          <p className="w-full text-sm leading-relaxed text-text-secondary">
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-text-secondary">
             {sentViaMailto ? (
               <>
-                Your email app should open with your message ready to send. Tap{" "}
-                <span className="font-medium text-text-heading">Send</span> to deliver it — then
-                we&apos;ll reply to{" "}
-                <span className="break-all font-medium text-text-primary">{submittedEmail}</span>.
+                Your email app should open with the message ready. Tap{" "}
+                <span className="font-semibold text-text-heading">Send</span>, then we&apos;ll reply
+                to the inbox below.
               </>
             ) : (
-              <>
-                We&apos;ll reply to{" "}
-                <span className="break-all font-medium text-text-primary">{submittedEmail}</span>.
-              </>
-            )}{" "}
-            We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+              <>Our team has your request. We&apos;ll reply to this inbox only:</>
+            )}
           </p>
-          <p className="w-full text-sm leading-relaxed text-text-secondary">
-            Remember: our reply will go to{" "}
-            <span className="break-all font-medium text-text-primary">{submittedEmail}</span> only —
-            not another inbox you may use elsewhere. If you don&apos;t see it within 48 hours, check
-            that inbox&apos;s spam or junk folder.
+          <p className="mt-3 inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--ds-line-sapphire)] bg-sapphire-100 px-3.5 py-2">
+            <Inbox className="h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
+            <span className="break-all text-left text-sm font-semibold text-ink">{submittedEmail}</span>
           </p>
         </div>
 
-        <div className="mt-5 rounded-xl border border-border-dim/80 bg-page/60 p-4">
-          <p className="text-sm leading-relaxed text-text-secondary">
-            While you wait, start with our{" "}
-            <span className="font-medium text-warning">free training</span> — discover how to wake
-            up with an extra <span className="font-medium text-warning">$1,000–$5,000</span> in your
-            account and scale to $1k–$5k per day without extra grind.
-          </p>
-          <p className="mt-3 text-xs font-medium uppercase tracking-wide text-danger">
-            Warning: This may be taken down soon
-          </p>
-          <a
-            href={FREE_TRAINING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary mt-4 w-full"
-          >
-            Watch The Free Training &gt;&gt;
-          </a>
+        <ul className="mt-5 space-y-3 rounded-2xl border border-[var(--ds-line)] bg-sapphire-100/70 p-4 text-left">
+          <li className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
+              <Clock className="h-4 w-4" aria-hidden />
+            </span>
+            <p className="text-sm leading-snug text-text-secondary">
+              <span className="font-semibold text-ink">Typical reply: under 2 hours.</span> Allow
+              24–48 hours if we&apos;re in a busy period.
+            </p>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
+              <ShieldCheck className="h-4 w-4" aria-hidden />
+            </span>
+            <p className="text-sm leading-snug text-text-secondary">
+              Watch that inbox only — not a different Gmail or work account. Check spam or junk if
+              nothing arrives within 48 hours.
+            </p>
+          </li>
+        </ul>
+
+        <div className="bonus-training-card mt-5">
+          <div className="bonus-training-card__body !p-4">
+            <span className="bonus-training-badge inline-flex items-center rounded-md px-2.5 py-0.5 text-[10px] font-black uppercase">
+              While you wait
+            </span>
+            <p className="mt-2.5 text-balance text-lg font-black leading-tight tracking-tight text-foreground">
+              Free training: wake up to an extra{" "}
+              <span className="bonus-training-accent">$1,000–$5,000</span>
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
+              A simple system that can scale to $1k–$5k per day — no extra grind, no credit card.
+            </p>
+            <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-danger">
+              Warning: this may be taken down soon
+            </p>
+            <a
+              href={FREE_TRAINING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bonus-training-cta mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-xl px-4 text-sm font-black"
+            >
+              Watch the free training
+            </a>
+          </div>
         </div>
 
         <button type="button" onClick={resetForm} className="btn-secondary mt-4 w-full">

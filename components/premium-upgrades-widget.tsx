@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { PREMIUM_FEATURES } from "@/lib/premium-features"
+import { getVideoThumbnailPath } from "@/lib/video-thumbnails"
 
 export function PremiumUpgradesWidget() {
   const pathname = usePathname()
@@ -24,7 +26,7 @@ export function PremiumUpgradesWidget() {
       <div className="relative z-[1] space-y-2">
         {PREMIUM_FEATURES.map((feature, index) => {
           const isActive = pathname === feature.href
-          const Icon = feature.icon
+          const thumbnailSrc = getVideoThumbnailPath(feature.thumbnailSlug)
 
           return (
             <div
@@ -36,12 +38,15 @@ export function PremiumUpgradesWidget() {
                 href={feature.href}
                 className={`premium-upgrade-card group ${isActive ? "is-active" : ""}`}
               >
-                <div
-                  className={`premium-upgrade-icon transition-all duration-[160ms] ${
-                    isActive ? "!bg-grad-sapphire !text-white shadow-sapphire" : ""
-                  }`}
-                >
-                  <Icon className="h-5 w-5" strokeWidth={1.5} />
+                <div className="premium-upgrade-thumb relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-ink">
+                  <Image
+                    src={thumbnailSrc}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    className="object-cover transition-transform duration-[160ms] group-hover:scale-[1.03]"
+                  />
+                  <div className="video-thumb-scrim absolute inset-0" aria-hidden />
                 </div>
 
                 <div className="min-w-0 flex-1">

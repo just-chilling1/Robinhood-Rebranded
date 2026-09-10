@@ -9,12 +9,14 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import { brand } from "@/config/brand.config"
 
 export default function LoginPage() {
   const [callbackError, setCallbackError] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -47,8 +49,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-5">
       <div className="text-center">
+        <p className="page-eyebrow">Welcome back</p>
         <h1 className="ds-h2 text-ink">Access {brand.productName}</h1>
         <p className="mt-1 text-sm font-medium text-ink-3">{brand.tagline}</p>
       </div>
@@ -57,15 +60,22 @@ export default function LoginPage() {
           <Label htmlFor="email" className="text-sm font-medium text-ink">
             Email Address
           </Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="your@email.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="input-base h-12"
-          />
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-5"
+              aria-hidden
+            />
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-base h-12 pl-10"
+            />
+          </div>
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-3">
@@ -79,14 +89,29 @@ export default function LoginPage() {
               Forgot password?
             </Link>
           </div>
-          <Input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input-base h-12"
-          />
+          <div className="relative">
+            <Lock
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-5"
+              aria-hidden
+            />
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-base h-12 pl-10 pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((open) => !open)}
+              className="absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-ink-5 transition-colors hover:bg-sapphire-100 hover:text-sapphire-700"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
         {callbackError && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/15 p-3">
