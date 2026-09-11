@@ -1,4 +1,4 @@
-import { fetchVideoOpportunities } from "../app/actions/fetch-video-opportunities"
+import { searchVideoOpportunities } from "../app/actions/fetch-video-opportunities"
 
 async function main() {
   const cases = [
@@ -17,7 +17,7 @@ async function main() {
   ]
 
   for (const input of cases) {
-    const results = await fetchVideoOpportunities(input)
+    const results = await searchVideoOpportunities(input)
     console.log({
       productName: input.productName,
       count: results.length,

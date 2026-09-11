@@ -38,9 +38,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.next({ request })
   }
 
-  // If Supabase env vars are missing, skip auth middleware so the app can render
-  // and show a clear setup error in the UI.
+  // If Supabase env vars are missing, fail closed in production.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (process.env.NODE_ENV === "production") {
+      const url = request.nextUrl.clone()
+      url.pathname = "/auth/login"
+      return NextResponse.redirect(url)
+    }
     return NextResponse.next({ request })
   }
 
@@ -66,10 +70,6 @@ export async function updateSession(request: NextRequest) {
       },
     },
   )
-
-  if (pathname.startsWith("/secret-p55-admin-panel-2029")) {
-    return supabaseResponse
-  }
 
   const {
     data: { user },
@@ -107,8 +107,7 @@ export async function updateSession(request: NextRequest) {
   if (
     user &&
     !isOnboardingRoute &&
-    !isResetPasswordRoute &&
-    !request.nextUrl.pathname.startsWith("/secret-p55-admin-panel-2029")
+    !isResetPasswordRoute
   ) {
     const { data: profile, error: profileError } = await supabase
       .from("users")

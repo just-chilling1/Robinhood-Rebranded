@@ -44,7 +44,7 @@ function parseInput(input: AffiliateLinkInput): ParsedInput {
     return { ok: false, error: "Paste your affiliate link." }
   }
   if (!isValidAffiliateUrl(affiliateUrl)) {
-    return { ok: false, error: "Use a full link that starts with http:// or https://" }
+    return { ok: false, error: "Use a full link that starts with https://" }
   }
 
   return { ok: true, value: { offerName, affiliateUrl, niche, notes } }

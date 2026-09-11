@@ -4,6 +4,7 @@ import { generateStructuredJson, isAiConfigured } from "@/lib/dfy-profit/ai"
 import { buildFacebookPostsPrompt } from "@/lib/dfy-profit/prompts"
 import { buildFallbackPosts } from "@/lib/dfy-profit/posts-fallback"
 import type { DfyFacebookPost } from "@/lib/dfy-profit/types"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 
 export const dynamic = "force-dynamic"
 export const maxDuration = 120
@@ -40,6 +41,10 @@ export async function POST(request: Request) {
       { error: "productName, niche, and one of articleUrl or affiliateUrl are required" },
       { status: 400, headers: NO_STORE },
     )
+  }
+
+  if (affiliateUrl && !isValidAffiliateUrl(affiliateUrl)) {
+    return NextResponse.json({ error: "Enter a valid affiliate URL starting with https://" }, { status: 400, headers: NO_STORE })
   }
 
   // Prefer the hosted article so clicks are tracked; fall back to the raw

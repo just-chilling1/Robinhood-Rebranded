@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react"
 import { Sparkles, TrendingUp, Award } from 'lucide-react'
+import { safeHref } from "@/lib/affiliate-url"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 interface ArticleContentProps {
   page: {
@@ -32,6 +34,8 @@ function generateHeroTitle(niche: string): string {
 
 export default function ArticleContent({ page }: ArticleContentProps) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const safeLink = safeHref(page.affiliate_link)
+  const safeHtml = sanitizeArticleHtml(page.content)
 
   useEffect(() => {
     if (!contentRef.current) return
@@ -115,7 +119,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
             <div 
               ref={contentRef} 
               className="article-content prose prose-lg max-w-none" 
-              dangerouslySetInnerHTML={{ __html: page.content }} 
+              dangerouslySetInnerHTML={{ __html: safeHtml }} 
             />
           </div>
 
@@ -134,8 +138,9 @@ export default function ArticleContent({ page }: ArticleContentProps) {
                 Join thousands who have already transformed their lives. Your journey starts here.
               </p>
               
+              {safeLink ? (
               <a
-                href={page.affiliate_link}
+                href={safeLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary via-primary to-primary-hover text-ink text-lg font-bold rounded-full hover:shadow-[0_0_40px_rgba(13,148,136,0.6)] hover:scale-105 transition-all duration-300 group"
@@ -145,6 +150,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </a>
+              ) : null}
               
               <p className="text-sm text-ink-4 mt-6">
                 100% Risk-Free • Instant Access • No Hidden Fees

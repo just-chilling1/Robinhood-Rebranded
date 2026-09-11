@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 export async function createPageFromTemplate({
   title,
@@ -23,6 +25,10 @@ export async function createPageFromTemplate({
 
     if (authError || !user) {
       return { success: false, error: "Not authenticated" }
+    }
+
+    if (!isValidAffiliateUrl(affiliateLink)) {
+      return { success: false, error: "Use a full link that starts with https://" }
     }
 
     let nicheId: string | null = null
@@ -87,7 +93,7 @@ export async function createPageFromTemplate({
         niche_id: nicheId,
         offer_id: offerId,
         title,
-        content,
+        content: sanitizeArticleHtml(content),
         affiliate_link: affiliateLink,
         status: "active",
         views: 0,

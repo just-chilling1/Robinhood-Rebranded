@@ -5,12 +5,12 @@ interface OnboardingLogoProps {
 }
 
 const sizeMap = {
-  sm: 48,
-  md: 64,
-  lg: 80,
-  header: 56,
+  sm: 56,
+  md: 80,
+  lg: 96,
+  header: 72,
 }
 
 export function OnboardingLogo({ size = "md" }: OnboardingLogoProps) {
-  return <BrandLogo variant="icon" size={sizeMap[size]} className="rounded-2xl" priority />
+  return <BrandLogo variant="icon" size={sizeMap[size]} priority />
 }

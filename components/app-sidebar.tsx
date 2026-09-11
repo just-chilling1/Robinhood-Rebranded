@@ -65,9 +65,9 @@ function SidebarBody({
             title={brand.productName}
           >
             {collapsed ? (
-              <BrandLogo variant="icon" size={40} className="rounded-[var(--ds-r-md)]" />
+              <BrandLogo variant="icon" size={52} />
             ) : (
-              <BrandLogo variant="wordmark" width={168} className="rounded-[var(--ds-r-md)]" priority />
+              <BrandLogo variant="wordmark" width={220} priority />
             )}
           </Link>
           <button
@@ -253,7 +253,7 @@ export function AppSidebar() {
         style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(var(--mobile-header-h, 3.5rem) + env(safe-area-inset-top))" }}
       >
         <Link href="/dashboard" className="min-w-0 px-4">
-          <BrandLogo variant="wordmark" width={140} className="rounded-[var(--ds-r-sm)]" priority />
+          <BrandLogo variant="wordmark" width={180} priority />
         </Link>
       </div>
     </>

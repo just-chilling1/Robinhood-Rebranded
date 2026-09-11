@@ -4,6 +4,7 @@ import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import { generateAuthorityArticle } from "@/lib/dfy-profit/generate-authority-article"
 import { weaveAffiliateLinks } from "@/lib/dfy-profit/weave-affiliate-links"
 import { buildArticleSlug } from "@/lib/dfy-profit/slug"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 export const dynamic = "force-dynamic"
 export const maxDuration = 120
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
     niche,
     affiliateUrl,
   })
-  const html = weaveAffiliateLinks(content.html, affiliateUrl)
+  const html = sanitizeArticleHtml(weaveAffiliateLinks(content.html, affiliateUrl))
 
   // Satisfies pages.niche_id NOT NULL without a migration.
   const { data: niche_row } = await supabase.from("niches").select("id").limit(1).single()

@@ -3,11 +3,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
-export async function unlockUpgrade(upgradeLevel: "dfy_vault" | "instant_income" | "automated_income") {
+export async function unlockUpgrade(_upgradeLevel: "dfy_vault" | "instant_income" | "automated_income") {
   try {
     const supabase = await createClient()
 
-    // Get current user
     const {
       data: { user },
       error: userError,
@@ -17,18 +16,7 @@ export async function unlockUpgrade(upgradeLevel: "dfy_vault" | "instant_income"
       return { success: false, error: "Not authenticated" }
     }
 
-    // Update user's upgrade level
-    const { error: updateError } = await supabase
-      .from("users")
-      .update({ upgrade_level: upgradeLevel })
-      .eq("id", user.id)
-
-    if (updateError) {
-      console.error("[v0] Error updating upgrade level:", updateError)
-      return { success: false, error: "Failed to unlock upgrade" }
-    }
-
-    // Revalidate paths to update UI
+    // Members already receive full access on signup. Do not write upgrade_level.
     revalidatePath("/dashboard")
     revalidatePath("/upgrades")
     revalidatePath("/training")
@@ -39,7 +27,7 @@ export async function unlockUpgrade(upgradeLevel: "dfy_vault" | "instant_income"
 
     return { success: true }
   } catch (error) {
-    console.error("[v0] Error in unlockUpgrade:", error)
+    console.error("[rh] Error in unlockUpgrade:", error)
     return { success: false, error: "An error occurred" }
   }
 }

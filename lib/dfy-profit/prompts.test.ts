@@ -72,13 +72,21 @@ describe("buildFacebookPostsPrompt", () => {
 })
 
 describe("buildFallbackArticle", () => {
-  it("passes its own normalization bar so a no-ai run still yields an article", () => {
-    const article = buildFallbackArticle({ productName: "KetoMax", productContext: "a keto plan", niche: "Weight Loss" })
+  it("passes its own normalization bar so a no-ai run still yields an article", async () => {
+    const article = await buildFallbackArticle({
+      productName: "KetoMax",
+      productContext: "a keto plan",
+      niche: "Weight Loss",
+    })
     expect(normalizeArticleContent(article, "Fallback")).not.toBeNull()
   })
 
-  it("uses the Recurring Stream / High-Ticket authority template", () => {
-    const article = buildFallbackArticle({ productName: "KetoMax", productContext: "", niche: "Weight Loss" })
+  it("uses the Recurring Stream / High-Ticket authority template with a niche-related image", async () => {
+    const article = await buildFallbackArticle({
+      productName: "KetoMax",
+      productContext: "",
+      niche: "Weight Loss",
+    })
     expect(article.title).toBe("KetoMax: The Complete Buyer's Guide")
     expect(article.html).toContain('class="article-body"')
     expect(article.html).toContain('href="#offer"')
@@ -86,5 +94,7 @@ describe("buildFallbackArticle", () => {
     expect(article.html).toContain("Frequently Asked Questions")
     expect(article.html).toContain('class="cta-box"')
     expect(article.html).toContain("<figure>")
+    expect(article.html).not.toContain("picsum.photos")
+    expect(article.html).toMatch(/loremflickr\.com|pixabay\.com/)
   })
 })

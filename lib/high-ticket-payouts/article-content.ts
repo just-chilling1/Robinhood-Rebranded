@@ -1,3 +1,5 @@
+import { buildNicheFallbackImageUrl } from "@/lib/high-ticket-payouts/niche-images"
+
 export type ArticleAngle =
   | "pillar-guide"
   | "best-picks"
@@ -103,12 +105,13 @@ function relatedArticleTitles(territory: string): string[] {
   ];
 }
 
-function featuredImageHtml(territory: string, title: string): string {
+function featuredImageHtml(territory: string, title: string, imageUrl?: string): string {
   const alt = `${title} — featured guide for ${territory.toLowerCase()}`;
-  const seed = encodeURIComponent(territory.toLowerCase().replace(/\s+/g, "-"));
+  // Sync niche-related fallback for catalog/client; pass Pixabay URL from server when available.
+  const src = imageUrl?.trim() || buildNicheFallbackImageUrl(territory, title);
   return `
 <figure>
-<img src="https://picsum.photos/seed/${seed}/1200/630" alt="${alt}" width="1200" height="630" loading="lazy" />
+<img src="${src}" alt="${alt}" width="1200" height="630" loading="lazy" />
 <figcaption>Featured image: ${territory} guide — use descriptive alt text when publishing.</figcaption>
 </figure>
 `.trim();
@@ -142,12 +145,9 @@ function buildIntroduction(params: {
 `.trim();
 }
 
-function buildTableOfContents(sections: string[]): string {
+function buildTableOfContents(sections: { id: string; label: string }[]): string {
   const items = sections
-    .map(
-      (s) =>
-        `<li><a href="#${s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}">${s}</a></li>`
-    )
+    .map((s) => `<li><a href="#${s.id}">${s.label}</a></li>`)
     .join("\n");
   return `
 <h2>Table of Contents</h2>
@@ -187,7 +187,7 @@ function buildMainSections(params: {
 <p>Strong decisions in ${t} start with a short list of non-negotiables. Before comparing features or prices, define your goal, budget range, and time commitment. Those three inputs filter out most poor fits immediately.</p>
 <h3>Quality markers that actually matter</h3>
 <p>Look for transparent onboarding, clear refund terms, and support channels that respond within a reasonable window. In ${t}, the best providers explain trade-offs upfront instead of hiding limitations in fine print.</p>
-<p>When a specific starter program aligns with beginners, we often point readers to <a href="#offer">the recommended starting option</a> because it balances clarity, support, and a realistic learning curve.</p>
+<p>When a specific starter program aligns with beginners, we often point readers to <a href="#offer" target="_blank" rel="noopener noreferrer">the recommended starting option</a> because it balances clarity, support, and a realistic learning curve.</p>
 <h4>Red flags to watch for</h4>
 <ul>
 <li>Vague outcome claims with no explanation of required effort</li>
@@ -422,7 +422,7 @@ function buildCta(territory: string): string {
   return `
 <div class="cta-box">
 <h2 id="next-steps">Next Steps</h2>
-<p>Ready to move forward? Apply the checklist above to your shortlist, then start with <a href="#offer">the option we recommend for most readers in ${territory.toLowerCase()}</a>. Keep your first month focused on execution and review — that is where real progress happens.</p>
+<p>Ready to move forward? Apply the checklist above to your shortlist, then start with <a href="#offer" target="_blank" rel="noopener noreferrer">the option we recommend for most readers in ${territory.toLowerCase()}</a>. Keep your first month focused on execution and review — that is where real progress happens.</p>
 </div>
 `.trim();
 }
@@ -449,28 +449,42 @@ export function buildAuthorityArticleContent(params: {
   territory: string
   hobby: string
   angle?: ArticleAngle
+  /** Optional Pixabay (or other) URL resolved server-side for a niche-related photo. */
+  featuredImageUrl?: string
 }): GeneratedArticleContent {
   const territory = params.territory.trim() || params.hobby.trim() || "this niche";
   const angle = params.angle ?? "pillar-guide";
   const title = params.topic.trim().slice(0, 120);
   const keyword = primaryKeyword(title, territory);
+  // Prefer hobby/niche label for visuals when territory is a product name (DFY).
+  const imageNiche = params.hobby.trim() || territory;
 
-  const sectionTitles = [
-    angle === "best-picks" ? `Best ${territory} Picks by Use Case` : `The Complete ${territory} Overview`,
-    `How to Evaluate ${territory} Options`,
-    `Practical ${territory} Examples`,
-    `${territory} Step-by-Step Checklist`,
-    `Common ${territory} Mistakes to Avoid`,
-    "Related Reading",
-    "Trusted External Resources",
-    "Frequently Asked Questions",
-    "Conclusion",
-    "Next Steps",
+  const angleSectionById: Record<ArticleAngle, { id: string; label: string }> = {
+    "pillar-guide": { id: "complete-overview", label: `The Complete ${territory} Overview` },
+    "best-picks": { id: "best-picks-by-use-case", label: `Best ${territory} Picks by Use Case` },
+    mistakes: { id: "mistake-patterns", label: `Why These ${territory} Mistakes Keep Happening` },
+    budget: { id: "budget-framework", label: `${territory} on a Budget: A Practical Framework` },
+    "pro-tips": { id: "advanced-tactics", label: `Advanced ${territory} Tactics` },
+    "worth-it": { id: "worth-it-analysis", label: `Is ${territory} Worth It? Pros, Cons, and Verdict` },
+    beginners: { id: "beginner-roadmap", label: `${territory} for Beginners: First-Week Roadmap` },
+  }
+
+  const sections = [
+    angleSectionById[angle],
+    { id: "how-to-evaluate", label: `How to Evaluate ${territory} Options` },
+    { id: "practical-examples", label: `Practical ${territory} Examples` },
+    { id: "step-by-step-checklist", label: `${territory} Step-by-Step Checklist` },
+    { id: "common-mistakes", label: `Common ${territory} Mistakes to Avoid` },
+    { id: "related-reading", label: "Related Reading" },
+    { id: "trusted-resources", label: "Trusted External Resources" },
+    { id: "frequently-asked-questions", label: "Frequently Asked Questions" },
+    { id: "conclusion", label: "Conclusion" },
+    { id: "next-steps", label: "Next Steps" },
   ];
 
   const intro = buildIntroduction({ title, territory, angle, keyword });
-  const featured = featuredImageHtml(territory, title);
-  const toc = buildTableOfContents(sectionTitles);
+  const featured = featuredImageHtml(imageNiche, title, params.featuredImageUrl);
+  const toc = buildTableOfContents(sections);
   const main = buildMainSections({ territory, angle, keyword });
   const internalLinks = buildInternalLinksSection(territory);
   const externalLinks = buildExternalResourcesSection(territory);

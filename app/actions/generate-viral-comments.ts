@@ -1,9 +1,8 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { generateVideoComments } from "@/lib/dfy-profit/generate-video-comments"
-
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 interface GenerateViralCommentsInput {
   videoId: string
   videoTitle: string
@@ -22,8 +21,12 @@ export default async function generateViralCommentsAction(input: GenerateViralCo
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user && !isDevAuthBypassEnabled()) {
+    if (!user) {
       return { success: false, error: "Not authenticated" }
+    }
+
+    if (!isValidAffiliateUrl(input.affiliateLink)) {
+      return { success: false, error: "Use a full link that starts with https://" }
     }
 
     console.log("[rh] Generating comments for:", input.videoTitle.substring(0, 60) + "...")

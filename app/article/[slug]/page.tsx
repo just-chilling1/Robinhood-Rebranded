@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { CommentPackViewer } from "./CommentPackViewer"
 import ArticleContent from "./article-content"
 import { parseArticlePayload } from "@/lib/dfy-profit/article-payload"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -17,15 +18,14 @@ export default async function ArticlePage({ params }: PageProps) {
   const supabase = await createClient()
 
   let { data: page } = await supabase
-    .from("pages")
+    .from("active_pages")
     .select(SELECT)
     .eq("slug", slug)
-    .eq("status", "active")
     .maybeSingle()
 
   // Packs created before slugs were populated are linked by uuid.
   if (!page && UUID_RE.test(slug)) {
-    const byId = await supabase.from("pages").select(SELECT).eq("id", slug).eq("status", "active").maybeSingle()
+    const byId = await supabase.from("active_pages").select(SELECT).eq("id", slug).maybeSingle()
     page = byId.data
   }
 
@@ -54,7 +54,7 @@ export default async function ArticlePage({ params }: PageProps) {
         page={{
           id: page.id,
           title: page.title,
-          content: page.content,
+          content: sanitizeArticleHtml(page.content),
           affiliate_link: page.affiliate_link,
           views: page.views ?? 0,
           created_at: page.created_at,

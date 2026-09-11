@@ -19,9 +19,14 @@ import {
   ChevronDown,
   Link2,
   PencilLine,
+  BookmarkCheck,
   X,
 } from "lucide-react"
 import type { AffiliateLink } from "@/app/actions/affiliate-links"
+import {
+  listHighTicketArticleUsage,
+  toggleHighTicketArticleUsage,
+} from "@/app/actions/high-ticket-article-usage"
 import { GenerationProgress } from "@/components/generation-progress"
 import {
   PremiumControlCard,
@@ -35,6 +40,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import { wrapArticleWithTitle } from "@/lib/high-ticket-payouts/article-content"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import {
   ARTICLE_CATALOG,
   HIGH_TICKET_ARTICLE_TARGET_COUNT,
@@ -42,6 +49,7 @@ import {
   weaveAffiliateLink,
   type HighTicketArticle,
 } from "@/lib/high-ticket-payouts/catalog"
+import { replaceFeaturedImageUrl } from "@/lib/high-ticket-payouts/niche-images"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
@@ -142,7 +150,7 @@ function OfferLinkPicker({
   }
 
   return (
-    <div ref={rootRef} className="relative max-w-xl">
+    <div ref={rootRef} className="relative w-full">
       <Label id="offer-link-label" className={labelClassName}>
         Link Vault offer
       </Label>
@@ -284,6 +292,10 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
   const [page, setPage] = useState(0)
   const [error, setError] = useState("")
   const [showResults, setShowResults] = useState(false)
+  const [usedArticleIds, setUsedArticleIds] = useState<Set<number>>(new Set())
+  const [usageLoading, setUsageLoading] = useState(false)
+  const [togglingUsageId, setTogglingUsageId] = useState<number | null>(null)
+  const [usageError, setUsageError] = useState("")
 
   const resultsRef = useScrollToResults(showResults && previewId != null)
 
@@ -321,6 +333,48 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
     return selectedVaultLink?.affiliate_url.trim() ?? ""
   }, [pastedLink, selectedLinkId, selectedVaultLink])
 
+  const usageLinkInput = useMemo(() => {
+    if (selectedLinkId && selectedLinkId !== PASTE_MODE) {
+      return { affiliateLinkId: selectedLinkId, affiliateUrl: null as string | null }
+    }
+    if (activeAffiliateUrl) {
+      return { affiliateLinkId: null as string | null, affiliateUrl: activeAffiliateUrl }
+    }
+    return null
+  }, [activeAffiliateUrl, selectedLinkId])
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadUsage() {
+      if (!usageLinkInput) {
+        setUsedArticleIds(new Set())
+        setUsageError("")
+        return
+      }
+
+      setUsageLoading(true)
+      setUsageError("")
+      const result = await listHighTicketArticleUsage(usageLinkInput)
+      if (cancelled) return
+
+      if (!result.success) {
+        setUsedArticleIds(new Set())
+        setUsageError(result.error)
+        setUsageLoading(false)
+        return
+      }
+
+      setUsedArticleIds(new Set(result.articleIds))
+      setUsageLoading(false)
+    }
+
+    void loadUsage()
+    return () => {
+      cancelled = true
+    }
+  }, [usageLinkInput])
+
   const filteredArticles = useMemo(() => {
     if (niche === "all") return ARTICLE_CATALOG
     return ARTICLE_CATALOG.filter((a) => a.niche === niche)
@@ -349,6 +403,11 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
       return null
     }
 
+    if (!isValidAffiliateUrl(activeAffiliateUrl)) {
+      setError("Use a full link that starts with https://")
+      return null
+    }
+
     if (articleHtml[article.id]) {
       setError("")
       return articleHtml[article.id]
@@ -360,7 +419,24 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
 
     await new Promise((resolve) => setTimeout(resolve, 1800))
 
-    const woven = weaveAffiliateLink(article.html, activeAffiliateUrl)
+    let woven = weaveAffiliateLink(article.html, activeAffiliateUrl)
+
+    try {
+      const res = await fetch("/api/premium/high-ticket-payouts/featured-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ niche: article.niche, title: article.title }),
+      })
+      if (res.ok) {
+        const data = (await res.json()) as { url?: string }
+        if (typeof data.url === "string" && data.url.trim()) {
+          woven = replaceFeaturedImageUrl(woven, data.url.trim())
+        }
+      }
+    } catch {
+      // Keep the niche-keyworded fallback already embedded in the catalog HTML.
+    }
+
     setArticleHtml((prev) => ({ ...prev, [article.id]: woven }))
     setLoadingAction(null)
     setShowResults(true)
@@ -384,7 +460,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
     const html = await personalizeArticle(article, "copy")
     if (!html) return
 
-    const exportHtml = wrapArticleWithTitle(article.title, html)
+    const exportHtml = sanitizeArticleHtml(wrapArticleWithTitle(article.title, html))
     const payload = `${article.title}\n\n${htmlToPlainText(exportHtml)}`
     await navigator.clipboard.writeText(payload)
     setCopiedArticleId(articleId)
@@ -397,13 +473,55 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
     const article = ARTICLE_CATALOG.find((a) => a.id === previewId)
     if (!html || !article) return
 
-    const exportHtml = wrapArticleWithTitle(article.title, html)
+    const exportHtml = sanitizeArticleHtml(wrapArticleWithTitle(article.title, html))
     const payload =
       mode === "html" ? exportHtml : `${article.title}\n\n${htmlToPlainText(exportHtml)}`
 
     await navigator.clipboard.writeText(payload)
     setCopiedMode(mode)
     setTimeout(() => setCopiedMode(null), 2000)
+  }
+
+  const toggleUsed = async (articleId: number) => {
+    if (!usageLinkInput) {
+      setUsageError("Select a Link Vault offer or paste your affiliate link first.")
+      return
+    }
+
+    const wasUsed = usedArticleIds.has(articleId)
+    setUsageError("")
+    setTogglingUsageId(articleId)
+    setUsedArticleIds((prev) => {
+      const next = new Set(prev)
+      if (wasUsed) next.delete(articleId)
+      else next.add(articleId)
+      return next
+    })
+
+    const result = await toggleHighTicketArticleUsage({
+      articleId,
+      ...usageLinkInput,
+    })
+
+    setTogglingUsageId(null)
+
+    if (!result.success) {
+      setUsedArticleIds((prev) => {
+        const next = new Set(prev)
+        if (wasUsed) next.add(articleId)
+        else next.delete(articleId)
+        return next
+      })
+      setUsageError(result.error)
+      return
+    }
+
+    setUsedArticleIds((prev) => {
+      const next = new Set(prev)
+      if (result.used) next.add(articleId)
+      else next.delete(articleId)
+      return next
+    })
   }
 
   useEffect(() => {
@@ -475,7 +593,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                 {selectedVaultLink && selectedLinkId !== PASTE_MODE ? (
                   <p
                     role="status"
-                    className="flex max-w-xl items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-sapphire-700"
+                    className="flex w-full items-start gap-2.5 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-3.5 py-2.5 text-sm font-medium text-sapphire-700"
                   >
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
                     <span>
@@ -489,7 +607,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
             )}
 
             {(selectedLinkId === PASTE_MODE || links.length === 0) && (
-              <div className="max-w-xl rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4">
+              <div className="w-full rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4">
                 <Label htmlFor="pasted-affiliate-link" className={labelClassName}>
                   Paste your affiliate link
                 </Label>
@@ -514,7 +632,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                   </p>
                 ) : (
                   <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-                    Must start with http:// or https://
+                    Must start with https://
                   </p>
                 )}
               </div>
@@ -607,8 +725,20 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
             </div>
             <div
               className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
+              onClick={(event) => {
+                const target = event.target as HTMLElement | null
+                const anchor = target?.closest?.("a[href^='#']") as HTMLAnchorElement | null
+                if (!anchor) return
+                const id = decodeURIComponent(anchor.getAttribute("href")?.slice(1) ?? "")
+                if (!id) return
+                const root = event.currentTarget
+                const heading = root.querySelector(`#${CSS.escape(id)}`)
+                if (!heading) return
+                event.preventDefault()
+                heading.scrollIntoView({ behavior: "smooth", block: "start" })
+              }}
               dangerouslySetInnerHTML={{
-                __html: wrapArticleWithTitle(previewArticle.title, articleHtml[previewArticle.id]),
+                __html: sanitizeArticleHtml(wrapArticleWithTitle(previewArticle.title, articleHtml[previewArticle.id])),
               }}
             />
             <div className="flex flex-wrap gap-2 border-t border-[var(--ds-line)] px-5 py-4 md:px-6">
@@ -633,7 +763,32 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                 )}
                 {copiedMode === "html" ? "Copied" : "Copy HTML"}
               </Button>
+              <Button
+                type="button"
+                disabled={!usageLinkInput || togglingUsageId === previewArticle.id || usageLoading}
+                onClick={() => void toggleUsed(previewArticle.id)}
+                variant={usedArticleIds.has(previewArticle.id) ? "default" : "outline"}
+                className={cn(
+                  "h-11 px-4 disabled:opacity-40",
+                  usedArticleIds.has(previewArticle.id) ? primaryCtaClass : outlineCtaClass,
+                )}
+              >
+                {togglingUsageId === previewArticle.id ? (
+                  <Loader2 size={16} className="mr-2 animate-spin" />
+                ) : (
+                  <BookmarkCheck size={16} className="mr-2" />
+                )}
+                {usedArticleIds.has(previewArticle.id) ? "Used" : "Mark as Used"}
+              </Button>
             </div>
+            {usageError ? (
+              <p
+                role="alert"
+                className="border-t border-[#C53030]/20 bg-[#FDE4E4] px-5 py-2.5 text-sm font-medium text-[#C53030] md:px-6"
+              >
+                {usageError}
+              </p>
+            ) : null}
           </motion.section>
         ) : null}
       </AnimatePresence>
@@ -672,6 +827,11 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                   <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-2.5 py-0.5 text-[11px] font-semibold text-ink">
                     {formatAngle(article.angle)}
                   </span>
+                  {usedArticleIds.has(article.id) ? (
+                    <span className="rounded-full bg-[var(--ds-offer-green-100)] px-2.5 py-0.5 text-[11px] font-semibold text-sapphire-700">
+                      Used
+                    </span>
+                  ) : null}
                 </div>
                 <h3 className="mt-3 line-clamp-2 text-base font-semibold leading-snug text-ink">
                   {article.title}

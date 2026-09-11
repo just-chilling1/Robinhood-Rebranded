@@ -7,6 +7,10 @@ import {
   type ArticlePromptInput,
 } from "./prompts"
 import { ARTICLE_BODY_CLASS } from "@/lib/high-ticket-payouts/article-content"
+import {
+  resolveNicheFeaturedImageUrl,
+  replaceFeaturedImageUrl,
+} from "@/lib/high-ticket-payouts/niche-images"
 import type { GeneratedArticleContent } from "./types"
 
 function wrapArticleBody(html: string): string {
@@ -41,7 +45,19 @@ export async function generateAuthorityArticle(
         normalizeArticleContent(raw, topic.topic, { minWords: 1000, requireFaq: true }),
       options: { maxRetries: 4, timeoutMs: 45_000 },
     })
-    return { ...content, html: wrapArticleBody(content.html) }
+    let html = wrapArticleBody(content.html)
+    const imageUrl = await resolveNicheFeaturedImageUrl(topic.hobby, content.title)
+    if (/<img\b/i.test(html)) {
+      html = replaceFeaturedImageUrl(html, imageUrl)
+    } else {
+      const alt = `${content.title} — featured guide for ${topic.hobby.toLowerCase()}`
+      const figure = `<figure>\n<img src="${imageUrl}" alt="${alt}" width="1200" height="630" loading="lazy" />\n</figure>`
+      html = html.replace(
+        `<article class="${ARTICLE_BODY_CLASS}">`,
+        `<article class="${ARTICLE_BODY_CLASS}">\n${figure}`,
+      )
+    }
+    return { ...content, html }
   } catch (error) {
     console.warn("[rh] dfy-profit article AI failed — using authority template", error)
     return buildFallbackArticle(input)

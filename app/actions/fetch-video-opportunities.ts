@@ -1,6 +1,7 @@
 "use server"
 
 import type { VideoOpportunity } from "@/lib/video-opportunity"
+import { requireUser } from "@/lib/auth/require-user"
 
 export type { VideoOpportunity }
 
@@ -506,13 +507,21 @@ async function searchVideos(query: string): Promise<Record<string, unknown>[]> {
   return searchShortsByQuery(query, "views")
 }
 
-export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
+export async function searchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
   try {
     return await fetchVideoOpportunitiesInternal(input)
   } catch (error) {
     console.error("[youtube] fetchVideoOpportunities failed:", error)
     return []
   }
+}
+
+export async function fetchVideoOpportunities(input: FetchVideosInput): Promise<VideoOpportunity[]> {
+  const { user, error } = await requireUser()
+  if (!user) {
+    throw new Error(error)
+  }
+  return searchVideoOpportunities(input)
 }
 
 async function fetchVideoOpportunitiesInternal(input: FetchVideosInput): Promise<VideoOpportunity[]> {

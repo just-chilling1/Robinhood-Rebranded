@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support"
+import { consumeSupportQuota } from "@/lib/rate-limit"
 
 // Freshdesk subdomain for the ticket API (mailbox/domain are fixed; override via env if needed).
 const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "robinhood"
@@ -125,13 +126,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    if (!consumeSupportQuota(user.id)) {
+      return NextResponse.json({ error: "Too many requests. Please wait and try again." }, { status: 429 })
+    }
+
     const body = await request.json()
-    const email = typeof body.email === "string" ? body.email.trim() : ""
+    const email = user.email?.trim() || ""
     const message = typeof body.message === "string" ? body.message.trim() : ""
     const subject = sanitizeSubject(body.subject)
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json({ error: "A valid email is required" }, { status: 400 })
+      return NextResponse.json({ error: "Your account email is missing. Please sign in again." }, { status: 400 })
     }
 
     if (message.length < 10) {

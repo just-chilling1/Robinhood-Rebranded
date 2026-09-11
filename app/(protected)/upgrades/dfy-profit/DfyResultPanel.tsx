@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button"
 import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/dfy-profit/types"
 import { cn } from "@/lib/utils"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 const primaryCtaClass =
   "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
@@ -319,7 +320,7 @@ export function DfyResultPanel({
           </div>
           <div
             className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
-            dangerouslySetInnerHTML={{ __html: article.html }}
+            dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(article.html) }}
           />
           <div className="flex flex-wrap gap-2 border-t-2 border-[var(--ds-line-strong)] bg-surface-nested px-5 py-4 md:px-6">
             {article.url ? (

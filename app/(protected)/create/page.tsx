@@ -135,7 +135,7 @@ export default function GoldRushPage() {
     if (!affiliateLink.trim()) {
       next.affiliateLink = "Paste your affiliate link so it can go inside the comments."
     } else if (!isValidAffiliateUrl(affiliateLink)) {
-      next.affiliateLink = "Use a full link that starts with http:// or https://"
+      next.affiliateLink = "Use a full link that starts with https://"
     }
     return next
   }
@@ -150,7 +150,7 @@ export default function GoldRushPage() {
     if (!affiliateLink.trim()) {
       next.affiliateLink = "Paste your affiliate link so it can go inside the comments."
     } else if (!isValidAffiliateUrl(affiliateLink)) {
-      next.affiliateLink = "Use a full link that starts with http:// or https://"
+      next.affiliateLink = "Use a full link that starts with https://"
     }
     if (Object.keys(next).length > 0) {
       setFieldErrors((prev) => ({ ...prev, ...next }))

@@ -1183,7 +1183,7 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 className="h-12 bg-card text-base text-ink"
               />
               <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-                We add this URL to every draft below. Must start with http:// or https://
+                We add this URL to every draft below. Must start with https://
               </p>
             </div>
 

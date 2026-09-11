@@ -1,3 +1,5 @@
+import { isSafeFetchedUrl } from "@/lib/affiliate-url"
+
 const DEFAULT_TIMEOUT_MS = 8_000
 
 function decodeEntities(value: string): string {
@@ -46,6 +48,10 @@ export async function scrapeOfferContext(
   timeoutMs: number = DEFAULT_TIMEOUT_MS,
 ): Promise<{ productName: string; productContext: string }> {
   const fallbackName = deriveNameFromUrl(url)
+  if (!isSafeFetchedUrl(url)) {
+    return { productName: fallbackName, productContext: "" }
+  }
+
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
@@ -55,6 +61,9 @@ export async function scrapeOfferContext(
       signal: controller.signal,
       headers: { "user-agent": "Mozilla/5.0 (compatible; WifiCodeBot/1.0)" },
     })
+    if (!isSafeFetchedUrl(response.url)) {
+      return { productName: fallbackName, productContext: "" }
+    }
     if (!response.ok) return { productName: fallbackName, productContext: "" }
 
     const { title, description } = parseOfferContext((await response.text()).slice(0, 200_000))

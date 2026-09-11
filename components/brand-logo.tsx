@@ -16,13 +16,13 @@ interface BrandLogoProps {
 
 export function BrandLogo({
   variant = "icon",
-  size = 40,
-  width = 220,
+  size = 52,
+  width = 260,
   className,
   priority = false,
 }: BrandLogoProps) {
   if (variant === "wordmark") {
-    const height = Math.round(width * (216 / 793))
+    const height = Math.round(width * (289 / 865))
     return (
       <Image
         src={brand.logo.src}

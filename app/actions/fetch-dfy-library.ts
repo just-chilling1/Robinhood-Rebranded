@@ -1,5 +1,7 @@
 "use server"
 
+import { requireUser } from "@/lib/auth/require-user"
+
 export interface DFYVideo {
   videoId: string
   title: string
@@ -196,6 +198,9 @@ async function searchShorts(query: string): Promise<RawVideo[]> {
  * user's product/keyword. Always returns fresh results from YouTube.
  */
 export async function searchDFYVideos(query: string): Promise<DFYVideo[]> {
+  const { user, error } = await requireUser()
+  if (!user) throw new Error(error)
+
   const trimmed = query.trim()
   if (trimmed.length < 2) return []
 
@@ -220,6 +225,9 @@ export async function searchDFYVideos(query: string): Promise<DFYVideo[]> {
 }
 
 export async function fetchDFYLibrary(): Promise<DFYVideo[]> {
+  const { user, error } = await requireUser()
+  if (!user) throw new Error(error)
+
   if (libraryCache && Date.now() - libraryCache.fetchedAt < LIBRARY_CACHE_TTL_MS && libraryCache.videos.length > 0) {
     const deduped = dedupeByVideoId(libraryCache.videos).sort((a, b) => b.viralScore - a.viralScore)
     libraryCache = { videos: deduped, fetchedAt: libraryCache.fetchedAt }

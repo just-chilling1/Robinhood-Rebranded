@@ -108,9 +108,15 @@ export default function DFYVaultClient() {
 
   const loadLibrary = async () => {
     setLoading(true)
-    const library = await fetchDFYLibrary()
-    setVideos(library)
-    setFilteredVideos(library)
+    try {
+      const library = await fetchDFYLibrary()
+      setVideos(library)
+      setFilteredVideos(library)
+    } catch (error) {
+      console.error("[dfy-vault] library load failed:", error)
+      setVideos([])
+      setFilteredVideos([])
+    }
     setLoading(false)
   }
 
@@ -141,7 +147,7 @@ export default function DFYVaultClient() {
     if (!productLink.trim()) {
       next.productLink = "Paste your affiliate link so it can go inside the comments."
     } else if (!isValidAffiliateUrl(productLink)) {
-      next.productLink = "Use a full link that starts with http:// or https://"
+      next.productLink = "Use a full link that starts with https://"
     }
     return next
   }
@@ -310,7 +316,7 @@ export default function DFYVaultClient() {
                       {fieldErrors.productLink ? (
                         <p className="mt-2 text-sm font-medium text-[#C53030]">{fieldErrors.productLink}</p>
                       ) : (
-                        <p className="mt-2 text-xs text-ink-4">Must start with http:// or https://</p>
+                        <p className="mt-2 text-xs text-ink-4">Must start with https://</p>
                       )}
                     </div>
                   </div>

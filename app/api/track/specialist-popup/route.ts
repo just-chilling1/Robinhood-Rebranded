@@ -9,7 +9,6 @@ const ALLOWED_EVENTS = new Set(["cta_call_click", "popup_open"])
 
 export async function POST(request: Request) {
   try {
-    // sendBeacon often uses text/plain; accept JSON from any content-type.
     const raw = await request.text().catch(() => "")
     let body: { event?: unknown } = {}
     if (raw) {
@@ -25,22 +24,12 @@ export async function POST(request: Request) {
         : "cta_call_click"
 
     const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    const { error } = await supabase.from("specialist_popup_events").insert({
-      event,
-      user_id: user?.id ?? null,
-      country: resolveRequestCountry(request),
-      user_agent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
+    await supabase.rpc("track_specialist_popup", {
+      p_event: event,
+      p_country: resolveRequestCountry(request),
+      p_user_agent: request.headers.get("user-agent")?.slice(0, 300) ?? "",
     })
-
-    if (error) {
-      console.error("specialist popup tracking insert failed:", error.message)
-    }
   } catch (err) {
-    // Tracking must never break the call CTA.
     console.error("specialist popup tracking error:", err)
   }
 

@@ -4,17 +4,12 @@ import { NextResponse } from "next/server"
 export async function POST(request: Request) {
   try {
     const { pageId } = await request.json()
-    const supabase = await createClient()
-
-    // Increment copy/usage count (kept as "clicks" in existing schema)
-    const { data: page } = await supabase.from("pages").select("clicks").eq("id", pageId).single()
-
-    if (page) {
-      await supabase
-        .from("pages")
-        .update({ clicks: (page.clicks || 0) + 1 })
-        .eq("id", pageId)
+    if (!pageId || typeof pageId !== "string") {
+      return NextResponse.json({ success: false, error: "Missing pageId" }, { status: 400 })
     }
+
+    const supabase = await createClient()
+    await supabase.rpc("increment_page_stat", { p_page_id: pageId, p_stat: "clicks" })
 
     return NextResponse.json({ success: true })
   } catch (error) {

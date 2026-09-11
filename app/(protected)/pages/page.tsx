@@ -74,7 +74,7 @@ export default async function MyVaultPage() {
   const isEmpty = !pages || pages.length === 0
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="w-full space-y-6">
       <PageHeader
         eyebrow="My Vault"
         title="Your Comment Vault"

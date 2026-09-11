@@ -52,7 +52,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
             />
           </div>
           <div className="flex w-full flex-col items-center gap-3 text-center">
-            <BrandLogo variant="wordmark" width={220} priority className="rounded-[var(--ds-r-md)]" />
+            <BrandLogo variant="wordmark" width={280} priority />
             {subtitle ? <p className="text-[15px] font-medium text-ink-3">{subtitle}</p> : null}
             <div className="h-px w-16 bg-gradient-to-r from-transparent via-[var(--ds-sapphire-300)] to-transparent" />
           </div>

@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
 interface Sequence {
   id: string
@@ -14,11 +16,21 @@ interface Sequence {
   bestFor: string
 }
 
-export async function createPageFromSequence(userId: string, sequence: Sequence, affiliateLink: string) {
+export async function createPageFromSequence(_userId: string, sequence: Sequence, affiliateLink: string) {
   try {
     const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-    // Get or create default niche and offer
+    if (!user) {
+      return { success: false, error: "Not authenticated" }
+    }
+
+    if (!isValidAffiliateUrl(affiliateLink)) {
+      return { success: false, error: "Use a full link that starts with https://" }
+    }
+
     let { data: niche } = await supabase.from("niches").select("id").limit(1).single()
 
     if (!niche) {
@@ -50,14 +62,14 @@ export async function createPageFromSequence(userId: string, sequence: Sequence,
       offer = newOffer
     }
 
-    // Replace placeholder with actual affiliate link
-    const finalContent = sequence.content.replace(/\[INSERT YOUR AFFILIATE LINK HERE\]/g, affiliateLink)
+    const finalContent = sanitizeArticleHtml(
+      sequence.content.replace(/\[INSERT YOUR AFFILIATE LINK HERE\]/g, affiliateLink),
+    )
 
-    // Create the page
     const { data: page, error: pageError } = await supabase
       .from("pages")
       .insert({
-        user_id: userId,
+        user_id: user.id,
         niche_id: niche.id,
         offer_id: offer.id,
         title: sequence.title,
@@ -74,8 +86,8 @@ export async function createPageFromSequence(userId: string, sequence: Sequence,
     revalidatePath("/dashboard")
 
     return { success: true, page }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating page:", error)
-    return { success: false, error: error.message }
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create page" }
   }
 }

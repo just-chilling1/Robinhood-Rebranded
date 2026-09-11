@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
-import { fetchVideoOpportunities } from "@/app/actions/fetch-video-opportunities"
+import { searchVideoOpportunities } from "@/app/actions/fetch-video-opportunities"
 import { scrapeOfferContext } from "@/lib/dfy-profit/scrape-offer-context"
 import { generateVideoComments } from "@/lib/dfy-profit/generate-video-comments"
 import type { DfyVideoResult } from "@/lib/dfy-profit/types"
-
 export const dynamic = "force-dynamic"
 export const maxDuration = 120
 
@@ -44,7 +43,7 @@ export async function POST(request: Request) {
 
   let opportunities
   try {
-    opportunities = await fetchVideoOpportunities({
+    opportunities = await searchVideoOpportunities({
       productName,
       productDescription: productContext,
       keyword: niche,
